@@ -4,23 +4,21 @@ import Logging
 
 final class OccurrenceTests: XCTestCase {
     
-    @Subsystem(.occurrence, factory: Occurrence.init) private var log: Logger
+    @LazyLogger(.occurrence) var log: Logger
     
-    let logger = Logger(label: "com.richardpiazza.occurrence.tests", factory: Occurrence.init)
-    
-//    override func setUpWithError() throws {
-//        try super.setUpWithError()
-//        LoggingSystem.bootstrap(Occurrence.init)
-//    }
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        LoggingSystem.bootstrap(Occurrence.init)
+    }
     
     func testExample() {
-        logger.trace("A 'TRACE' Message")
-        logger.debug("A 'DEBUG' Message")
-        logger.info("A 'INFO' Message")
-        logger.notice("A 'NOTICE' Message")
-        logger.warning("A 'WARNING' Message")
-        logger.error("A 'ERROR' Message")
-        logger.critical("A 'CRITICAL' Message")
+        log.trace("A 'TRACE' Message")
+        log.debug("A 'DEBUG' Message")
+        log.info("A 'INFO' Message")
+        log.notice("A 'NOTICE' Message")
+        log.warning("A 'WARNING' Message")
+        log.error("A 'ERROR' Message")
+        log.critical("A 'CRITICAL' Message")
     }
 
     static var allTests = [
