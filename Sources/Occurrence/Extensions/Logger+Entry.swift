@@ -53,5 +53,30 @@ public extension Logger {
                 return output
             }
         }
+        
+        public func matchesFilter(_ filter: Logger.Filter) -> Bool {
+            switch filter {
+            case .subsystem(let subsystem):
+                return self.subsystem == subsystem
+            case .level(let level):
+                return self.level == level
+            case .message(let message):
+                return self.message.description.contains(message)
+            case .source(let source):
+                return self.source.contains(source)
+            case .file(let file):
+                return self.file.contains(file)
+            case .function(let function):
+                return self.function.contains(function)
+            case .period(let start, let end):
+                return (date >= start) && (date <= end)
+            case .and(let filters):
+                return !filters.map({ matchesFilter($0) }).contains(false)
+            case .or(let filters):
+                return filters.map({ matchesFilter($0) }).contains(true)
+            case .not(let filters):
+                return !filters.map({ matchesFilter($0) }).contains(true)
+            }
+        }
     }
 }

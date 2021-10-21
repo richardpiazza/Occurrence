@@ -12,7 +12,9 @@ class OccurrenceTests: XCTestCase {
     }
     
     override class func tearDown() {
-        Occurrence.logProvider.purge()
+        if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
+            Occurrence.logProvider.purge()
+        }
         super.tearDown()
     }
     

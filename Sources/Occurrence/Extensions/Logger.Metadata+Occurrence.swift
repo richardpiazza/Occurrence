@@ -1,15 +1,13 @@
 import Foundation
 import Logging
 
-public extension Logger.Metadata {
-    init(error: Error) {
-        self = .init()
-        self["localizedDescription"] = .string(error.localizedDescription)
+extension Logger.Metadata {
+    public init(error: Error) {
+        self = ["localizedDescription": .string(error.localizedDescription)]
     }
     
-    init(localizedError error: LocalizedError) {
-        self = .init()
-        self["localizedDescription"] = .string(error.localizedDescription)
+    public init(localizedError error: LocalizedError) {
+        self = ["localizedDescription": .string(error.localizedDescription)]
         
         if let errorDescription = error.errorDescription {
             self["errorDescription"] = .string(errorDescription)
@@ -25,22 +23,8 @@ public extension Logger.Metadata {
         }
     }
     
-    init(decodingError error: DecodingError) {
-        self = .init()
-        self["localizedDescription"] = .string(error.localizedDescription)
-        
-        if let errorDescription = error.errorDescription {
-            self["errorDescription"] = .string(errorDescription)
-        }
-        if let failureReason = error.failureReason {
-            self["failureReason"] = .string(failureReason)
-        }
-        if let recoverySuggestion = error.recoverySuggestion {
-            self["recoverySuggestion"] = .string(recoverySuggestion)
-        }
-        if let helpAnchor = error.helpAnchor {
-            self["helpAnchor"] = .string(helpAnchor)
-        }
+    public init(decodingError error: DecodingError) {
+        self = .init(localizedError: error)
         
         switch error {
         case .typeMismatch(let type, let context):
@@ -59,7 +43,15 @@ public extension Logger.Metadata {
         }
     }
     
-    init(encodingError: EncodingError) {
-        self = .init()
+    public init(encodingError error: EncodingError) {
+        self = .init(localizedError: error)
+        
+        switch error {
+        case .invalidValue(let type, let context):
+            self["type"] = .string(String(describing: type))
+            self["context"] = .string(context.debugDescription)
+        @unknown default:
+            break
+        }
     }
 }

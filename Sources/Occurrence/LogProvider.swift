@@ -3,6 +3,7 @@ import Logging
 
 /// A source of logging data.
 public protocol LogProvider {
+    /// Consume a log entry.
     func log(_ entry: Logger.Entry)
     
     /// A collection of known `Logger.Subsystem`.
