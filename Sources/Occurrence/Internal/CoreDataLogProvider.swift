@@ -86,11 +86,48 @@ class CoreDataLogProvider: LogProvider {
         }
         
         let request: NSFetchRequest<NSFetchRequestResult> = ManagedEntry.fetchRequest()
-        return []
+        request.predicate = filter?.predicate
+        request.sortDescriptors = [
+            NSSortDescriptor(key: #keyPath(ManagedEntry.date), ascending: ascending)
+        ]
+        if limit > 0 {
+            request.fetchLimit = Int(limit)
+        }
+        
+        var fetch: [ManagedEntry] = []
+        
+        context.performAndWait {
+            do {
+                if let entities = try context.fetch(request) as? [ManagedEntry] {
+                    fetch = entities
+                }
+            } catch {
+                print(error)
+            }
+        }
+        
+        return fetch.map { $0.entry }
     }
     
     public func purge(matching filter: Logger.Filter?) {
+        guard let context = persistentContainer?.newBackgroundContext() else {
+            return
+        }
         
+        let request: NSFetchRequest<NSFetchRequestResult> = ManagedEntry.fetchRequest()
+        request.predicate = filter?.predicate
+        
+        context.performAndWait {
+            do {
+                let entities = try context.fetch(request) as? [ManagedEntry]
+                entities?.forEach {
+                    context.delete($0)
+                }
+                try context.save()
+            } catch {
+                print(error)
+            }
+        }
     }
 }
 #endif

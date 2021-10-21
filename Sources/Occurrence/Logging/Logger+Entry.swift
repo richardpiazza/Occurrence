@@ -46,7 +46,7 @@ public extension Logger {
         public var description: String {
             let _date = Self.gmtDateFormatter.string(from: date)
             let _file = URL(fileURLWithPath: file).lastPathComponent
-            let output = "[\(_date) \(level.gem) \(level) | \(subsystem) | \(_file) \(function) \(line)] \(message)"
+            let output = "[\(_date) \(level) | \(subsystem) | \(source) \(_file) | \(function) \(line)] \(message)"
             if let metadata = metadata {
                 return "\(output)\n\(metadata)"
             } else {

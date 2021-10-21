@@ -11,7 +11,7 @@ class OccurrenceTests: XCTestCase {
         Occurrence.bootstrap()
     }
     
-    func testExample() {
+    func testMessage() {
         log.trace("A 'TRACE' Message")
         log.debug("A 'DEBUG' Message")
         log.info("A 'INFO' Message")
@@ -20,8 +20,24 @@ class OccurrenceTests: XCTestCase {
         log.error("A 'ERROR' Message")
         log.critical("A 'CRITICAL' Message")
     }
+    
+    func testMetadata() {
+        struct BasicError: Error {
+        }
+        
+        struct ExtendedError: LocalizedError {
+            var errorDescription: String? { "Description of the error." }
+            var failureReason: String? { "The reason for the failure." }
+            var recoverySuggestion: String? { "How to recover from the error." }
+            var helpAnchor: String? { "Help information for the user." }
+        }
+        
+        log.error("A Basic Error", error: BasicError())
+        log.error("A Detailed Error", error: ExtendedError())
+    }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testMessage", testMessage),
+        ("testMetadata", testMetadata),
     ]
 }
