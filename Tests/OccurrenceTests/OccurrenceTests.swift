@@ -11,6 +11,11 @@ class OccurrenceTests: XCTestCase {
         Occurrence.bootstrap()
     }
     
+    override class func tearDown() {
+        Occurrence.logProvider.purge()
+        super.tearDown()
+    }
+    
     func testMessage() {
         log.trace("A 'TRACE' Message")
         log.debug("A 'DEBUG' Message")
@@ -32,8 +37,16 @@ class OccurrenceTests: XCTestCase {
             var helpAnchor: String? { "Help information for the user." }
         }
         
-        log.error("A Basic Error", error: BasicError())
-        log.error("A Detailed Error", error: ExtendedError())
+        enum Key: CodingKey {
+            case name
+        }
+        
+        let context = DecodingError.Context(codingPath: [Key.name], debugDescription: "'Name' not found", underlyingError: nil)
+        let error = DecodingError.keyNotFound(Key.name, context)
+        
+        log.error("A Basic Error", metadata: .init(error: BasicError()))
+        log.error("A Detailed Error", metadata: .init(localizedError: ExtendedError()))
+        log.error("A Decoding Error", metadata: .init(decodingError: error))
     }
 
     static var allTests = [

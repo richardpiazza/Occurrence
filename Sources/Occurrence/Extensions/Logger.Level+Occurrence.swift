@@ -5,13 +5,13 @@ extension Logger.Level {
     /// A unique visual indicator for each `Level`.
     public var gem: String {
         switch self {
-        case .trace: return "🔦"
+        case .trace: return "🚰"
         case .debug: return "🦠"
         case .info: return "🔎"
-        case .notice: return "📎"
-        case .warning: return "⚠️"
+        case .notice: return "💡"
+        case .warning: return "🔮"
         case .error: return "🚫"
-        case .critical: return "☢️"
+        case .critical: return "💣"
         }
     }
     
@@ -24,11 +24,6 @@ extension Logger.Level {
 
 extension Logger.Level: CustomStringConvertible {
     public var description: String {
-        var fixedWidthGem = gem
-        if gem.unicodeScalars.count > 1 {
-            fixedWidthGem.append(" ")
-        }
-        
-        return "\(fixedWidthGem) \(fixedWidthDescription.uppercased())"
+        "\(gem) \(fixedWidthDescription.uppercased())"
     }
 }
