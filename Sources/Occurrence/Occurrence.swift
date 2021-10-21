@@ -9,6 +9,20 @@ public struct Occurrence: LogHandler {
     }
     
     public static var configuration: Configuration = .init()
+    private static var bootstrapped: Bool = false
+    
+    /// Bootstraps **Occurrence** in to `Logging.LoggingSystem`.
+    ///
+    /// This ensures that `Occurrence` only calls `LoggingSystem.bootstrap(Occurrence.init)` once.
+    /// Repeated calls to `LoggingSystem.bootstrap()` is unpredictable and can lead to application crashes.
+    public static func bootstrap() {
+        guard !bootstrapped else {
+            return
+        }
+        
+        LoggingSystem.bootstrap(Occurrence.init)
+        bootstrapped = true
+    }
     
     #if canImport(Combine)
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)

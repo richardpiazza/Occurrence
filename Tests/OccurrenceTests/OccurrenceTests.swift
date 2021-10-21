@@ -2,13 +2,13 @@ import XCTest
 import Logging
 @testable import Occurrence
 
-final class OccurrenceTests: XCTestCase {
+class OccurrenceTests: XCTestCase {
     
     @LazyLogger(.occurrence) var log: Logger
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        LoggingSystem.bootstrap(Occurrence.init)
+        Occurrence.bootstrap()
     }
     
     func testExample() {

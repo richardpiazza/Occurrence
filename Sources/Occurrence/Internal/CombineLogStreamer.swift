@@ -9,10 +9,6 @@ struct CombineLogStreamer: LogStreamer {
     private var streamSubject: PassthroughSubject<Logger.Entry, Never> = .init()
     public var publisher: AnyPublisher<Logger.Entry, Never> { streamSubject.eraseToAnyPublisher() }
     
-    public init() {
-        
-    }
-    
     public func log(_ entry: Logger.Entry) {
         streamSubject.send(entry)
     }

@@ -13,4 +13,9 @@ extension Logger.Level {
         case .critical: return "☢️"
         }
     }
+    
+    public var fixedWidthDescription: String {
+        let max = Logger.Level.allCases.map { $0.rawValue.count }.max() ?? rawValue.count
+        return rawValue.uppercased().padding(toLength: max, withPad: " ", startingAt: 0)
+    }
 }
