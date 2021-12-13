@@ -33,4 +33,9 @@ import Occurrence
 
 ## Usage
 
+During you app initialization, call `Occurrence.bootstrap()`. This will configure the Swift `LoggingSystem` to use **Occurrence** as a `LogHandler`.
 
+As a convenience to creating a `Logger` reference, use the `LazyLogger` property wrapper which will create a Logger with the specific label (`Logger.Subsystem`).
+```
+@LazyLogger("LoggerLabel") var logger: Logger
+```

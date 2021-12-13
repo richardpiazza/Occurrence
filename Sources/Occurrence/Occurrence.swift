@@ -29,12 +29,17 @@ public struct Occurrence: LogHandler {
     public static let logStreamer: LogStreamer = CombineLogStreamer()
     #endif
     
-    #if canImport(CoreData)
-    @available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)
-    public static let logProvider: LogProvider = CoreDataLogProvider()
-    #else
-    public static let logProvider: LogProvider = SQLiteLogProvider()
-    #endif
+    public static var logProvider: LogProvider = {
+        #if canImport(CoreData)
+        if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
+            return CoreDataLogProvider()
+        } else {
+            return SQLiteLogProvider()
+        }
+        #else
+        return SQLiteLogProvider()
+        #endif
+    }()
     
     public let label: String
     public var metadata: Logger.Metadata = .init()
