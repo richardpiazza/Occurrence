@@ -3,7 +3,7 @@
 A swift logging library that integrates with [`SwiftLog`](https://github.com/apple/swift-log).
 
 <p>
-    <img src="https://github.com/richardpiazza/Occurence/workflows/Swift/badge.svg?branch=main" />
+    <img src="https://github.com/richardpiazza/Occurrence/workflows/Swift/badge.svg?branch=main" />
     <img src="https://img.shields.io/badge/Swift-5.3-orange.svg" />
     <a href="https://twitter.com/richardpiazza">
         <img src="https://img.shields.io/badge/twitter-@richardpiazza-blue.svg?style=flat" alt="Twitter: @richardpiazza" />
@@ -36,6 +36,6 @@ import Occurrence
 During you app initialization, call `Occurrence.bootstrap()`. This will configure the Swift `LoggingSystem` to use **Occurrence** as a `LogHandler`.
 
 As a convenience to creating a `Logger` reference, use the `LazyLogger` property wrapper which will create a Logger with the specific label (`Logger.Subsystem`).
-```
+```swift
 @LazyLogger("LoggerLabel") var logger: Logger
 ```
