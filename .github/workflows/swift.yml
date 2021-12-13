@@ -1,0 +1,34 @@
+name: Swift
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  macOS:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Resolve Packages
+      run: swift package resolve
+    - name: Compile Source
+      run: swift build -v
+    - name: Run Tests
+      run: swift test -v
+  
+  ubuntu:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Resolve Packages
+      run: swift package resolve
+    - name: Compile Source
+      run: swift build -v
+    - name: Run Tests
+      run: swift test -v
