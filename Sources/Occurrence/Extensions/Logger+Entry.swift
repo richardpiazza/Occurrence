@@ -26,11 +26,11 @@ public extension Logger {
             subsystem: Subsystem,
             level: Logger.Level,
             message: Logger.Message,
-            metadata: Logger.Metadata?,
+            metadata: Logger.Metadata? = nil,
             source: String,
-            file: String,
-            function: String,
-            line: UInt
+            file: String = #fileID,
+            function: String = #function,
+            line: UInt = #line
         ) {
             self.date = date
             self.subsystem = subsystem

@@ -25,11 +25,11 @@ extension Logger.Filter {
                 NSPredicate(format: "%K <= %@", #keyPath(ManagedEntry.date), end as NSDate)
             ])
         case .and(let filters):
-            return NSCompoundPredicate(type: .and, subpredicates: filters.map { $0.predicate})
+            return NSCompoundPredicate(type: .and, subpredicates: filters.map { $0.predicate })
         case .or(let filters):
-            return NSCompoundPredicate(type: .or, subpredicates: filters.map { $0.predicate})
+            return NSCompoundPredicate(type: .or, subpredicates: filters.map { $0.predicate })
         case .not(let filters):
-            return NSCompoundPredicate(type: .not, subpredicates: filters.map { $0.predicate})
+            return NSCompoundPredicate(type: .not, subpredicates: filters.map { $0.predicate })
         }
     }
 }

@@ -2,8 +2,35 @@
   "object": {
     "pins": [
       {
+        "package": "PerfectCRUD",
+        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-CRUD.git",
+        "state": {
+          "branch": null,
+          "revision": "71c445eaaa94e5ce634aa11a6a1aa6544e786307",
+          "version": "2.0.0"
+        }
+      },
+      {
+        "package": "PerfectSQLite",
+        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-SQLite.git",
+        "state": {
+          "branch": null,
+          "revision": "43c0e16cfce1dada7914d8334e43ffa887e66f8e",
+          "version": "5.0.0"
+        }
+      },
+      {
+        "package": "Statement",
+        "repositoryURL": "https://github.com/richardpiazza/Statement.git",
+        "state": {
+          "branch": null,
+          "revision": "18e29f300c92cce626b708206ea56a78338e6848",
+          "version": "0.7.0"
+        }
+      },
+      {
         "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log",
+        "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
           "branch": null,
           "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",

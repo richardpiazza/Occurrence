@@ -6,42 +6,47 @@ import CoreData
 @available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)
 class CoreDataLogProvider: LogProvider {
     
-    private lazy var persistentContainer: NSPersistentContainer? = {
-        do {
-            let directory = try FileManager.default.occurrenceDirectory()
-            let url = directory.appendingPathComponent("LogProvider.sqlite")
-            
-            let description = NSPersistentStoreDescription()
-            description.shouldInferMappingModelAutomatically = true
-            description.shouldMigrateStoreAutomatically = true
-            description.type = NSSQLiteStoreType
-            description.url = url
-            
-            var loadError: Error?
-            
-            let container = NSPersistentContainer(name: "Occurrence", managedObjectModel: LogModel.default.managedObjectModel)
-            container.persistentStoreDescriptions = [description]
-            container.loadPersistentStores { _, error in
-                if let error = error {
-                    loadError = error
-                }
+    private var persistentContainer: NSPersistentContainer
+    let storeUrl: URL
+    
+    init(url: URL? = nil) throws {
+        storeUrl = try url ?? FileManager.default.defaultDatabaseUrl()
+        
+        let description = NSPersistentStoreDescription()
+        description.shouldInferMappingModelAutomatically = true
+        description.shouldMigrateStoreAutomatically = true
+        description.type = NSSQLiteStoreType
+        description.url = storeUrl
+        
+        var loadError: Error?
+        
+        let container = NSPersistentContainer(name: "Occurrence", managedObjectModel: LogModel.default.managedObjectModel)
+        container.persistentStoreDescriptions = [description]
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                loadError = error
             }
-            
-            if let error = loadError {
-                throw error
-            }
-            
-            container.viewContext.automaticallyMergesChangesFromParent = true
-            return container
-        } catch {
-            return nil
         }
-    }()
+        
+        if let error = loadError {
+            throw error
+        }
+        
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        persistentContainer = container
+    }
+    
+    deinit {
+        let coordinator = persistentContainer.persistentStoreCoordinator
+        let stores = coordinator.persistentStores
+        do {
+            try stores.forEach { try coordinator.remove($0) }
+        } catch {
+        }
+    }
     
     public func log(_ entry: Logger.Entry) {
-        guard let context = persistentContainer?.newBackgroundContext() else {
-            return
-        }
+        let context = persistentContainer.newBackgroundContext()
         
         context.performAndWait {
             do {
@@ -54,9 +59,7 @@ class CoreDataLogProvider: LogProvider {
     }
     
     public func subsystems() -> [Logger.Subsystem] {
-        guard let context = persistentContainer?.newBackgroundContext() else {
-            return []
-        }
+        let context = persistentContainer.newBackgroundContext()
         
         let request: NSFetchRequest<NSFetchRequestResult> = ManagedEntry.fetchRequest()
         request.resultType = .dictionaryResultType
@@ -73,17 +76,24 @@ class CoreDataLogProvider: LogProvider {
             }
         }
         
+        var subsystems: Set<Logger.Subsystem> = [.occurrence]
+        
         guard let dictionary = fetch else {
-            return []
+            return Array(subsystems)
         }
         
-        return dictionary.compactMap { $0[#keyPath(ManagedEntry.subsystem)] }.map { Logger.Subsystem(stringLiteral: $0) }
+        dictionary
+            .compactMap { $0[#keyPath(ManagedEntry.subsystem)] }
+            .map { Logger.Subsystem(stringLiteral: $0) }
+            .forEach {
+                subsystems.insert($0)
+            }
+        
+        return Array(subsystems)
     }
     
     public func entries(matching filter: Logger.Filter?, ascending: Bool, limit: UInt) -> [Logger.Entry] {
-        guard let context = persistentContainer?.newBackgroundContext() else {
-            return []
-        }
+        let context = persistentContainer.newBackgroundContext()
         
         let request: NSFetchRequest<NSFetchRequestResult> = ManagedEntry.fetchRequest()
         request.predicate = filter?.predicate
@@ -110,9 +120,7 @@ class CoreDataLogProvider: LogProvider {
     }
     
     public func purge(matching filter: Logger.Filter?) {
-        guard let context = persistentContainer?.newBackgroundContext() else {
-            return
-        }
+        let context = persistentContainer.newBackgroundContext()
         
         let request: NSFetchRequest<NSFetchRequestResult> = ManagedEntry.fetchRequest()
         request.predicate = filter?.predicate
