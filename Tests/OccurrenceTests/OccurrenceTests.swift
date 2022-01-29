@@ -48,9 +48,4 @@ class OccurrenceTests: XCTestCase {
         log.error("A Detailed Error", metadata: .init(localizedError: ExtendedError()))
         log.error("A Decoding Error", metadata: .init(decodingError: error))
     }
-
-    static var allTests = [
-        ("testMessage", testMessage),
-        ("testMetadata", testMetadata),
-    ]
 }

@@ -30,15 +30,16 @@ public struct Occurrence: LogHandler {
     #endif
     
     public static var logProvider: LogProvider = {
-        #if canImport(CoreData)
-        if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
-            return CoreDataLogProvider()
-        } else {
-            return SQLiteLogProvider()
+        do {
+            #if canImport(CoreData)
+            if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
+                return try CoreDataLogProvider()
+            }
+            #endif
+            return try SQLiteLogProvider()
+        } catch {
+            preconditionFailure(error.localizedDescription)
         }
-        #else
-        return SQLiteLogProvider()
-        #endif
     }()
     
     public let label: String
