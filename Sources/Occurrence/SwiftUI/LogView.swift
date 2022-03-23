@@ -3,7 +3,7 @@ import Logging
 import SwiftUI
 import Combine
 
-@available(iOS 14.0, macOS 11.0, *)
+@available(iOS 14.0, tvOS 14.0, macOS 11.0, *)
 public struct LogView: View {
     
     enum ManageOption: String, CaseIterable {
@@ -140,9 +140,11 @@ public struct LogView: View {
     
     public var body: some View {
         VStack(spacing: 4.0) {
+            #if os(iOS) || os(macOS)
             if !viewModel.limitUI {
                 entryManagementView
                     .padding()
+                
                 
                 Divider()
                 
@@ -151,6 +153,7 @@ public struct LogView: View {
                 
                 Divider()
             }
+            #endif
             
             ScrollView {
                 ForEach(viewModel.entries, id: \.date) { entry in
@@ -162,6 +165,7 @@ public struct LogView: View {
         .navigationTitle("System Log")
     }
     
+    #if os(iOS) || os(macOS)
     private var entryManagementView: some View {
         HStack {
             Menu {
@@ -231,6 +235,7 @@ public struct LogView: View {
             }
         }
     }
+    #endif
     
     struct LogEntryView: View {
         
@@ -300,7 +305,7 @@ public struct LogView: View {
     }
 }
 
-@available(iOS 14.0, macOS 11.0, *)
+@available(iOS 14.0, tvOS 14.0, macOS 11.0, *)
 public struct SwiftUIView_Previews: PreviewProvider {
     public static var previews: some View {
         NavigationView {
