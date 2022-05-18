@@ -19,7 +19,7 @@ Xcode 'Swift Packages' menu or add it as a dependency within your `Package.swift
 let package = Package(
     ...
     dependencies: [
-        .package(url: "https://github.com/richardpiazza/Occurence.git", .upToNextMinor(from: "0.1.0"))
+        .package(url: "https://github.com/richardpiazza/Occurence.git", .upToNextMinor(from: "0.3.0"))
     ],
     ...
 )

@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -7,6 +7,7 @@ let package = Package(
     name: "Occurrence",
     platforms: [
         .macOS(.v10_15),
+        .macCatalyst(.v13),
         .iOS(.v13),
         .tvOS(.v13),
         .watchOS(.v6),
@@ -20,9 +21,9 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-log.git", .upToNextMinor(from: "1.4.2")),
-        .package(name: "PerfectSQLite", url: "https://github.com/PerfectlySoft/Perfect-SQLite.git", .upToNextMinor(from: "5.0.0")),
-        .package(url: "https://github.com/richardpiazza/Statement.git", .upToNextMinor(from: "0.7.0"))
+        .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.4.2")),
+        .package(name: "PerfectSQLite", url: "https://github.com/richardpiazza/Perfect-SQLite", .upToNextMajor(from: "5.1.0")),
+        .package(url: "https://github.com/richardpiazza/Statement.git", .upToNextMajor(from: "0.7.0"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
