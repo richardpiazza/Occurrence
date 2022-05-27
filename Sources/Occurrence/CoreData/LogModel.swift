@@ -14,12 +14,14 @@ enum LogModel {
     }
 }
 
-private class Version_1_0_0: NSManagedObjectModel {
+class Version_1_0_0: NSManagedObjectModel, NSSecureCoding {
     /// Provide a singular instance of the model to be referenced. There is a known issue where when referencing
     /// a model in an app target, as well as unit tests, a model - and therefore its entities - can be loaded twice.
-    public static let instance: Version_1_0_0 = Version_1_0_0()
-
-    private override init() {
+    static let instance: Version_1_0_0 = Version_1_0_0()
+    
+    static var supportsSecureCoding: Bool { true }
+    
+    override init() {
         super.init()
         
         // Attributes
