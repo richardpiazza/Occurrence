@@ -15,17 +15,8 @@
         "repositoryURL": "https://github.com/richardpiazza/Perfect-SQLite",
         "state": {
           "branch": null,
-          "revision": "6c707f87897741f5cbb52e48967a3ef607b06dc7",
-          "version": "5.1.0"
-        }
-      },
-      {
-        "package": "PerfectCSQLite3",
-        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-sqlite3-support",
-        "state": {
-          "branch": null,
-          "revision": "64c2bd87e1fd3a41cdeeba073bab794db7e97e42",
-          "version": "3.1.1"
+          "revision": "3740d1ea1e519584c3d665831968c4d7e086edb7",
+          "version": "5.1.1"
         }
       },
       {
