@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "AsyncPlus",
+        "repositoryURL": "https://github.com/richardpiazza/AsyncPlus.git",
+        "state": {
+          "branch": null,
+          "revision": "be7aad849d2ead0196aee1c296f52ef2e016fcf5",
+          "version": "0.1.0"
+        }
+      },
+      {
         "package": "PerfectCRUD",
         "repositoryURL": "https://github.com/richardpiazza/Perfect-CRUD",
         "state": {

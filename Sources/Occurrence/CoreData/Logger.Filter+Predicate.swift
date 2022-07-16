@@ -3,7 +3,6 @@ import Logging
 #if canImport(CoreData)
 import CoreData
 
-@available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)
 extension Logger.Filter {
     var predicate: NSPredicate {
         switch self {

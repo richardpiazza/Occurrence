@@ -2,8 +2,8 @@ import Logging
 #if canImport(SwiftUI)
 import SwiftUI
 import Combine
+import AsyncPlus
 
-@available(iOS 14.0, tvOS 14.0, macOS 11.0, *)
 public struct LogView: View {
     
     enum ManageOption: String, CaseIterable {
@@ -300,7 +300,6 @@ public struct LogView: View {
     }
 }
 
-@available(iOS 14.0, tvOS 14.0, macOS 11.0, *)
 public struct SwiftUIView_Previews: PreviewProvider {
     public static var previews: some View {
         NavigationView {
@@ -389,13 +388,23 @@ private struct PreviewLogProvider: LogProvider {
     }
 }
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-private struct PreviewLogStreamer: LogStreamer {
-    private var stream: PassthroughSubject<Logger.Entry, Never> = .init()
-    var publisher: AnyPublisher<Logger.Entry, Never> { stream.eraseToAnyPublisher() }
+private class PreviewLogStreamer: LogStreamer {
+    
+    var _stream: PassthroughAsyncSequence<Logger.Entry>?
+    
+    var stream: AsyncStream<Logger.Entry> {
+        _stream?.finish()
+        let sequence = PassthroughAsyncSequence<Logger.Entry>()
+        _stream = sequence
+        return sequence.stream
+    }
+    
+    private var subject: PassthroughSubject<Logger.Entry, Never> = .init()
+    var publisher: AnyPublisher<Logger.Entry, Never> { subject.eraseToAnyPublisher() }
     
     func log(_ entry: Logger.Entry) {
-        stream.send(entry)
+        _stream?.yield(entry)
+        subject.send(entry)
     }
 }
 #endif

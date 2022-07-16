@@ -4,8 +4,14 @@ public struct Occurrence: LogHandler {
     
     public struct Configuration {
         public var outputToConsole: Bool = true
-        public var outputToPublisher: Bool = true
+        public var outputToStream: Bool = true
         public var outputToStorage: Bool = true
+        
+        @available(*, deprecated, renamed: "outputToStream")
+        public var outputToPublisher: Bool {
+            get { outputToStream }
+            set { outputToStream = newValue }
+        }
     }
     
     public static var configuration: Configuration = .init()
@@ -27,10 +33,7 @@ public struct Occurrence: LogHandler {
         bootstrapped = true
     }
     
-    #if canImport(Combine)
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    public static let logStreamer: LogStreamer = CombineLogStreamer()
-    #endif
+    public static let logStreamer: LogStreamer = OccurrenceLogStreamer()
     
     public static var logProvider: LogProvider = {
         do {
@@ -93,12 +96,8 @@ public struct Occurrence: LogHandler {
             print(entry)
         }
         
-        if Self.configuration.outputToPublisher {
-            #if canImport(Combine)
-            if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
-                Self.logStreamer.log(entry)
-            }
-            #endif
+        if Self.configuration.outputToStream {
+            Self.logStreamer.log(entry)
         }
         
         if Self.configuration.outputToStorage {
