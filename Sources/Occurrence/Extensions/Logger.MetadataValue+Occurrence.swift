@@ -28,3 +28,13 @@ extension Logger.MetadataValue: Codable {
         }
     }
 }
+
+public extension Logger.MetadataValue {
+    init(_ any: Any) {
+        if let customConvertible = any as? CustomStringConvertible {
+            self = .stringConvertible(customConvertible)
+        } else {
+            self = .string(String(describing: any))
+        }
+    }
+}
