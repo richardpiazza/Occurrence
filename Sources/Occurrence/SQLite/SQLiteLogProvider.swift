@@ -58,7 +58,7 @@ class SQLiteLogProvider: LogProvider {
                 try db.execute(statement: statement)
             }
         } catch {
-            print("SQLiteLogProvider \(#line): \(error)")
+            print("SQLiteLogProvider \(#line): \(error)\n\(statement)")
         }
     }
     
@@ -80,7 +80,7 @@ class SQLiteLogProvider: LogProvider {
                 subsystems.insert(Logger.Subsystem(stringLiteral: name))
             })
         } catch {
-            print("SQLiteLogProvider \(#line): \(error)")
+            print("SQLiteLogProvider \(#line): \(error)\n\(sql)")
         }
         
         return subsystems.sorted()
@@ -231,7 +231,7 @@ class SQLiteLogProvider: LogProvider {
                 try db.execute(statement: sql)
             }
         } catch {
-            print("SQLiteLogProvider \(#line): \(error)")
+            print("SQLiteLogProvider \(#line): \(error)\n\(sql)")
         }
     }
 }
