@@ -27,8 +27,7 @@ class OccurrenceTests: XCTestCase {
     }
     
     func testMetadata() {
-        struct BasicError: Error {
-        }
+        struct BasicError: Error {}
         
         struct ExtendedError: LocalizedError {
             var errorDescription: String? { "Description of the error." }
@@ -44,8 +43,75 @@ class OccurrenceTests: XCTestCase {
         let context = DecodingError.Context(codingPath: [Key.name], debugDescription: "'Name' not found", underlyingError: nil)
         let error = DecodingError.keyNotFound(Key.name, context)
         
-        log.error("A Basic Error", metadata: .init(error: BasicError()))
-        log.error("A Detailed Error", metadata: .init(localizedError: ExtendedError()))
-        log.error("A Decoding Error", metadata: .init(decodingError: error))
+        log.error("A Basic Error", metadata: .init(BasicError()))
+        log.error("A Detailed Error", metadata: .init(ExtendedError()))
+        log.error("A Decoding Error", metadata: .init(error))
+    }
+    
+    func testConvenienceObject() throws {
+        class Item: CustomStringConvertible {
+            let value: Int
+            
+            init(value: Int) {
+                self.value = value
+            }
+            
+            var description: String {
+                "Item { value: \(value) }"
+            }
+        }
+        
+        log.log(level: .info, "Object", object: Item(value: 47))
+        
+        let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
+        var description = entry.description
+        let first = description.index(description.startIndex, offsetBy: 1)
+        let last = description.index(description.startIndex, offsetBy: 25)
+        description.replaceSubrange(first...last, with: "")
+        
+        XCTAssertEqual(description, """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceObject() 64] Object
+        [object: Item { value: 47 }]
+        """)
+    }
+    
+    func testConvenienceDictionary() throws {
+        let dictionary: [String: Any] = [
+            "label": "count",
+            "value": 42
+        ]
+        
+        log.log(level: .info, "Dictionary", dictionary: dictionary, redacting: ["value"])
+        
+        let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
+        var description = entry.description
+        let first = description.index(description.startIndex, offsetBy: 1)
+        let last = description.index(description.startIndex, offsetBy: 25)
+        description.replaceSubrange(first...last, with: "")
+        
+        XCTAssertEqual(description, """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceDictionary() 84] Dictionary
+        [label: count, value: <REDACTED>]
+        """)
+    }
+    
+    func testConvenienceEncodable() throws {
+        struct Metadata: Encodable {
+            let id: Int
+            let name: String
+        }
+        
+        log.log(level: .info, "Encodable", encodable: Metadata(id: 123, name: "Bob"), redacting: ["name"])
+        
+        let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
+        var description = entry.description
+        let first = description.index(description.startIndex, offsetBy: 1)
+        let last = description.index(description.startIndex, offsetBy: 25)
+        description.replaceSubrange(first...last, with: "")
+        
+        XCTAssertEqual(description, """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceEncodable() 104] Encodable
+        [id: 123, name: <REDACTED>]
+        """)
     }
 }

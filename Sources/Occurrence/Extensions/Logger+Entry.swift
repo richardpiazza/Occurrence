@@ -48,7 +48,9 @@ public extension Logger {
             let _file = URL(fileURLWithPath: file).lastPathComponent
             let output = "[\(_date) \(level) | \(subsystem) | \(source) \(_file) | \(function) \(line)] \(message)"
             if let metadata = metadata {
-                return "\(output)\n\(metadata)"
+                let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
+                let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
+                return "\(output)\n[\(values)]"
             } else {
                 return output
             }

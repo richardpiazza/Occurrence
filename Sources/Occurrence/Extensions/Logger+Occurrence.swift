@@ -7,7 +7,7 @@ public extension Logger {
     /// - parameters:
     ///    - level: The `Logger.Level` for which to log the `message`.
     ///    - message: The message to be logged. `message` can be used with any string interpolation literal.
-    ///    - any: Any object that will be represented in the `Metadata`.
+    ///    - object: Any object that will be represented in the `Metadata`.
     ///    - source: The source to which this log messages originates.
     ///    - file: The file to which this log message originates from.
     ///    - function: The function to which this log message originates.
@@ -15,7 +15,7 @@ public extension Logger {
     func log(
         level: Logger.Level,
         _ message: @autoclosure () -> Logger.Message,
-        any: AnyObject,
+        object: AnyObject,
         source: @autoclosure () -> String? = nil,
         file: String = #file,
         function: String = #function,
@@ -24,7 +24,7 @@ public extension Logger {
         log(
             level: level,
             message(),
-            metadata: ["any": MetadataValue(any)],
+            metadata: ["object": MetadataValue(object)],
             source: source(),
             file: file,
             function: function,
@@ -47,14 +47,14 @@ public extension Logger {
         level: Logger.Level,
         _ message: @autoclosure () -> Logger.Message,
         dictionary: [String: Any],
-        redacting keys: [String] = [],
+        redacting keyPaths: [String] = [],
         source: @autoclosure () -> String? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        guard let redacted = JSONSerialization.redact(dictionary, keyPathsToRedact: keys) as? [String: Any] else {
-            log(level: level, message(), any: dictionary as AnyObject, source: source(), file: file, function: function, line: line)
+        guard let redacted = JSONSerialization.redact(dictionary, redacting: keyPaths) as? [String: Any] else {
+            log(level: level, message(), object: dictionary as AnyObject, source: source(), file: file, function: function, line: line)
             return
         }
         
@@ -89,25 +89,25 @@ public extension Logger {
         level: Logger.Level,
         _ message: @autoclosure () -> Logger.Message,
         data: Data,
-        redacting keys: [String] = [],
+        redacting keyPaths: [String] = [],
         source: @autoclosure () -> String? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
         guard let jsonObject = try? JSONSerialization.jsonObject(with: data) else {
-            log(level: level, message(), any: data as AnyObject, source: source(), file: file, function: function, line: line)
+            log(level: level, message(), object: data as AnyObject, source: source(), file: file, function: function, line: line)
             return
         }
         
         if let dictionary = jsonObject as? [String: Any] {
-            log(level: level, message(), dictionary: dictionary, source: source(), file: file, function: function, line: line)
+            log(level: level, message(), dictionary: dictionary, redacting: keyPaths, source: source(), file: file, function: function, line: line)
         } else if let array = jsonObject as? [[String: Any]] {
             array.forEach {
-                log(level: level, message(), dictionary: $0, source: source(), file: file, function: function, line: line)
+                log(level: level, message(), dictionary: $0, redacting: keyPaths, source: source(), file: file, function: function, line: line)
             }
         } else {
-            log(level: level, message(), any: jsonObject as AnyObject, source: source(), file: file, function: function, line: line)
+            log(level: level, message(), object: jsonObject as AnyObject, source: source(), file: file, function: function, line: line)
         }
     }
     
@@ -126,25 +126,25 @@ public extension Logger {
         level: Logger.Level,
         _ message: @autoclosure () -> Logger.Message,
         encodable: T,
-        redacting keys: [String] = [],
+        redacting keyPaths: [String] = [],
         source: @autoclosure () -> String? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
         guard let data = try? JSONEncoder().encode(encodable) else {
-            log(level: level, message(), any: String(describing: encodable) as AnyObject, source: source(), file: file, function: function, line: line)
+            log(level: level, message(), object: String(describing: encodable) as AnyObject, source: source(), file: file, function: function, line: line)
             return
         }
         
-        log(level: level, message(), data: data, source: source(), file: file, function: function, line: line)
+        log(level: level, message(), data: data, redacting: keyPaths, source: source(), file: file, function: function, line: line)
     }
 }
 
 // MARK: - Trace
 public extension Logger {
     func trace(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .trace, message(), any: any, source: source(), file: file, function: function, line: line)
+        log(level: .trace, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func trace(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -163,7 +163,7 @@ public extension Logger {
 // MARK: - Debug
 public extension Logger {
     func debug(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .debug, message(), any: any, source: source(), file: file, function: function, line: line)
+        log(level: .debug, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func debug(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -182,7 +182,7 @@ public extension Logger {
 // MARK: - Info
 public extension Logger {
     func info(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .info, message(), any: any, source: source(), file: file, function: function, line: line)
+        log(level: .info, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func info(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -201,7 +201,7 @@ public extension Logger {
 // MARK: - Notice
 public extension Logger {
     func notice(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .notice, message(), any: any, source: source(), file: file, function: function, line: line)
+        log(level: .notice, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func notice(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -220,7 +220,7 @@ public extension Logger {
 // MARK: - Warning
 public extension Logger {
     func warning(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .warning, message(), any: any, source: source(), file: file, function: function, line: line)
+        log(level: .warning, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func warning(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -243,7 +243,7 @@ public extension Logger {
 // MARK: - Error
 public extension Logger {
     func error(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .error, message(), any: any, source: source(), file: file, function: function, line: line)
+        log(level: .error, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func error(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -266,7 +266,7 @@ public extension Logger {
 // MARK: - Critical
 public extension Logger {
     func critical(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .critical, message(), any: any, source: source(), file: file, function: function, line: line)
+        log(level: .critical, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func critical(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
