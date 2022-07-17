@@ -7,7 +7,7 @@ extension Logger.Metadata {
     }
     
     public init(localizedError error: LocalizedError) {
-        self = ["localizedDescription": .string(error.localizedDescription)]
+        self = .init(error: error)
         
         if let errorDescription = error.errorDescription {
             self["errorDescription"] = .string(errorDescription)
@@ -24,7 +24,7 @@ extension Logger.Metadata {
     }
     
     public init(decodingError error: DecodingError) {
-        self = .init(localizedError: error)
+        self = .init(error: error)
         
         switch error {
         case .typeMismatch(let type, let context):
@@ -44,7 +44,7 @@ extension Logger.Metadata {
     }
     
     public init(encodingError error: EncodingError) {
-        self = .init(localizedError: error)
+        self = .init(error: error)
         
         switch error {
         case .invalidValue(let type, let context):
@@ -52,6 +52,20 @@ extension Logger.Metadata {
             self["context"] = .string(context.debugDescription)
         @unknown default:
             break
+        }
+    }
+}
+
+extension Logger.Metadata {
+    public init(_ error: Error) {
+        if let encodingError = error as? EncodingError {
+            self = .init(encodingError: encodingError)
+        } else if let decodingError = error as? DecodingError {
+            self = .init(decodingError: decodingError)
+        } else if let localizedError = error as? LocalizedError {
+            self = .init(localizedError: localizedError)
+        } else {
+            self = .init(error: error)
         }
     }
 }
