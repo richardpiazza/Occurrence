@@ -6,29 +6,72 @@ on:
   pull_request:
     branches: [ main ]
 
-jobs:
-  macOS:
+env:
+  PACKAGE_NAME: Occurrence
 
-    runs-on: macos-latest
+jobs:
+
+  macos:
+    runs-on: macos-12 # 'latest' is still 11/swift 5.4 (pre-async-await)
 
     steps:
     - uses: actions/checkout@v2
-    - name: Resolve Packages
+    
+    - name: Lint
+      run: swiftlint lint --reporter github-actions-logging
+    
+    - name: Package Resolution
       run: swift package resolve
-    - name: Compile Source
+    
+    - name: Build
       run: swift build -v
-    - name: Run Tests
-      run: swift test -v
+    
+    - name: Test
+      run: swift test --enable-code-coverage -v | xcpretty --report junit
+    
+    - name: Code Coverage
+      run: xcrun llvm-cov export -format="lcov" .build/debug/${{ env.PACKAGE_NAME }}PackageTests.xctest/Contents/MacOS/${{ env.PACKAGE_NAME }}PackageTests -instr-profile .build/debug/codecov/default.profdata > build/reports/coverage.lcov
+    
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          build/reports/junit.xml
+          build/reports/coverage.lcov
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v1
+      with:
+        files: 'build/reports/junit.xml'
+
+    - name: Publish Code Coverage
+      uses: vebr/jest-lcov-reporter@v0.2.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        lcov-file: build/reports/coverage.lcov
+        update-comment: true
+
+#    - name: Publish Code Coverage
+#      uses: codecov/codecov-action@v2
+#      with:
+#        token: ${{ secrets.CODECOV_TOKEN }}
+#        fail_ci_if_error: fail
+#        files: build/reports/coverage.lcov
+#        verbose: true
   
   ubuntu:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Resolve Packages
+    
+    - name: Package Resolution
       run: swift package resolve
-    - name: Compile Source
+    
+    - name: Build (Ubuntu)
       run: swift build -v
-    - name: Run Tests
+    
+    - name: Run tests
       run: swift test -v
+      
