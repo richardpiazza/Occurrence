@@ -11,14 +11,11 @@ env:
 
 jobs:
 
-  macos:
+  MacOS:
     runs-on: macos-12 # 'latest' is still 11/swift 5.4 (pre-async-await)
 
     steps:
     - uses: actions/checkout@v2
-    
-#    - name: Lint
-#     run: swiftlint lint --reporter github-actions-logging
     
     - name: Package Resolution
       run: swift package resolve
@@ -43,7 +40,7 @@ jobs:
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/composite@v1
       with:
-        files: 'build/reports/junit.xml'
+        files: build/reports/junit.xml
 
     - name: Publish Code Coverage
       uses: vebr/jest-lcov-reporter@v0.2.1
@@ -52,15 +49,7 @@ jobs:
         lcov-file: build/reports/coverage.lcov
         update-comment: true
 
-#    - name: Publish Code Coverage
-#      uses: codecov/codecov-action@v2
-#      with:
-#        token: ${{ secrets.CODECOV_TOKEN }}
-#        fail_ci_if_error: fail
-#        files: build/reports/coverage.lcov
-#        verbose: true
-  
-  ubuntu:
+  Ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -74,4 +63,3 @@ jobs:
     
     - name: Run tests
       run: swift test -v
-      
