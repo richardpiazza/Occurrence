@@ -17,8 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Lint
-      run: swiftlint lint --reporter github-actions-logging
+#    - name: Lint
+#     run: swiftlint lint --reporter github-actions-logging
     
     - name: Package Resolution
       run: swift package resolve
