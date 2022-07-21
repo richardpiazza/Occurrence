@@ -71,9 +71,10 @@ jobs:
     - name: Run tests
       run: swift test -v
   
+  # norio-nomura/action-swiftlint@3.2.1 only runs on Linux
   Ubuntu-Lint:
     runs-on: ubuntu-latest
-    needs: Ubuntu-Build
+    needs: Ubuntu-Build-Test
     
     steps:
     - uses: actions/checkout@v2
