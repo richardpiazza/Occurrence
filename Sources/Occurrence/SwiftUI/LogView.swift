@@ -256,27 +256,22 @@ public struct LogView: View {
         
         var body: some View {
             VStack(alignment: .leading) {
-                HStack {
-                    Text(entry.level.gem)
-                        .font(.system(.caption, design: .monospaced))
-                    
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(entry.level.description)
-                                .font(.system(size: 10, weight: .regular, design: .monospaced))
-                            Text(Logger.Entry.gmtDateFormatter.string(from: entry.date))
-                                .font(.system(size: 10, weight: .regular, design: .monospaced))
-                        }
-                        
-                        Text(entry.subsystem.description)
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text(entry.level.description)
+                            .font(.system(size: 10, weight: .regular, design: .monospaced))
+                        Text(Logger.Entry.gmtDateFormatter.string(from: entry.date))
+                            .font(.system(size: 10, weight: .regular, design: .monospaced))
                     }
+                    
+                    Text(entry.subsystem.description)
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 }
                 
                 Divider()
                 
                 VStack(alignment: .leading) {
-                    Text("\(entry.file) \(entry.line)")
+                    Text("\(entry.fileName) \(entry.line)")
                         .lineLimit(1)
                         .allowsTightening(true)
                         .minimumScaleFactor(0.5)
