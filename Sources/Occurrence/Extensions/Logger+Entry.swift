@@ -45,8 +45,7 @@ public extension Logger {
         
         public var description: String {
             let _date = Self.gmtDateFormatter.string(from: date)
-            let _file = URL(fileURLWithPath: file).lastPathComponent
-            let output = "[\(_date) \(level) | \(subsystem) | \(source) \(_file) | \(function) \(line)] \(message)"
+            let output = "[\(_date) \(level) | \(subsystem) | \(source) \(fileName) | \(function) \(line)] \(message)"
             if let metadata = metadata {
                 let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
                 let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
@@ -80,5 +79,12 @@ public extension Logger {
                 return !filters.map({ matchesFilter($0) }).contains(true)
             }
         }
+    }
+}
+
+public extension Logger.Entry {
+    /// Attempts to extract only the last path component of the `file`
+    var fileName: String {
+        URL(fileURLWithPath: file).lastPathComponent
     }
 }
