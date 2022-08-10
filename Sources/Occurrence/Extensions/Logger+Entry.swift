@@ -45,7 +45,8 @@ public extension Logger {
         
         public var description: String {
             let _date = Self.gmtDateFormatter.string(from: date)
-            let output = "[\(_date) \(level) | \(subsystem) | \(source) \(fileName) | \(function) \(line)] \(message)"
+            let sourceFile = [source, fileName].filter { !$0.isEmpty }.joined(separator: " ")
+            let output = "[\(_date) \(level) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
             if let metadata = metadata {
                 let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
                 let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")

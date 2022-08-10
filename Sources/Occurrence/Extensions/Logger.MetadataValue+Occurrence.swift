@@ -31,9 +31,20 @@ extension Logger.MetadataValue: Codable {
 
 public extension Logger.MetadataValue {
     init(_ any: Any) {
-        if let customConvertible = any as? CustomStringConvertible {
-            self = .stringConvertible(customConvertible)
-        } else {
+        switch any {
+        case let value as String:
+            self = .string(value)
+        case let value as Bool:
+            self = .stringConvertible(value)
+        case let value as Int:
+            self = .stringConvertible(value)
+        case let value as Double:
+            self = .stringConvertible(value)
+        case let value as [CustomStringConvertible & Sendable]:
+            self = .array(value.map { .stringConvertible($0) })
+        case let value as [String: CustomStringConvertible & Sendable]:
+            self = .dictionary(value.mapValues { .stringConvertible($0) })
+        default:
             self = .string(String(describing: any))
         }
     }
