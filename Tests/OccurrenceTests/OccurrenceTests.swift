@@ -69,10 +69,16 @@ class OccurrenceTests: XCTestCase {
         let last = description.index(description.startIndex, offsetBy: 25)
         description.replaceSubrange(first...last, with: "")
         
-        XCTAssertEqual(description, """
+        let swiftLog_1_4_2 = """
         [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceObject() 64] Object
         [object: Item { value: 47 }]
-        """)
+        """
+        let swiftLog_1_4_3 = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceObject() 64] Object
+        [object: Item { value: 47 }]
+        """
+        
+        XCTAssertTrue(description == swiftLog_1_4_2 || description == swiftLog_1_4_3)
     }
     
     func testConvenienceDictionary() throws {
@@ -89,10 +95,16 @@ class OccurrenceTests: XCTestCase {
         let last = description.index(description.startIndex, offsetBy: 25)
         description.replaceSubrange(first...last, with: "")
         
-        XCTAssertEqual(description, """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceDictionary() 84] Dictionary
+        let swiftLog_1_4_2 = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceDictionary() 90] Dictionary
         [label: count, value: <REDACTED>]
-        """)
+        """
+        let swiftLog_1_4_3 = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 90] Dictionary
+        [label: count, value: <REDACTED>]
+        """
+        
+        XCTAssertTrue(description == swiftLog_1_4_2 || description == swiftLog_1_4_3)
     }
     
     func testConvenienceEncodable() throws {
@@ -109,9 +121,15 @@ class OccurrenceTests: XCTestCase {
         let last = description.index(description.startIndex, offsetBy: 25)
         description.replaceSubrange(first...last, with: "")
         
-        XCTAssertEqual(description, """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceEncodable() 104] Encodable
+        let swiftLog_1_4_2 = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceEncodable() 116] Encodable
         [id: 123, name: <REDACTED>]
-        """)
+        """
+        let swiftLog_1_4_3 = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 116] Encodable
+        [id: 123, name: <REDACTED>]
+        """
+        
+        XCTAssertTrue(description == swiftLog_1_4_2 || description == swiftLog_1_4_3)
     }
 }
