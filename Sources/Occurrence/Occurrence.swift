@@ -15,12 +15,15 @@ public struct Occurrence: LogHandler {
     ///
     /// This ensures that `Occurrence` only calls `LoggingSystem.bootstrap(Occurrence.init)` once.
     /// Repeated calls to `LoggingSystem.bootstrap()` is unpredictable and can lead to application crashes.
-    public static func bootstrap() {
+    ///
+    /// - parameters:
+    ///   - metadataProvider: The `MetadataProvider` used to inject runtime-generated metadata from the execution context.
+    public static func bootstrap(metadataProvider: Logger.MetadataProvider? = nil) {
         guard !bootstrapped else {
             return
         }
         
-        LoggingSystem.bootstrap(Occurrence.init)
+        LoggingSystem.bootstrap(Occurrence.init, metadataProvider: metadataProvider)
         bootstrapped = true
     }
     
@@ -43,11 +46,13 @@ public struct Occurrence: LogHandler {
     }()
     
     public let label: String
+    public var metadataProvider: Logger.MetadataProvider?
     public var metadata: Logger.Metadata = .init()
     public var logLevel: Logger.Level = .trace
     
-    public init(label: String) {
+    public init(label: String, metadataProvider: Logger.MetadataProvider?) {
         self.label = label
+        self.metadataProvider = metadataProvider
     }
     
     public subscript(metadataKey key: String) -> Logger.Metadata.Value? {
@@ -60,11 +65,24 @@ public struct Occurrence: LogHandler {
     }
     
     public func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, source: String, file: String, function: String, line: UInt) {
+        let joinedMetadata: Logger.Metadata?
+        
+        switch (metadata, metadataProvider?.get()) {
+        case (.some(let instance), .some(let context)):
+            joinedMetadata = instance.merging(context, uniquingKeysWith: { instanceValue, _ in instanceValue })
+        case (.some(let instance), .none):
+            joinedMetadata = instance
+        case (.none, .some(let context)):
+            joinedMetadata = context
+        case (.none, .none):
+            joinedMetadata = nil
+        }
+        
         let entry = Logger.Entry(
             subsystem: Logger.Subsystem(stringLiteral: label),
             level: level,
             message: message,
-            metadata: metadata,
+            metadata: joinedMetadata,
             source: source,
             file: file,
             function: function,
