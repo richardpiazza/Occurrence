@@ -3,7 +3,6 @@ import Logging
 #if canImport(CoreData)
 import CoreData
 
-@available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)
 @objc(ManagedEntry)
 class ManagedEntry: NSManagedObject {
     
@@ -22,7 +21,6 @@ class ManagedEntry: NSManagedObject {
     @NSManaged var line: Int64
 }
 
-@available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)
 extension ManagedEntry {
     private static let encoder = JSONEncoder()
     private static let decoder = JSONDecoder()

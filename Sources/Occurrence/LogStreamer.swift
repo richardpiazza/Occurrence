@@ -2,13 +2,20 @@ import Foundation
 import Logging
 #if canImport(Combine)
 import Combine
+#endif
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public protocol LogStreamer {
+    /// `AsyncStream` which emits log entries.
+    ///
+    /// Due to limitations with the underlying `AsyncSequence` implementation, only a single receiver can await elements.
+    /// Each access will _finish_ an existing stream and return a fresh stream.
+    var stream: AsyncStream<Logger.Entry> { get }
+    
+    #if canImport(Combine)
     /// Publisher which emits log entries.
     var publisher: AnyPublisher<Logger.Entry, Never> { get }
+    #endif
     
     /// Consume a log entry.
     func log(_ entry: Logger.Entry)
 }
-#endif

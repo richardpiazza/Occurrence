@@ -6,11 +6,11 @@ import PackageDescription
 let package = Package(
     name: "Occurrence",
     platforms: [
-        .macOS(.v10_15),
-        .macCatalyst(.v13),
-        .iOS(.v13),
-        .tvOS(.v13),
-        .watchOS(.v6),
+        .macOS(.v12),
+        .macCatalyst(.v15),
+        .iOS(.v15),
+        .tvOS(.v15),
+        .watchOS(.v8),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -24,6 +24,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.5.2")),
         .package(url: "https://github.com/richardpiazza/Statement.git", .upToNextMajor(from: "0.7.1")),
         .package(url: "https://github.com/richardpiazza/Perfect-SQLite", .upToNextMajor(from: "5.1.1")),
+        .package(url: "https://github.com/richardpiazza/AsyncPlus.git", .upToNextMajor(from: "0.1.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -35,6 +36,7 @@ let package = Package(
                 "Statement",
                 .product(name: "StatementSQLite", package: "Statement"),
                 .product(name: "PerfectSQLite", package: "Perfect-SQLite"),
+                "AsyncPlus"
             ]
         ),
         .testTarget(
