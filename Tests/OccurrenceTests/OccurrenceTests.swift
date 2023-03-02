@@ -69,20 +69,17 @@ class OccurrenceTests: XCTestCase {
         
         let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
         var description = entry.description
+        
+        // Remove the timestamp
         let first = description.index(description.startIndex, offsetBy: 1)
         let last = description.index(description.startIndex, offsetBy: 25)
         description.replaceSubrange(first...last, with: "")
         
-        let swiftLog_1_4_2 = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceObject() 68] Object
-        [context: XCTestCase, object: Item { value: 47 }]
-        """
-        let swiftLog_1_4_3 = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceObject() 68] Object
-        [context: XCTestCase, object: Item { value: 47 }]
+        let output = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceObject() 68] Object { context: XCTestCase, object: Item { value: 47 } }
         """
         
-        XCTAssertTrue(description == swiftLog_1_4_2 || description == swiftLog_1_4_3)
+        XCTAssertEqual(description, output)
     }
     
     func testConvenienceDictionary() throws {
@@ -95,20 +92,17 @@ class OccurrenceTests: XCTestCase {
         
         let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
         var description = entry.description
+        
+        // Remove the timestamp
         let first = description.index(description.startIndex, offsetBy: 1)
         let last = description.index(description.startIndex, offsetBy: 25)
         description.replaceSubrange(first...last, with: "")
         
-        let swiftLog_1_4_2 = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceDictionary() 94] Dictionary
-        [context: XCTestCase, label: count, value: <REDACTED>]
-        """
-        let swiftLog_1_4_3 = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 94] Dictionary
-        [context: XCTestCase, label: count, value: <REDACTED>]
+        let output = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 91] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
         """
         
-        XCTAssertTrue(description == swiftLog_1_4_2 || description == swiftLog_1_4_3)
+        XCTAssertEqual(description, output)
     }
     
     func testConvenienceEncodable() throws {
@@ -121,19 +115,16 @@ class OccurrenceTests: XCTestCase {
         
         let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
         var description = entry.description
+        
+        // Remove the timestamp
         let first = description.index(description.startIndex, offsetBy: 1)
         let last = description.index(description.startIndex, offsetBy: 25)
         description.replaceSubrange(first...last, with: "")
         
-        let swiftLog_1_4_2 = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceEncodable() 120] Encodable
-        [context: XCTestCase, id: 123, name: <REDACTED>]
-        """
-        let swiftLog_1_4_3 = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 120] Encodable
-        [context: XCTestCase, id: 123, name: <REDACTED>]
+        let output = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 114] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
         """
         
-        XCTAssertTrue(description == swiftLog_1_4_2 || description == swiftLog_1_4_3)
+        XCTAssertEqual(description, output)
     }
 }

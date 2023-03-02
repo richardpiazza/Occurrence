@@ -50,7 +50,7 @@ public extension Logger {
             if let metadata = metadata {
                 let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
                 let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
-                return "\(output)\n[\(values)]"
+                return "\(output) { \(values) }"
             } else {
                 return output
             }

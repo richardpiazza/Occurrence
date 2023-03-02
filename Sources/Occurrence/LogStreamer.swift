@@ -8,7 +8,7 @@ public protocol LogStreamer {
     /// `AsyncStream` which emits log entries.
     ///
     /// Due to limitations with the underlying `AsyncSequence` implementation, only a single receiver can await elements.
-    /// Each access with _finish_ an existing stream and return a fresh stream.
+    /// Each access will _finish_ an existing stream and return a fresh stream.
     var stream: AsyncStream<Logger.Entry> { get }
     
     #if canImport(Combine)
