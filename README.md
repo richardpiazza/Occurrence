@@ -19,7 +19,7 @@ Xcode 'Swift Packages' menu or add it as a dependency within your `Package.swift
 let package = Package(
     ...
     dependencies: [
-        .package(url: "https://github.com/richardpiazza/Occurence.git", .upToNextMinor(from: "0.3.0"))
+        .package(url: "https://github.com/richardpiazza/Occurence.git", .upToNextMinor(from: "0.5.0"))
     ],
     ...
 )
@@ -38,4 +38,23 @@ During you app initialization, call `Occurrence.bootstrap()`. This will configur
 As a convenience to creating a `Logger` reference, use the `LazyLogger` property wrapper which will create a Logger with the specific label (`Logger.Subsystem`).
 ```swift
 @LazyLogger("LoggerLabel") var logger: Logger
+```
+
+**Occurrence** also offers the ability to observe logging events as they are happening.
+This can also be useful in the case where entries may need to be proxied to a third-party service.
+
+```swift
+// Combine
+Occurrence.logStreamer
+    .publisher
+    .sink { entry in
+        // process entry
+    }
+
+// async/await
+let task = Task {
+    for await entry in Occurrence.logStreamer.stream {
+        // process entry
+    }
+}
 ```
