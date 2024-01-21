@@ -1,6 +1,6 @@
 import Foundation
 import Logging
-import PerfectSQLite
+import SQLite
 import Statement
 import StatementSQLite
 
@@ -12,17 +12,13 @@ class SQLiteLogProvider: LogProvider {
         return url
     }
     
-    private let db: SQLite
+    private let db: Connection
     let storeUrl: URL
     
     init(url: URL? = nil) throws {
         storeUrl = try url ?? FileManager.default.defaultDatabaseUrl()
-        db = try SQLite(storeUrl.path)
+        db = try Connection(storeUrl.path)
         try db.prepare()
-    }
-    
-    deinit {
-        db.close()
     }
     
     public func log(_ entry: Logger.Entry) {
@@ -54,9 +50,7 @@ class SQLiteLogProvider: LogProvider {
         ).render()
         
         do {
-            try db.doWithTransaction {
-                try db.execute(statement: statement)
-            }
+            try db.run(statement)
         } catch {
             print("SQLiteLogProvider \(#line): \(error)\n\(statement)")
         }
@@ -75,10 +69,11 @@ class SQLiteLogProvider: LogProvider {
         let sql = statement.render()
         
         do {
-            try db.forEachRow(statement: sql, handleRow: { stmt, index in
-                let name = stmt.columnText(position: 0)
-                subsystems.insert(Logger.Subsystem(stringLiteral: name))
-            })
+            for row in try db.run(sql) {
+                if let name = row[0] as? String {
+                    subsystems.insert(Logger.Subsystem(stringLiteral: name))
+                }
+            }
         } catch {
             print("SQLiteLogProvider \(#line): \(error)\n\(sql)")
         }
@@ -177,30 +172,29 @@ class SQLiteLogProvider: LogProvider {
         print(sql)
         
         do {
-            try db.forEachRow(statement: sql, handleRow: { stmt, index in
+            for row in try db.run(sql) {
                 let metadata: Data?
-                if stmt.isNull(position: 5) {
-                    metadata = nil
+                if let blob = row[5] as? Blob {
+                    metadata = Data(bytes: blob.bytes, count: blob.bytes.count)
                 } else {
-                    let ints: [UInt8] = stmt.columnIntBlob(position: 5)
-                    metadata = Data(bytes: ints, count: ints.count)
+                    metadata = nil
                 }
                 
                 let entry = SQLiteEntry(
-                    id: stmt.columnInt(position: 0),
-                    date: Date(timeIntervalSince1970: stmt.columnDouble(position: 1)),
-                    subsystem: stmt.columnText(position: 2),
-                    levelRawValue: stmt.columnText(position: 3),
-                    message: stmt.columnText(position: 4),
+                    id: Int(row[0] as! Int64),
+                    date: Date(timeIntervalSince1970: row[1] as! Double),
+                    subsystem: row[2] as! String,
+                    levelRawValue: row[3] as! String,
+                    message: row[4] as! String,
                     metadata: metadata,
-                    source: stmt.columnText(position: 6),
-                    file: stmt.columnText(position: 7),
-                    function: stmt.columnText(position: 8),
-                    line: stmt.columnInt(position: 9)
+                    source: row[6] as! String,
+                    file: row[7] as! String,
+                    function: row[8] as! String,
+                    line: Int(row[9] as! Int64)
                 )
                 
                 entries.append(Logger.Entry(entry))
-            })
+            }
         } catch {
             print("SQLiteLogProvider \(#line): \(error)")
         }
@@ -227,30 +221,30 @@ class SQLiteLogProvider: LogProvider {
         let sql = statement.render()
         
         do {
-            try db.doWithTransaction {
-                try db.execute(statement: sql)
-            }
+            try db.run(sql)
         } catch {
             print("SQLiteLogProvider \(#line): \(error)\n\(sql)")
         }
     }
 }
 
-extension SQLite {
+extension Connection {
     func prepare() throws {
         let names = tableNames
         guard !names.contains(SQLiteEntry.identifier) else {
             return
         }
         
-        try doWithTransaction {
-            try execute(
-                statement: SQLiteStatement(
-                    .CREATE(
-                        .SCHEMA(SQLiteEntry.instance, ifNotExists: true)
-                    )
-                ).render()
+        let sql = SQLiteStatement(
+            .CREATE(
+                .SCHEMA(SQLiteEntry.instance, ifNotExists: true)
             )
+        ).render()
+        
+        do {
+            try run(sql)
+        } catch {
+            throw error
         }
     }
     
@@ -260,9 +254,11 @@ extension SQLite {
         let sql = "SELECT name FROM sqlite_master WHERE type='table';"
         
         do {
-            try forEachRow(statement: sql, handleRow: { (statement, index) in
-                names.append(statement.columnText(position: 0))
-            })
+            for row in try run(sql) {
+                if let name = row[0] as? String {
+                    names.append(name)
+                }
+            }
         } catch {
             print("SQLiteLogProvider \(#line): \(error)")
         }

@@ -11,21 +11,12 @@
         }
       },
       {
-        "package": "PerfectCRUD",
-        "repositoryURL": "https://github.com/richardpiazza/Perfect-CRUD",
+        "package": "SQLite.swift",
+        "repositoryURL": "https://github.com/stephencelis/SQLite.swift.git",
         "state": {
           "branch": null,
-          "revision": "9e8165db6164cb6fcc7740694192626cf4ffafcc",
-          "version": "2.1.0"
-        }
-      },
-      {
-        "package": "PerfectSQLite",
-        "repositoryURL": "https://github.com/richardpiazza/Perfect-SQLite",
-        "state": {
-          "branch": null,
-          "revision": "3740d1ea1e519584c3d665831968c4d7e086edb7",
-          "version": "5.1.1"
+          "revision": "7a2e3cd27de56f6d396e84f63beefd0267b55ccb",
+          "version": "0.14.1"
         }
       },
       {
