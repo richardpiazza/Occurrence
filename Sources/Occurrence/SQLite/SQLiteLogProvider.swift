@@ -176,6 +176,8 @@ class SQLiteLogProvider: LogProvider {
                 let metadata: Data?
                 if let blob = row[5] as? Blob {
                     metadata = Data(bytes: blob.bytes, count: blob.bytes.count)
+                } else if let string = row[5] as? String {
+                    metadata = string.data(using: .utf8)
                 } else {
                     metadata = nil
                 }

@@ -23,9 +23,9 @@
         "package": "Statement",
         "repositoryURL": "https://github.com/richardpiazza/Statement.git",
         "state": {
-          "branch": null,
-          "revision": "cad6e6081c678b19b8140ad2afb8e5465eb99e97",
-          "version": "0.7.1"
+          "branch": "feature/cleanup-public-api",
+          "revision": "0412513a9cb51c265618e40f103141ad62564c09",
+          "version": null
         }
       },
       {
