@@ -80,9 +80,6 @@ class OccurrenceTests: XCTestCase {
         """
         
         XCTAssertEqual(description, output)
-        /**
-         XCTAssertEqual failed: ("[🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceObject() 68] Object") is not equal to ("[🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceObject() 68] Object { context: XCTestCase, object: Item { value: 47 } }")
-         */
     }
     
     func testConvenienceDictionary() throws {
@@ -106,9 +103,6 @@ class OccurrenceTests: XCTestCase {
         """
         
         XCTAssertEqual(description, output)
-        /**
-         XCTAssertEqual failed: ("[🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 91] Dictionary") is not equal to ("[🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 91] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }")
-         */
     }
     
     func testConvenienceEncodable() throws {
@@ -132,8 +126,5 @@ class OccurrenceTests: XCTestCase {
         """
         
         XCTAssertEqual(description, output)
-        /**
-         XCTAssertEqual failed: ("[🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 114] Encodable") is not equal to ("[🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 114] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }")
-         */
     }
 }
