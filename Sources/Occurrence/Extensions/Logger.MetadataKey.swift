@@ -2,9 +2,10 @@ import Foundation
 import Logging
 
 public extension Logger {
-    enum MetadataKey {
+    enum MetadataKey: CodingKey {
         case domain
         case code
+        case description
         case file
         case function
         case line
@@ -12,10 +13,11 @@ public extension Logger {
         case localizedFailureReason
         case localizedRecoverySuggestion
         
-        public var value: String {
+        public var stringValue: String {
             switch self {
             case .domain: return "domain"
             case .code: return "code"
+            case .description: return "description"
             case .file: return "file"
             case .function: return "function"
             case .line: return "line"
@@ -30,10 +32,10 @@ public extension Logger {
 extension Logger.Metadata {
     subscript(_ key: Logger.MetadataKey) -> Value? {
         get {
-            self[key.value]
+            self[key.stringValue]
         }
         set {
-            self[key.value] = newValue
+            self[key.stringValue] = newValue
         }
     }
 }

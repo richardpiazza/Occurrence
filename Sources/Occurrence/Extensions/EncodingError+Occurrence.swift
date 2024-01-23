@@ -1,5 +1,5 @@
 extension EncodingError: CustomMetadataError {
-    public static var errorDomain: String { "swift.encoding-error" }
+    public static var errorDomain: String { "SwiftEncodingErrorDomain" }
     
     public var errorCode: Int {
         switch self {
@@ -11,7 +11,8 @@ extension EncodingError: CustomMetadataError {
     public var description: String {
         switch self {
         case .invalidValue(let value, let context):
-            return "Encoding (Invalid Value) - Value: \(value), Context: \(context.debugDescription) \(context.codingPath)"
+            let path = context.codingPath.map { $0.stringValue }
+            return "Encoding (Invalid Value) - Value: \(value), Context: \(context.debugDescription) \(path)"
         @unknown default:
             return "Encoding (Unknown) - \(localizedDescription)"
         }

@@ -1,5 +1,5 @@
 extension DecodingError: CustomMetadataError {
-    public static var errorDomain: String { "swift.decoding-error" }
+    public static var errorDomain: String { "SwiftDecodingErrorDomain" }
     
     public var errorCode: Int {
         switch self {
@@ -14,13 +14,17 @@ extension DecodingError: CustomMetadataError {
     public var description: String {
         switch self {
         case .typeMismatch(let any, let context):
-            return "Decoding (Type Mismatch) - Type: \(String(describing: any)), Context: \(context.debugDescription) \(context.codingPath)"
+            let path = context.codingPath.map { $0.stringValue }
+            return "Decoding (Type Mismatch) - Type: \(String(describing: any)), Context: \(context.debugDescription) \(path)"
         case .valueNotFound(let any, let context):
-            return "Decoding (Value Not Found) - Type: \(String(describing: any)), Context: \(context.debugDescription) \(context.codingPath)"
+            let path = context.codingPath.map { $0.stringValue }
+            return "Decoding (Value Not Found) - Type: \(String(describing: any)), Context: \(context.debugDescription) \(path)"
         case .keyNotFound(let codingKey, let context):
-            return "Decoding (Key Not Found) - Key: \(codingKey), Context: \(context.debugDescription) \(context.codingPath)"
+            let path = context.codingPath.map { $0.stringValue }
+            return "Decoding (Key Not Found) - Key: \(codingKey), Context: \(context.debugDescription) \(path)"
         case .dataCorrupted(let context):
-            return "Decoding (Data Corrupted) - Context: \(context.debugDescription) \(context.codingPath)"
+            let path = context.codingPath.map { $0.stringValue }
+            return "Decoding (Data Corrupted) - Context: \(context.debugDescription) \(path)"
         @unknown default:
             return "Decoding (Unknown) - \(localizedDescription)"
         }

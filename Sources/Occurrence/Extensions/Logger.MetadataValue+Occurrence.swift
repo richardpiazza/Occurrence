@@ -48,4 +48,51 @@ public extension Logger.MetadataValue {
             self = .string(String(describing: any))
         }
     }
+    
+    var stringValue: String? {
+        switch self {
+        case .string(let value):
+            return value
+        default:
+            return nil
+        }
+    }
+    
+    #if compiler(>=5.7)
+    var stringConvertibleValue: (CustomStringConvertible & Sendable)? {
+        switch self {
+        case .string(let value):
+            return value
+        default:
+            return nil
+        }
+    }
+    #else
+    var stringConvertibleValue: CustomStringConvertible? {
+        switch self {
+        case .string(let value):
+            return value
+        default:
+            return nil
+        }
+    }
+    #endif
+    
+    var dictionaryValue: Logger.Metadata? {
+        switch self {
+        case .dictionary(let value):
+            return value
+        default:
+            return nil
+        }
+    }
+    
+    var arrayValue: [Logger.Metadata.Value]? {
+        switch self {
+        case .array(let value):
+            return value
+        default:
+            return nil
+        }
+    }
 }

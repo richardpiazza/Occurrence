@@ -19,9 +19,14 @@ public extension CustomMetadataError {
         var meta: Logger.Metadata = [:]
         meta[.domain] = .string(Self.errorDomain)
         meta[.code] = .string(errorCode.description)
+        meta[.description] = .string(description)
         meta[.localizedDescription] = .string(localizedDescription)
         
         if let localized = self as? LocalizedError {
+            if let errorDescription = localized.errorDescription {
+                meta[.localizedDescription] = .string(errorDescription)
+            }
+            
             if let failureReason = localized.failureReason {
                 meta[.localizedFailureReason] = .string(failureReason)
             }
