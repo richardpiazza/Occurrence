@@ -2,6 +2,39 @@ import Foundation
 import Logging
 
 public extension Logger {
+    /// Log a message along with a `CustomMetadataError` that provides `Logger.Metadata` in the entry.
+    ///
+    /// - parameters:
+    ///    - level: The `Logger.Level` for which to log the `message`.
+    ///    - message: The message to be logged. `message` can be used with any string interpolation literal.
+    ///    - metadataError: Error providing `Metadata` to the entry.
+    ///    - source: The source to which this log messages originates.
+    ///    - file: The file to which this log message originates from.
+    ///    - function: The function to which this log message originates.
+    ///    - line: The line to which this log message originates.
+    ///  - returns: The `CustomMetadataError` that was logged as a convenience to `throw` or use the error.
+    @discardableResult func log<T: CustomMetadataError>(
+        level: Logger.Level,
+        _ message: @autoclosure () -> Logger.Message,
+        metadataError error: T,
+        source: @autoclosure () -> String? = nil,
+        file: String = #file,
+        function: String = #function,
+        line: UInt = #line
+    ) -> T {
+        log(
+            level: level,
+            message(),
+            metadata: error.metadata,
+            source: source(),
+            file: file,
+            function: function,
+            line: line
+        )
+        
+        return error
+    }
+    
     /// Log a message along with an object that should be represented in the entry metadata.
     ///
     /// - parameters:
@@ -143,6 +176,10 @@ public extension Logger {
 
 // MARK: - Trace
 public extension Logger {
+    @discardableResult func trace<T: CustomMetadataError>(_ message: @autoclosure () -> Logger.Message, metadataError error: T, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
+        log(level: .trace, message(), metadataError: error, source: source(), file: file, function: function, line: line)
+    }
+    
     func trace(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .trace, message(), object: any, source: source(), file: file, function: function, line: line)
     }
@@ -162,6 +199,10 @@ public extension Logger {
 
 // MARK: - Debug
 public extension Logger {
+    @discardableResult func debug<T: CustomMetadataError>(_ message: @autoclosure () -> Logger.Message, metadataError error: T, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
+        log(level: .debug, message(), metadataError: error, source: source(), file: file, function: function, line: line)
+    }
+    
     func debug(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .debug, message(), object: any, source: source(), file: file, function: function, line: line)
     }
@@ -181,6 +222,10 @@ public extension Logger {
 
 // MARK: - Info
 public extension Logger {
+    @discardableResult func info<T: CustomMetadataError>(_ message: @autoclosure () -> Logger.Message, metadataError error: T, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
+        log(level: .info, message(), metadataError: error, source: source(), file: file, function: function, line: line)
+    }
+    
     func info(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .info, message(), object: any, source: source(), file: file, function: function, line: line)
     }
@@ -200,6 +245,10 @@ public extension Logger {
 
 // MARK: - Notice
 public extension Logger {
+    @discardableResult func notice<T: CustomMetadataError>(_ message: @autoclosure () -> Logger.Message, metadataError error: T, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
+        log(level: .notice, message(), metadataError: error, source: source(), file: file, function: function, line: line)
+    }
+    
     func notice(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .notice, message(), object: any, source: source(), file: file, function: function, line: line)
     }
@@ -219,6 +268,10 @@ public extension Logger {
 
 // MARK: - Warning
 public extension Logger {
+    @discardableResult func warning<T: CustomMetadataError>(_ message: @autoclosure () -> Logger.Message, metadataError error: T, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
+        log(level: .warning, message(), metadataError: error, source: source(), file: file, function: function, line: line)
+    }
+    
     func warning(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .warning, message(), object: any, source: source(), file: file, function: function, line: line)
     }
@@ -242,6 +295,10 @@ public extension Logger {
 
 // MARK: - Error
 public extension Logger {
+    @discardableResult func error<T: CustomMetadataError>(_ message: @autoclosure () -> Logger.Message, metadataError error: T, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
+        log(level: .error, message(), metadataError: error, source: source(), file: file, function: function, line: line)
+    }
+    
     func error(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .error, message(), object: any, source: source(), file: file, function: function, line: line)
     }
@@ -265,6 +322,10 @@ public extension Logger {
 
 // MARK: - Critical
 public extension Logger {
+    @discardableResult func critical<T: CustomMetadataError>(_ message: @autoclosure () -> Logger.Message, metadataError error: T, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
+        log(level: .critical, message(), metadataError: error, source: source(), file: file, function: function, line: line)
+    }
+    
     func critical(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .critical, message(), object: any, source: source(), file: file, function: function, line: line)
     }

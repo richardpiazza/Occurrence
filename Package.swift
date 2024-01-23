@@ -33,9 +33,9 @@ let package = Package(
             name: "Occurrence",
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
-                "Statement",
+                .product(name: "Statement", package: "Statement"),
                 .product(name: "StatementSQLite", package: "Statement"),
-                "AsyncPlus",
+                .product(name: "AsyncPlus", package: "AsyncPlus"),
                 .product(name: "SQLite", package: "SQLite.swift"),
             ]
         ),
