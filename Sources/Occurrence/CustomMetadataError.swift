@@ -3,7 +3,7 @@ import Logging
 
 /// A `Error` that can easily be converted to `Logger.Metadata`.
 ///
-/// A `CustomNSError` defines several useful components:
+/// This protocol is designed to mirror the `CustomNSError` definition:
 /// ```swift
 /// protocol CustomNSError: Error {
 ///    static var errorDomain: String { get }
@@ -15,6 +15,8 @@ public protocol CustomMetadataError: CustomNSError, CustomStringConvertible {
 }
 
 public extension CustomMetadataError {
+    var errorUserInfo: [String: Any] { [:] }
+    
     var metadata: Logger.Metadata {
         var meta: Logger.Metadata = [:]
         meta[.domain] = .string(Self.errorDomain)
@@ -36,6 +38,42 @@ public extension CustomMetadataError {
             }
         }
         
+        return meta.merging(errorUserInfo.metadata) { _, rhs in
+            rhs
+        }
+    }
+}
+
+private extension Dictionary<String, Any> {
+    var metadata: Logger.Metadata {
+        var meta = Logger.Metadata()
+        for (key, value) in self {
+            switch value {
+            case let array as [Any]:
+                meta[key] = .array(array.metadata)
+            case let dictionary as [String: Any]:
+                meta[key] = .dictionary(dictionary.metadata)
+            default:
+                meta[key] = .string(String(describing: value))
+            }
+        }
+        return meta
+    }
+}
+
+private extension Array<Any> {
+    var metadata: [Logger.MetadataValue] {
+        var meta: [Logger.MetadataValue] = []
+        for element in self {
+            switch element {
+            case let array as [Any]:
+                meta.append(contentsOf: array.metadata)
+            case let dictionary as [String: Any]:
+                meta.append(.dictionary(dictionary.metadata))
+            default:
+                meta.append(.string(String(describing: element)))
+            }
+        }
         return meta
     }
 }

@@ -12,13 +12,18 @@ final class CustomMetadataErrorTests: XCTestCase {
             static let errorDomain: String = "any-error-domain"
             let errorCode: Int = 404
             let description: String = "My unique error case"
+            var errorUserInfo: [String : Any] = [
+                "answer": 42
+            ]
         }
         
         let metadata = AnyMetadataError().metadata
+        XCTAssertEqual(metadata.count, 5)
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.stringValue)
         let description = try XCTUnwrap(metadata[.description]?.stringValue)
         let localizedDescription = try XCTUnwrap(metadata[.localizedDescription]?.stringValue)
+        let answer = try XCTUnwrap(metadata["answer"]?.stringValue)
         
         XCTAssertEqual(domain, "any-error-domain")
         XCTAssertEqual(code, "404")
@@ -28,6 +33,7 @@ final class CustomMetadataErrorTests: XCTestCase {
         #else
         XCTAssertEqual(localizedDescription, "The operation couldn’t be completed. (any-error-domain error 404.)")
         #endif
+        XCTAssertEqual(answer, "42")
     }
     
     func testLocalizedErrorConformance() throws {
@@ -41,6 +47,7 @@ final class CustomMetadataErrorTests: XCTestCase {
         }
         
         let metadata = AnyMetadataError().metadata
+        XCTAssertEqual(metadata.count, 6)
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.stringValue)
         let description = try XCTUnwrap(metadata[.description]?.stringValue)
@@ -58,6 +65,7 @@ final class CustomMetadataErrorTests: XCTestCase {
     
     func testCocoaErrorConformance() throws {
         let metadata = CocoaError(.featureUnsupported).metadata
+        XCTAssertEqual(metadata.count, 4)
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.stringValue)
         let description = try XCTUnwrap(metadata[.description]?.stringValue)
@@ -73,6 +81,7 @@ final class CustomMetadataErrorTests: XCTestCase {
     
     func testURLErrorConformance() throws {
         let metadata = URLError(.cancelled).metadata
+        XCTAssertEqual(metadata.count, 4)
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.stringValue)
         let description = try XCTUnwrap(metadata[.description]?.stringValue)
@@ -97,6 +106,7 @@ final class CustomMetadataErrorTests: XCTestCase {
         )
         let error = EncodingError.invalidValue(FileRef(), context)
         let metadata = error.metadata
+        XCTAssertEqual(metadata.count, 4)
         
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.stringValue)
@@ -120,6 +130,7 @@ final class CustomMetadataErrorTests: XCTestCase {
         )
         let error = DecodingError.typeMismatch(Int.self, context)
         let metadata = error.metadata
+        XCTAssertEqual(metadata.count, 4)
         
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.stringValue)
