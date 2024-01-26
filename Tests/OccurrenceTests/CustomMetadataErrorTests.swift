@@ -73,7 +73,7 @@ final class CustomMetadataErrorTests: XCTestCase {
         XCTAssertEqual(domain, "NSCocoaErrorDomain")
         XCTAssertEqual(code, "3328")
         #if os(Linux)
-        XCTAssertEqual(description, "The requested operation could not be completed because the feature is not supported.")
+        XCTAssertEqual(description, #"Error Domain=NSCocoaErrorDomain Code=3328 "The requested operation is not supported.""#)
         #else
         XCTAssertEqual(description, "The requested operation couldn’t be completed because the feature is not supported.")
         #endif
@@ -89,7 +89,7 @@ final class CustomMetadataErrorTests: XCTestCase {
         XCTAssertEqual(domain, "NSURLErrorDomain")
         XCTAssertEqual(code, "-999")
         #if os(Linux)
-        XCTAssertEqual(description, "The operation could not be completed. (NSURLErrorDomain error -999.)")
+        XCTAssertEqual(description, #"Error Domain=NSURLErrorDomain Code=-999 "(null)""#)
         #else
         XCTAssertEqual(description, "The operation couldn’t be completed. (NSURLErrorDomain error -999.)")
         #endif
