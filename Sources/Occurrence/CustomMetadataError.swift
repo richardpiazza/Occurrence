@@ -3,7 +3,7 @@ import Logging
 
 /// A `Error` that can easily be converted to `Logger.Metadata`.
 ///
-/// This protocol is designed to mirror the `CustomNSError` definition:
+/// A `CustomNSError` defines several useful components:
 /// ```swift
 /// protocol CustomNSError: Error {
 ///    static var errorDomain: String { get }
@@ -15,8 +15,6 @@ public protocol CustomMetadataError: CustomNSError, CustomStringConvertible {
 }
 
 public extension CustomMetadataError {
-    var errorUserInfo: [String: Any] { [:] }
-    
     var metadata: Logger.Metadata {
         var meta: Logger.Metadata = [:]
         meta[.domain] = .string(Self.errorDomain)
