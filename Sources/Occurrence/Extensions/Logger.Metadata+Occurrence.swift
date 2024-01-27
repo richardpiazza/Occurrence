@@ -1,6 +1,7 @@
 import Foundation
 import Logging
 
+@available(*, deprecated, message: "Prefer `LoggableError` metadata conformance.")
 extension Logger.Metadata {
     public init(error: Error) {
         self = ["localizedDescription": .string(error.localizedDescription)]
@@ -56,6 +57,7 @@ extension Logger.Metadata {
     }
 }
 
+@available(*, deprecated, message: "Prefer `LoggableError` metadata conformance.")
 extension Logger.Metadata {
     public init(_ error: Error) {
         if let encodingError = error as? EncodingError {

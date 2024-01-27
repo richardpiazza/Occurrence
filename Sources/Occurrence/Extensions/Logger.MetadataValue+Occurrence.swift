@@ -8,6 +8,12 @@ extension Logger.MetadataValue: Codable {
             self = .dictionary(dictionary)
         } else if let array = try? container.decode([Logger.MetadataValue].self) {
             self = .array(array)
+        } else if let bool = try? container.decode(Bool.self) {
+            self = .stringConvertible(bool)
+        } else if let int = try? container.decode(Int.self) {
+            self = .stringConvertible(int)
+        } else if let double = try? container.decode(Double.self) {
+            self = .stringConvertible(double)
         } else {
             let string = try container.decode(String.self)
             self = .string(string)
@@ -20,7 +26,15 @@ extension Logger.MetadataValue: Codable {
         case .string(let string):
             try container.encode(string)
         case .stringConvertible(let stringConvertible):
-            try container.encode(stringConvertible.description)
+            if let bool = stringConvertible as? Bool {
+                try container.encode(bool)
+            } else if let int = stringConvertible as? Int {
+                try container.encode(int)
+            } else if let double = stringConvertible as? Double {
+                try container.encode(double)
+            } else {
+                try container.encode(stringConvertible.description)
+            }
         case .dictionary(let dictionary):
             try container.encode(dictionary)
         case .array(let array):
@@ -58,10 +72,22 @@ public extension Logger.MetadataValue {
         }
     }
     
+    var boolValue: Bool? {
+        stringConvertibleValue as? Bool
+    }
+    
+    var intValue: Int? {
+        stringConvertibleValue as? Int
+    }
+    
+    var doubleValue: Double? {
+        stringConvertibleValue as? Double
+    }
+    
     #if compiler(>=5.7)
     var stringConvertibleValue: (CustomStringConvertible & Sendable)? {
         switch self {
-        case .string(let value):
+        case .stringConvertible(let value):
             return value
         default:
             return nil
@@ -70,7 +96,7 @@ public extension Logger.MetadataValue {
     #else
     var stringConvertibleValue: CustomStringConvertible? {
         switch self {
-        case .string(let value):
+        case .stringConvertible(let value):
             return value
         default:
             return nil

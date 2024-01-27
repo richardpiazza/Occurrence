@@ -3,6 +3,5 @@ import Foundation
 import FoundationNetworking
 #endif
 
-extension URLError: CustomMetadataError {
-    public var description: String { localizedDescription }
+extension URLError: LoggableError {
 }
