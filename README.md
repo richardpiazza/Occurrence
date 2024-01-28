@@ -19,7 +19,7 @@ Xcode 'Swift Packages' menu or add it as a dependency within your `Package.swift
 let package = Package(
     ...
     dependencies: [
-        .package(url: "https://github.com/richardpiazza/Occurence.git", .upToNextMinor(from: "0.5.0"))
+        .package(url: "https://github.com/richardpiazza/Occurence.git", .upToNextMinor(from: "0.6.0"))
     ],
     ...
 )
@@ -56,5 +56,26 @@ let task = Task {
     for await entry in Occurrence.logStreamer.stream {
         // process entry
     }
+}
+```
+
+### Conveniences
+
+**Occurrence** has many conveniences to enhance the overall logging experience.
+
+The `LoggableError` protocol provides a way to easily convert errors to a `Logger.Metadata` representation.
+There are also extensions to the `Logger` instance that allow for passthrough of a `LoggableError` instance:
+
+```swift
+@LazyLogger("MyApp") var logger: Logger
+
+enum AppError: LoggableError {
+  case badData
+}
+
+func throwingFunction() throws {
+  guard condition else {
+    throw logger.error("Condition not met.", AppError.badData)
+  }
 }
 ```

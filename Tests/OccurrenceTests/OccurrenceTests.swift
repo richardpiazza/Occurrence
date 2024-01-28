@@ -30,6 +30,7 @@ class OccurrenceTests: XCTestCase {
         log.critical("A 'CRITICAL' Message")
     }
     
+    @available(*, deprecated, message: "Prefer `LoggableError` usage.")
     func testMetadata() {
         struct BasicError: Error {}
         
@@ -52,6 +53,7 @@ class OccurrenceTests: XCTestCase {
         log.error("A Decoding Error", metadata: .init(error))
     }
     
+    @available(*, deprecated)
     func testConvenienceObject() throws {
         class Item: CustomStringConvertible {
             let value: Int
@@ -76,7 +78,7 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first...last, with: "")
         
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceObject() 68] Object { context: XCTestCase, object: Item { value: 47 } }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceObject() 70] Object { context: XCTestCase, object: Item { value: 47 } }
         """
         
         XCTAssertEqual(description, output)
@@ -99,7 +101,7 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first...last, with: "")
         
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 91] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 93] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
         """
         
         XCTAssertEqual(description, output)
@@ -122,7 +124,7 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first...last, with: "")
         
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 114] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 116] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
         """
         
         XCTAssertEqual(description, output)
