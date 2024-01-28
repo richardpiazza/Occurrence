@@ -5,9 +5,6 @@ A swift logging library that integrates with [`SwiftLog`](https://github.com/app
 <p>
     <img src="https://github.com/richardpiazza/Occurrence/workflows/Swift/badge.svg?branch=main" />
     <img src="https://img.shields.io/badge/Swift-5.5-orange.svg" />
-    <a href="https://twitter.com/richardpiazza">
-        <img src="https://img.shields.io/badge/twitter-@richardpiazza-blue.svg?style=flat" alt="Twitter: @richardpiazza" />
-    </a>
 </p>
 
 ## Installation
