@@ -1,5 +1,6 @@
 import Foundation
 
+@available(*, deprecated)
 public extension JSONSerialization {
     /// Recurses `object` as a Dictionary and redacts any values identified by `keyPaths`.
     ///
