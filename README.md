@@ -2,10 +2,8 @@
 
 A swift logging library that integrates with [`SwiftLog`](https://github.com/apple/swift-log).
 
-<p>
-    <img src="https://github.com/richardpiazza/Occurrence/workflows/Swift/badge.svg?branch=main" />
-    <img src="https://img.shields.io/badge/Swift-5.5-orange.svg" />
-</p>
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardpiazza%2FOccurrence%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/richardpiazza/Occurrence)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardpiazza%2FOccurrence%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/richardpiazza/Occurrence)
 
 ## Installation
 
