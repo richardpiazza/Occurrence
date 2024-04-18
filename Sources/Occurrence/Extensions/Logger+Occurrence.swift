@@ -37,37 +37,6 @@ public extension Logger {
         return error
     }
     
-    /// Log a message along with an object that should be represented in the entry metadata.
-    ///
-    /// - parameters:
-    ///    - level: The `Logger.Level` for which to log the `message`.
-    ///    - message: The message to be logged. `message` can be used with any string interpolation literal.
-    ///    - object: Any object that will be represented in the `Metadata`.
-    ///    - source: The source to which this log messages originates.
-    ///    - file: The file to which this log message originates from.
-    ///    - function: The function to which this log message originates.
-    ///    - line: The line to which this log message originates.
-    @available(*, deprecated)
-    func log(
-        level: Logger.Level,
-        _ message: @autoclosure () -> Logger.Message,
-        object: AnyObject,
-        source: @autoclosure () -> String? = nil,
-        file: String = #file,
-        function: String = #function,
-        line: UInt = #line
-    ) {
-        log(
-            level: level,
-            message(),
-            metadata: ["object": MetadataValue(object)],
-            source: source(),
-            file: file,
-            function: function,
-            line: line
-        )
-    }
-    
     /// Log a message along with a dictionary that will be converted to a Metadata representation.
     ///
     /// - parameters:
@@ -175,11 +144,6 @@ public extension Logger {
         log(level: .trace, message(), error: error, redacting: keyPaths, source: source(), file: file, function: function, line: line)
     }
     
-    @available(*, deprecated)
-    func trace(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .trace, message(), object: any, source: source(), file: file, function: function, line: line)
-    }
-    
     func trace(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .trace, message(), dictionary: dictionary, redacting: keys, source: source(), file: file, function: function, line: line)
     }
@@ -197,11 +161,6 @@ public extension Logger {
 public extension Logger {
     @discardableResult func debug<T: LoggableError>(_ message: @autoclosure () -> Logger.Message, error: T, redacting keyPaths: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
         log(level: .debug, message(), error: error, redacting: keyPaths, source: source(), file: file, function: function, line: line)
-    }
-    
-    @available(*, deprecated)
-    func debug(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .debug, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func debug(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -223,11 +182,6 @@ public extension Logger {
         log(level: .info, message(), error: error, redacting: keyPaths, source: source(), file: file, function: function, line: line)
     }
     
-    @available(*, deprecated)
-    func info(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .info, message(), object: any, source: source(), file: file, function: function, line: line)
-    }
-    
     func info(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .info, message(), dictionary: dictionary, redacting: keys, source: source(), file: file, function: function, line: line)
     }
@@ -245,11 +199,6 @@ public extension Logger {
 public extension Logger {
     @discardableResult func notice<T: LoggableError>(_ message: @autoclosure () -> Logger.Message, error: T, redacting keyPaths: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
         log(level: .notice, message(), error: error, redacting: keyPaths, source: source(), file: file, function: function, line: line)
-    }
-    
-    @available(*, deprecated)
-    func notice(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .notice, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func notice(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -271,11 +220,6 @@ public extension Logger {
         log(level: .warning, message(), error: error, redacting: keyPaths, source: source(), file: file, function: function, line: line)
     }
     
-    @available(*, deprecated)
-    func warning(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .warning, message(), object: any, source: source(), file: file, function: function, line: line)
-    }
-    
     func warning(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .warning, message(), dictionary: dictionary, redacting: keys, source: source(), file: file, function: function, line: line)
     }
@@ -287,22 +231,12 @@ public extension Logger {
     func warning<T: Encodable>(_ message: @autoclosure () -> Logger.Message, encodable: T, redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .warning, message(), encodable: encodable, redacting: keys, source: source(), file: file, function: function, line: line)
     }
-    
-    @available(*, deprecated, message: "Prefer `LoggableError` usage.")
-    func warning(_ message: @autoclosure () -> Logger.Message, error: Error, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .warning, message(), metadata: Metadata(error), source: source(), file: file, function: function, line: line)
-    }
 }
 
 // MARK: - Error
 public extension Logger {
     @discardableResult func error<T: LoggableError>(_ message: @autoclosure () -> Logger.Message, error: T, redacting keyPaths: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
         log(level: .error, message(), error: error, redacting: keyPaths, source: source(), file: file, function: function, line: line)
-    }
-    
-    @available(*, deprecated)
-    func error(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .error, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func error(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -316,22 +250,12 @@ public extension Logger {
     func error<T: Encodable>(_ message: @autoclosure () -> Logger.Message, encodable: T, redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .error, message(), encodable: encodable, redacting: keys, source: source(), file: file, function: function, line: line)
     }
-    
-    @available(*, deprecated, message: "Prefer `LoggableError` usage.")
-    func error(_ message: @autoclosure () -> Logger.Message, error: Error, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .error, message(), metadata: Metadata(error), source: source(), file: file, function: function, line: line)
-    }
 }
 
 // MARK: - Critical
 public extension Logger {
     @discardableResult func critical<T: LoggableError>(_ message: @autoclosure () -> Logger.Message, error: T, redacting keyPaths: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) -> T {
         log(level: .critical, message(), error: error, redacting: keyPaths, source: source(), file: file, function: function, line: line)
-    }
-    
-    @available(*, deprecated)
-    func critical(_ message: @autoclosure () -> Logger.Message, any: AnyObject, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .critical, message(), object: any, source: source(), file: file, function: function, line: line)
     }
     
     func critical(_ message: @autoclosure () -> Logger.Message, dictionary: [String: Any], redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
@@ -344,10 +268,5 @@ public extension Logger {
     
     func critical<T: Encodable>(_ message: @autoclosure () -> Logger.Message, encodable: T, redacting keys: [String] = [], source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
         log(level: .critical, message(), encodable: encodable, redacting: keys, source: source(), file: file, function: function, line: line)
-    }
-    
-    @available(*, deprecated, message: "Prefer `LoggableError` usage.")
-    func critical(_ message: @autoclosure () -> Logger.Message, error: Error, source: @autoclosure () -> String? = nil, file: String = #file, function: String = #function, line: UInt = #line) {
-        log(level: .critical, message(), metadata: Metadata(error), source: source(), file: file, function: function, line: line)
     }
 }

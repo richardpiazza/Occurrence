@@ -118,25 +118,3 @@ internal extension Logger.MetadataValue {
         }
     }
 }
-
-@available(*, deprecated, message: "")
-extension Logger.MetadataValue {
-    public init(_ any: Any) {
-        switch any {
-        case let value as String:
-            self = .string(value)
-        case let value as Bool:
-            self = .stringConvertible(value)
-        case let value as Int:
-            self = .stringConvertible(value)
-        case let value as Double:
-            self = .stringConvertible(value)
-        case let value as [CustomStringConvertible & Sendable]:
-            self = .array(value.map { .stringConvertible($0) })
-        case let value as [String: CustomStringConvertible & Sendable]:
-            self = .dictionary(value.mapValues { .stringConvertible($0) })
-        default:
-            self = .string(String(describing: any))
-        }
-    }
-}

@@ -2,7 +2,6 @@ import Logging
 #if canImport(SwiftUI)
 import SwiftUI
 import Combine
-import AsyncPlus
 
 public struct LogView: View {
     
@@ -38,8 +37,7 @@ public struct LogView: View {
             }
         }
         @Published var entries: [Logger.Entry] = []
-        // Wether management and filtering tools are available
-        @Published var limitUI: Bool = false
+        @Published var allowManagement: Bool = false
         
         var subsystemDescription: String { selectedSubsystem?.description ?? "All" }
         
@@ -60,10 +58,33 @@ public struct LogView: View {
             return .and(filters)
         }
         
-        public init(provider: LogProvider = Occurrence.logProvider, streamer: LogStreamer = Occurrence.logStreamer, limitUI: Bool = false, exportAction: ExportAction? = nil) {
+        /// Initialize `LogView` settings
+        ///
+        /// - parameters:
+        ///   - provider:
+        ///   - streamer:
+        ///   - allowManagement: Whether management and filtering tools are available
+        ///   - exportAction:
+        public init(
+            provider: LogProvider = Occurrence.logProvider,
+            streamer: LogStreamer = Occurrence.logStreamer,
+            allowManagement: Bool = true,
+            exportAction: ExportAction? = nil
+        ) {
             self.provider = provider
             self.streamer = streamer
-            self.limitUI = limitUI
+            self.allowManagement = allowManagement
+            self.exportAction = exportAction
+            subsystems.append(contentsOf: provider.subsystems())
+            levels.append(contentsOf: Logger.Level.allCases)
+            reload()
+        }
+        
+        @available(*, deprecated, renamed: "init(provider:streamer:allowManagement:exportAction:)")
+        public init(provider: LogProvider = Occurrence.logProvider, streamer: LogStreamer = Occurrence.logStreamer, limitUI: Bool, exportAction: ExportAction? = nil) {
+            self.provider = provider
+            self.streamer = streamer
+            self.allowManagement = limitUI
             self.exportAction = exportAction
             subsystems.append(contentsOf: provider.subsystems())
             levels.append(contentsOf: Logger.Level.allCases)
@@ -141,10 +162,9 @@ public struct LogView: View {
     public var body: some View {
         VStack(spacing: 4.0) {
             #if os(iOS) || os(macOS)
-            if !viewModel.limitUI {
+            if viewModel.allowManagement {
                 entryManagementView
                     .padding()
-                
                 
                 Divider()
                 
@@ -170,9 +190,11 @@ public struct LogView: View {
         HStack {
             Menu {
                 ForEach(ManageOption.allCases, id: \.self) { option in
-                    Button(option.rawValue, action: {
+                    Button {
                         viewModel.manage(option)
-                    })
+                    } label: {
+                        Text(option.rawValue)
+                    }
                 }
             } label: {
                 Text(Image(systemName: "trash")) + Text(" Manage")
@@ -182,9 +204,11 @@ public struct LogView: View {
             
             Menu {
                 ForEach(ExportOption.allCases, id: \.self) { option in
-                    Button(option.rawValue, action: {
+                    Button {
                         viewModel.export(option)
-                    })
+                    } label: {
+                        Text(option.rawValue)
+                    }
                 }
             } label: {
                 Text(Image(systemName: "square.and.arrow.up")) + Text(" Export")
@@ -390,12 +414,12 @@ private struct PreviewLogProvider: LogProvider {
 
 private class PreviewLogStreamer: LogStreamer {
     
-    var _stream: PassthroughAsyncSequence<Logger.Entry>?
+    var _stream: AsyncStream<Logger.Entry>.Continuation?
     
     var stream: AsyncStream<Logger.Entry> {
         _stream?.finish()
-        let sequence = PassthroughAsyncSequence<Logger.Entry>()
-        _stream = sequence
+        let sequence = AsyncStream<Logger.Entry>.makeStream()
+        _stream = sequence.continuation
         return sequence.stream
     }
     

@@ -1,43 +1,32 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "AsyncPlus",
-        "repositoryURL": "https://github.com/richardpiazza/AsyncPlus.git",
-        "state": {
-          "branch": null,
-          "revision": "be7aad849d2ead0196aee1c296f52ef2e016fcf5",
-          "version": "0.1.0"
-        }
-      },
-      {
-        "package": "SQLite.swift",
-        "repositoryURL": "https://github.com/stephencelis/SQLite.swift.git",
-        "state": {
-          "branch": null,
-          "revision": "7a2e3cd27de56f6d396e84f63beefd0267b55ccb",
-          "version": "0.14.1"
-        }
-      },
-      {
-        "package": "Statement",
-        "repositoryURL": "https://github.com/richardpiazza/Statement.git",
-        "state": {
-          "branch": null,
-          "revision": "1123b422e028cec9da56b9e7c83b8f1b63d2b7e2",
-          "version": "0.7.2"
-        }
-      },
-      {
-        "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log.git",
-        "state": {
-          "branch": null,
-          "revision": "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
-          "version": "1.5.4"
-        }
+  "pins" : [
+    {
+      "identity" : "sqlite.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stephencelis/SQLite.swift.git",
+      "state" : {
+        "revision" : "7a2e3cd27de56f6d396e84f63beefd0267b55ccb",
+        "version" : "0.14.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "statement",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/richardpiazza/Statement.git",
+      "state" : {
+        "revision" : "1123b422e028cec9da56b9e7c83b8f1b63d2b7e2",
+        "version" : "0.7.2"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
+        "version" : "1.5.4"
+      }
+    }
+  ],
+  "version" : 2
 }
