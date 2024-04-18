@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.8
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -23,7 +23,6 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.5.4")),
         .package(url: "https://github.com/richardpiazza/Statement.git", .upToNextMajor(from : "0.7.2")),
-        .package(url: "https://github.com/richardpiazza/AsyncPlus.git", .upToNextMajor(from: "0.1.0")),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", .upToNextMajor(from: "0.14.1")),
     ],
     targets: [
@@ -35,7 +34,6 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Statement", package: "Statement"),
                 .product(name: "StatementSQLite", package: "Statement"),
-                .product(name: "AsyncPlus", package: "AsyncPlus"),
                 .product(name: "SQLite", package: "SQLite.swift"),
             ]
         ),

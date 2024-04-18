@@ -16,18 +16,4 @@ final class RedactionTests: XCTestCase {
         XCTAssertEqual(redactedDictionary["b"] as? String, "two")
         XCTAssertEqual(redactedDictionary["c"] as? [String: String], ["d": "<REDACTED>"])
     }
-    
-    @available(*, deprecated)
-    func testJSONRepresentation() throws {
-        let json = try JSONSerialization.json(withJSONObject: dictionary, redacting: ["a", "c.d"])
-        XCTAssertEqual(json, """
-        {
-          "a" : "<REDACTED>",
-          "b" : "two",
-          "c" : {
-            "d" : "<REDACTED>"
-          }
-        }
-        """)
-    }
 }

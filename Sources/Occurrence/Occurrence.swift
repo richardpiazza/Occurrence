@@ -6,12 +6,6 @@ public struct Occurrence: LogHandler {
         public var outputToConsole: Bool = true
         public var outputToStream: Bool = true
         public var outputToStorage: Bool = true
-        
-        @available(*, deprecated, renamed: "outputToStream")
-        public var outputToPublisher: Bool {
-            get { outputToStream }
-            set { outputToStream = newValue }
-        }
     }
     
     public static var configuration: Configuration = .init()
