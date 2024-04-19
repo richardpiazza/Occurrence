@@ -327,7 +327,7 @@ public struct LogView: View {
 public struct SwiftUIView_Previews: PreviewProvider {
     public static var previews: some View {
         NavigationView {
-            LogView(viewModel: .init(provider: PreviewLogProvider(), streamer: PreviewLogStreamer()))
+            LogView(viewModel: .init(provider: PreviewLogProvider(), streamer: OccurrenceLogStreamer()))
         }
     }
 }
@@ -409,26 +409,6 @@ private struct PreviewLogProvider: LogProvider {
     }
     
     func purge(matching filter: Logger.Filter?) {
-    }
-}
-
-private class PreviewLogStreamer: LogStreamer {
-    
-    var _stream: AsyncStream<Logger.Entry>.Continuation?
-    
-    var stream: AsyncStream<Logger.Entry> {
-        _stream?.finish()
-        let sequence = AsyncStream<Logger.Entry>.makeStream()
-        _stream = sequence.continuation
-        return sequence.stream
-    }
-    
-    private var subject: PassthroughSubject<Logger.Entry, Never> = .init()
-    var publisher: AnyPublisher<Logger.Entry, Never> { subject.eraseToAnyPublisher() }
-    
-    func log(_ entry: Logger.Entry) {
-        _stream?.yield(entry)
-        subject.send(entry)
     }
 }
 #endif

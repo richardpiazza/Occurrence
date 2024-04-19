@@ -6,13 +6,25 @@ import Combine
 
 class OccurrenceLogStreamer: LogStreamer {
     
-    private var passthroughSequence: AsyncStream<Logger.Entry>.Continuation?
+    private var asyncStream: AsyncStream<Logger.Entry>?
+    private var continuation: AsyncStream<Logger.Entry>.Continuation?
     
     var stream: AsyncStream<Logger.Entry> {
-        passthroughSequence?.finish()
+        continuation?.finish()
+        let _stream: AsyncStream<Logger.Entry>
+        #if swift(>=5.8)
         let sequence = AsyncStream<Logger.Entry>.makeStream()
-        passthroughSequence = sequence.continuation
-        return sequence.stream
+        _stream = sequence.stream
+        asyncStream = _stream
+        continuation = sequence.continuation
+        #else
+        _stream = AsyncStream<Logger.Entry> { token in
+            continuation = token
+        }
+        asyncStream = _stream
+        #endif
+        
+        return _stream
     }
     
     #if canImport(Combine)
@@ -21,7 +33,7 @@ class OccurrenceLogStreamer: LogStreamer {
     #endif
     
     func log(_ entry: Logger.Entry) {
-        passthroughSequence?.yield(entry)
+        continuation?.yield(entry)
         #if canImport(Combine)
         streamSubject.send(entry)
         #endif
