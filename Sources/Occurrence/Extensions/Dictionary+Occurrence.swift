@@ -1,5 +1,57 @@
 import Logging
 
+public extension Dictionary<String, Any> {
+    /// Redacts keys within the instance with a replacement value.
+    ///
+    /// The provided `keyPaths` should be in a dotted notation to recursively redact entries. For example:
+    /// ```swift
+    /// let dictionary: [String: Any] = [
+    ///   "a": "example",
+    ///   "b": 2,
+    ///   "c": [
+    ///     "d": "secret"
+    ///     "e": "not"
+    ///   ]
+    /// ]
+    ///
+    /// let result = dictionary.redacting(keyPaths: ["b", "c.d"])
+    /// /*
+    /// [
+    ///   "a": "example",
+    ///   "b": "<REDACTED>",
+    ///   "c": [
+    ///     "d": "<REDACTED>",
+    ///     "e": "not"
+    ///   ]
+    /// ]
+    /// */
+    /// ```
+    func redacting(keyPaths: [String] = [], replacement: String = "<REDACTED>") -> Self {
+        var dictionary = self
+        
+        for keyPath in keyPaths {
+            let split = keyPath.split(separator: ".", maxSplits: 1)
+            let key = String(split[0])
+            guard var value = dictionary[key] else {
+                continue
+            }
+
+            if split.count > 1 {
+                let subPath = String(split[1])
+                if let subDictionary = value as? [String: Any] {
+                    value = subDictionary.redacting(keyPaths: [subPath], replacement: replacement)
+                }
+            } else {
+                value = replacement
+            }
+
+            dictionary[key] = value
+        }
+        
+        return dictionary
+    }
+}
+
 internal extension Dictionary<String, Any> {
     var metadata: Logger.Metadata {
         var meta: Logger.Metadata = [:]
@@ -25,30 +77,5 @@ internal extension Dictionary<String, Any> {
         }
         
         return meta
-    }
-    
-    func redacting(keyPaths: [String] = [], replacement: String = "<REDACTED>") -> Self {
-        var dictionary = self
-        
-        for keyPath in keyPaths {
-            let split = keyPath.split(separator: ".", maxSplits: 1)
-            let key = String(split[0])
-            guard var value = dictionary[key] else {
-                continue
-            }
-
-            if split.count > 1 {
-                let subPath = String(split[1])
-                if let subDictionary = value as? [String: Any] {
-                    value = subDictionary.redacting(keyPaths: [subPath], replacement: replacement)
-                }
-            } else {
-                value = replacement
-            }
-
-            dictionary[key] = value
-        }
-        
-        return dictionary
     }
 }
