@@ -12,7 +12,7 @@ class OccurrenceLogStreamer: LogStreamer {
     var stream: AsyncStream<Logger.Entry> {
         continuation?.finish()
         let _stream: AsyncStream<Logger.Entry>
-        #if swift(>=5.8)
+        #if swift(>=5.9)
         let sequence = AsyncStream<Logger.Entry>.makeStream()
         _stream = sequence.stream
         asyncStream = _stream
