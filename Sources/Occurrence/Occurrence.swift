@@ -2,63 +2,51 @@ import Logging
 
 public struct Occurrence: LogHandler {
     
-    public struct Configuration {
-        public var outputToConsole: Bool = true
-        public var outputToStream: Bool = true
-        public var outputToStorage: Bool = true
+    private actor Bootstrapper {
+        var bootstrapped: Bool = false
+        
+        func bootstrap(metadataProvider: Logger.MetadataProvider? = nil) {
+            guard !bootstrapped else {
+                return
+            }
+            
+            bootstrapped = true
+            LoggingSystem.bootstrap(Occurrence.init, metadataProvider: metadataProvider)
+        }
     }
     
-    public static var configuration: Configuration = .init()
-    private static var bootstrapped: Bool = false
+    private static let bootstrapper = Bootstrapper()
     
     /// Bootstraps **Occurrence** in to `Logging.LoggingSystem`.
     ///
-    /// This ensures that `Occurrence` only calls `LoggingSystem.bootstrap(Occurrence.init)` once.
-    /// Repeated calls to `LoggingSystem.bootstrap()` is unpredictable and can lead to application crashes.
+    /// > bootstrap is a one-time configuration function which globally selects the desired logging backend implementation.
     ///
+    /// - warning: Repeated calls to `LoggingSystem.bootstrap()` will throw an exception.
     /// - parameters:
     ///   - metadataProvider: The `MetadataProvider` used to inject runtime-generated metadata from the execution context.
     public static func bootstrap(metadataProvider: Logger.MetadataProvider? = nil) {
-        guard !bootstrapped else {
-            return
+        Task {
+            await bootstrapper.bootstrap(metadataProvider: metadataProvider)
         }
-        
-        LoggingSystem.bootstrap(Occurrence.init, metadataProvider: metadataProvider)
-        bootstrapped = true
     }
-    
-    public static let logStreamer: LogStreamer = OccurrenceLogStreamer()
-    
-    public static var logProvider: LogProvider = {
-        do {
-            #if canImport(CoreData)
-            if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {
-                return try CoreDataLogProvider()
-            }
-            #endif
-            return try SQLiteLogProvider()
-        } catch {
-            preconditionFailure(error.localizedDescription)
-        }
-    }()
     
     public let label: String
     public var metadataProvider: Logger.MetadataProvider?
-    public var metadata: Logger.Metadata = .init()
+    public var metadata: Logger.Metadata = [:]
     public var logLevel: Logger.Level = .trace
+    public var incidence: Incidence = .instance
     
-    public init(label: String, metadataProvider: Logger.MetadataProvider?) {
+    @Sendable public init(
+        label: String,
+        metadataProvider: Logger.MetadataProvider?
+    ) {
         self.label = label
         self.metadataProvider = metadataProvider
     }
     
     public subscript(metadataKey key: String) -> Logger.Metadata.Value? {
-        get {
-            return metadata[key]
-        }
-        set(newValue) {
-            metadata[key] = newValue
-        }
+        get { metadata[key] }
+        set(newValue) { metadata[key] = newValue }
     }
     
     public func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, source: String, file: String, function: String, line: UInt) {
@@ -86,16 +74,16 @@ public struct Occurrence: LogHandler {
             line: line
         )
         
-        if Self.configuration.outputToConsole {
+        if incidence.outputToConsole {
             print(entry)
         }
         
-        if Self.configuration.outputToStream {
-            Self.logStreamer.log(entry)
+        if incidence.outputToStream {
+            incidence.streamer.log(entry)
         }
         
-        if Self.configuration.outputToStorage {
-            Self.logProvider.log(entry)
+        if incidence.outputToStorage {
+            incidence.storage.log(entry)
         }
     }
 }

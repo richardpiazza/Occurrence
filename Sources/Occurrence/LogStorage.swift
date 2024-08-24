@@ -1,8 +1,10 @@
-import Foundation
 import Logging
 
+@available(*, deprecated, renamed: "LogStorage")
+public typealias LogProvider = LogStorage
+
 /// A source of logging data.
-public protocol LogProvider {
+public protocol LogStorage: Sendable {
     /// Consume a log entry.
     func log(_ entry: Logger.Entry)
     
@@ -27,7 +29,7 @@ public protocol LogProvider {
     func purge(matching filter: Logger.Filter?)
 }
 
-public extension LogProvider {
+public extension LogStorage {
     func entries(_ filter: Logger.Filter? = nil, ascending: Bool = false, limit: UInt = 0) -> [Logger.Entry] {
         entries(matching: filter, ascending: ascending, limit: limit)
     }

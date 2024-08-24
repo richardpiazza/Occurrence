@@ -1,23 +1,25 @@
 import Foundation
 #if canImport(CoreData)
-import CoreData
+@preconcurrency import CoreData
 
-enum LogModel {
-    case version_1_0_0
+public final class LogModel: Sendable {
     
-    static var `default`: LogModel = .version_1_0_0
+    private let _managedObjectModel: NSManagedObjectModel
     
-    var managedObjectModel: NSManagedObjectModel {
-        switch self {
-        case .version_1_0_0: return Version_1_0_0.instance
-        }
+    init(model: @Sendable () -> NSManagedObjectModel) {
+        _managedObjectModel = model()
     }
+    
+    public func managedObjectModel() -> NSManagedObjectModel {
+        _managedObjectModel
+    }
+    
+    /// Provide a singular instance of the model to be referenced. There is a known issue where when referencing
+    /// a model in multiple targets can fatally be loaded twice.
+    public static let version_1_0_0 = LogModel(model: { Version_1_0_0() })
 }
 
-class Version_1_0_0: NSManagedObjectModel, NSSecureCoding {
-    /// Provide a singular instance of the model to be referenced. There is a known issue where when referencing
-    /// a model in an app target, as well as unit tests, a model - and therefore its entities - can be loaded twice.
-    static let instance: Version_1_0_0 = Version_1_0_0()
+final class Version_1_0_0: NSManagedObjectModel, NSSecureCoding {
     
     static var supportsSecureCoding: Bool { true }
     

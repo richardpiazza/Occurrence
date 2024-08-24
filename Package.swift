@@ -22,8 +22,9 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.6.2")),
-        .package(url: "https://github.com/richardpiazza/Statement.git", .upToNextMajor(from : "0.7.2")),
-        .package(url: "https://github.com/stephencelis/SQLite.swift.git", .upToNextMajor(from: "0.14.1")),
+        .package(url: "https://github.com/richardpiazza/AsyncPlus.git", .upToNextMajor(from : "0.3.1")),
+        .package(url: "https://github.com/richardpiazza/Statement.git", .upToNextMajor(from : "0.8.1")),
+        .package(url: "https://github.com/stephencelis/SQLite.swift.git", .upToNextMajor(from: "0.15.3")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -32,9 +33,13 @@ let package = Package(
             name: "Occurrence",
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
+                .product(name: "AsyncPlus", package: "AsyncPlus"),
                 .product(name: "Statement", package: "Statement"),
                 .product(name: "StatementSQLite", package: "Statement"),
                 .product(name: "SQLite", package: "SQLite.swift"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(

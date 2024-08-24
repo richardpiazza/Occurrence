@@ -1,7 +1,7 @@
 import Foundation
 import Logging
 
-extension EncodingError: CustomNSError, LoggableError {
+extension EncodingError: @retroactive CustomNSError, LoggableError {
     public static var errorDomain: String { "SwiftEncodingErrorDomain" }
     
     public var errorCode: Int {
