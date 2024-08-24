@@ -1,10 +1,10 @@
 import Foundation
 import Logging
-import SQLite
+@preconcurrency import SQLite
 import Statement
 import StatementSQLite
 
-class SQLiteLogProvider: LogProvider {
+final class SQLiteLogStorage: LogStorage {
     
     public static func defaultURL() throws -> URL {
         let directory = try FileManager.default.occurrenceDirectory()
@@ -239,7 +239,7 @@ extension Connection {
         
         let sql = SQLiteStatement(
             .CREATE(
-                .SCHEMA(SQLiteEntry.instance, ifNotExists: true)
+                .SCHEMA(SQLiteEntry(), ifNotExists: true)
             )
         ).render()
         

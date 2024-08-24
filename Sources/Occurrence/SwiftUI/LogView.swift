@@ -41,7 +41,7 @@ public struct LogView: View {
         
         var subsystemDescription: String { selectedSubsystem?.description ?? "All" }
         
-        private let provider: LogProvider
+        private let storage: LogStorage
         private let streamer: LogStreamer
         public var exportAction: ExportAction?
         private var liveSubscription: AnyCancellable?
@@ -61,32 +61,21 @@ public struct LogView: View {
         /// Initialize `LogView` settings
         ///
         /// - parameters:
-        ///   - provider:
+        ///   - storage:
         ///   - streamer:
         ///   - allowManagement: Whether management and filtering tools are available
         ///   - exportAction:
         public init(
-            provider: LogProvider = Occurrence.logProvider,
-            streamer: LogStreamer = Occurrence.logStreamer,
+            storage: LogStorage = OccurrenceLogStorage(),
+            streamer: LogStreamer = OccurrenceLogStreamer(),
             allowManagement: Bool = true,
             exportAction: ExportAction? = nil
         ) {
-            self.provider = provider
+            self.storage = storage
             self.streamer = streamer
             self.allowManagement = allowManagement
             self.exportAction = exportAction
-            subsystems.append(contentsOf: provider.subsystems())
-            levels.append(contentsOf: Logger.Level.allCases)
-            reload()
-        }
-        
-        @available(*, deprecated, renamed: "init(provider:streamer:allowManagement:exportAction:)")
-        public init(provider: LogProvider = Occurrence.logProvider, streamer: LogStreamer = Occurrence.logStreamer, limitUI: Bool, exportAction: ExportAction? = nil) {
-            self.provider = provider
-            self.streamer = streamer
-            self.allowManagement = limitUI
-            self.exportAction = exportAction
-            subsystems.append(contentsOf: provider.subsystems())
+            subsystems.append(contentsOf: storage.subsystems())
             levels.append(contentsOf: Logger.Level.allCases)
             reload()
         }
@@ -102,7 +91,7 @@ public struct LogView: View {
             
             let filter = self.filter
             
-            entries = provider.entries(filter, limit: 50)
+            entries = storage.entries(filter, limit: 50)
             
             guard live else {
                 return
@@ -121,10 +110,10 @@ public struct LogView: View {
             case .removeOld:
                 let lastWeek = Calendar.current.date(byAdding: .day, value: -3, to: Date())!
                 let filter: Logger.Filter = .period(start: .distantPast, end: lastWeek)
-                provider.purge(matching: filter)
+                storage.purge(matching: filter)
                 entries.removeAll(where: { $0.matchesFilter(filter) })
             case .removeAll:
-                provider.purge(matching: nil)
+                storage.purge(matching: nil)
                 entries.removeAll()
             }
         }
@@ -148,7 +137,7 @@ public struct LogView: View {
                 filter = .period(start: threeDays, end: Date())
             }
             
-            let entries = provider.entries(filter, ascending: true)
+            let entries = storage.entries(filter, ascending: true)
             action(entries)
         }
     }
@@ -327,17 +316,17 @@ public struct LogView: View {
 public struct SwiftUIView_Previews: PreviewProvider {
     public static var previews: some View {
         NavigationView {
-            LogView(viewModel: .init(provider: PreviewLogProvider(), streamer: OccurrenceLogStreamer()))
+            LogView(viewModel: .init(storage: PreviewLogStorage(), streamer: OccurrenceLogStreamer()))
         }
     }
 }
 
 private extension Logger.Subsystem {
-    static var sub1: Logger.Subsystem = "package.diagnostics"
-    static var sub2: Logger.Subsystem = "app.iOS"
+    static let sub1: Logger.Subsystem = "package.diagnostics"
+    static let sub2: Logger.Subsystem = "app.iOS"
 }
 
-private struct PreviewLogProvider: LogProvider {
+private struct PreviewLogStorage: LogStorage {
     
     private let entries: [Logger.Entry] = [
         .init(

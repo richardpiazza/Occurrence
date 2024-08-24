@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "asyncplus",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/richardpiazza/AsyncPlus.git",
+      "state" : {
+        "revision" : "4e7b506142c6a268b2adac12b405615320bb04c8",
+        "version" : "0.3.1"
+      }
+    },
+    {
       "identity" : "sqlite.swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stephencelis/SQLite.swift.git",
@@ -14,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/Statement.git",
       "state" : {
-        "revision" : "1123b422e028cec9da56b9e7c83b8f1b63d2b7e2",
-        "version" : "0.7.2"
+        "revision" : "fc77679f1d34c75cf996bd09169efbc31ca93d7a",
+        "version" : "0.8.1"
       }
     },
     {

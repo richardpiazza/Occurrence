@@ -2,7 +2,7 @@ import Foundation
 import Statement
 import Logging
 
-struct SQLiteEntry: Entity, Identifiable {
+struct SQLiteEntry: Entity, Identifiable, Sendable {
     
     static let identifier: String = "entry"
     
@@ -35,7 +35,7 @@ struct SQLiteEntry: Entity, Identifiable {
 
 
 extension SQLiteEntry {
-    static var instance: SQLiteEntry = { SQLiteEntry() }()
+    static let instance: SQLiteEntry = SQLiteEntry()
     static var id: Attribute { instance["id"]! }
     static var date: Attribute { instance["date"]! }
     static var subsystem: Attribute { instance["subsystem"]! }

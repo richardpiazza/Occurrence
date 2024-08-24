@@ -11,7 +11,7 @@ public extension Logger {
     ///     static let component: Logger.Subsystem = "tld.domain.package"
     /// }
     /// ```
-    struct Subsystem: ExpressibleByStringLiteral, Codable, Hashable, Comparable, CustomStringConvertible {
+    struct Subsystem: ExpressibleByStringLiteral, Codable, Hashable, Comparable, CustomStringConvertible, Sendable {
         public let rawValue: String
         
         public var description: String { rawValue }

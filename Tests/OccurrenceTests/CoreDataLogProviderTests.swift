@@ -4,16 +4,16 @@ import Logging
 #if canImport(CoreData)
 import CoreData
 
-final class CoreDataLogProviderTests: LogProviderTestCase {
+final class CoreDataLogProviderTests: LogStorageTestCase {
     
-    var coreDataLogProvider: CoreDataLogProvider!
-    override var logProvider: LogProvider! {
+    var coreDataLogProvider: CoreDataLogStorage!
+    override var logStorage: LogStorage! {
         get { coreDataLogProvider }
         set { }
     }
     
     override func setUpWithError() throws {
-        coreDataLogProvider = try CoreDataLogProvider(url: Self.randomStoreUrl())
+        coreDataLogProvider = try CoreDataLogStorage(url: Self.randomStoreUrl())
         
         try super.setUpWithError()
     }
