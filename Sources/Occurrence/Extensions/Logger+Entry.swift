@@ -3,8 +3,8 @@ import Logging
 
 public extension Logger {
     struct Entry: Codable, Sendable {
-
-        public static var gmtDateFormatter: DateFormatter = {
+        
+        public static let gmtDateFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             formatter.timeZone = TimeZone(secondsFromGMT: 0)

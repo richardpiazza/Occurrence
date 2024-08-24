@@ -1,19 +1,14 @@
 import Foundation
 import Logging
 #if canImport(CoreData)
-import CoreData
+@preconcurrency import CoreData
 
-class CoreDataLogProvider: LogProvider {
-
+final class CoreDataLogStorage: LogStorage {
+    
     let storeUrl: URL
-    private var persistentContainer: NSPersistentContainer
-
-    private lazy var context: NSManagedObjectContext = {
-        let context = persistentContainer.newBackgroundContext()
-        context.automaticallyMergesChangesFromParent = true
-        return context
-    }()
-
+    private let persistentContainer: NSPersistentContainer
+    private let backgroundContext: NSManagedObjectContext
+    
     init(url: URL? = nil) throws {
         storeUrl = try url ?? FileManager.default.defaultDatabaseUrl()
 
@@ -24,8 +19,9 @@ class CoreDataLogProvider: LogProvider {
         description.url = storeUrl
 
         var loadError: Error?
-
-        let container = NSPersistentContainer(name: "Occurrence", managedObjectModel: LogModel.default.managedObjectModel)
+        
+        let managedObjectModel = LogModel.version_1_0_0.managedObjectModel()
+        let container = NSPersistentContainer(name: "Occurrence", managedObjectModel: managedObjectModel)
         container.persistentStoreDescriptions = [description]
         container.loadPersistentStores { _, error in
             if let error {
@@ -39,6 +35,9 @@ class CoreDataLogProvider: LogProvider {
 
         container.viewContext.automaticallyMergesChangesFromParent = true
         persistentContainer = container
+        
+        backgroundContext = container.newBackgroundContext()
+        backgroundContext.automaticallyMergesChangesFromParent = true
     }
 
     deinit {
@@ -75,10 +74,10 @@ class CoreDataLogProvider: LogProvider {
     }
 
     public func log(_ entry: Logger.Entry) {
-        context.performAndWait {
+        backgroundContext.performAndWait {
             do {
-                try ManagedEntry(context: context, entry: entry)
-                try context.save()
+                try ManagedEntry(context: backgroundContext, entry: entry)
+                try backgroundContext.save()
             } catch {
                 print(error)
             }
@@ -93,9 +92,9 @@ class CoreDataLogProvider: LogProvider {
 
         var subsystems: Set<Logger.Subsystem> = [.occurrence]
 
-        context.performAndWait {
+        backgroundContext.performAndWait {
             do {
-                let results = try context.fetch(request) as? [[String: String]]
+                let results = try backgroundContext.fetch(request) as? [[String: String]]
                 results?
                     .compactMap { $0[#keyPath(ManagedEntry.subsystem)] }
                     .map { Logger.Subsystem($0) }
@@ -122,10 +121,10 @@ class CoreDataLogProvider: LogProvider {
 
         var results: [Logger.Entry] = []
 
-        context.performAndWait {
+        backgroundContext.performAndWait {
             do {
-                let entries = try context.fetch(request)
-                results = entries.map(\.entry)
+                let entries = try backgroundContext.fetch(request)
+                results = entries.map { $0.entry }
             } catch {
                 print(error)
             }
@@ -137,15 +136,15 @@ class CoreDataLogProvider: LogProvider {
     public func purge(matching filter: Logger.Filter?) {
         let request = ManagedEntry.fetchRequest()
         request.predicate = filter?.predicate
-
-        context.performAndWait {
+        
+        backgroundContext.performAndWait {
             do {
-                let entities = try context.fetch(request)
-                for entity in entities {
-                    context.delete(entity)
+                let entities = try backgroundContext.fetch(request)
+                entities.forEach {
+                    backgroundContext.delete($0)
                 }
-                if context.hasChanges {
-                    try context.save()
+                if backgroundContext.hasChanges {
+                    try backgroundContext.save()
                 }
             } catch {
                 print(error)

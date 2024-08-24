@@ -14,7 +14,7 @@ class LogProviderTestCase: XCTestCase {
         return URL(fileURLWithPath: path, relativeTo: directory)
     }
 
-    var logProvider: LogProvider!
+    var logProvider: LogStorage!
 
     let subsystem1: Logger.Subsystem = "log.provider.1"
     let subsystem2: Logger.Subsystem = "log.provider.2"

@@ -4,17 +4,16 @@ import XCTest
 #if canImport(CoreData)
 import CoreData
 
-final class CoreDataLogProviderTests: LogProviderTestCase {
-
-    var coreDataLogProvider: CoreDataLogProvider!
-    override var logProvider: LogProvider! {
+final class CoreDataLogProviderTests: LogStorageTestCase {
+    
+    var coreDataLogProvider: CoreDataLogStorage!
+    override var logStorage: LogStorage! {
         get { coreDataLogProvider }
         set {}
     }
 
     override func setUpWithError() throws {
-        coreDataLogProvider = try CoreDataLogProvider(url: Self.randomStoreUrl())
-
+        coreDataLogProvider = try CoreDataLogStorage(url: Self.randomStoreUrl())
         try super.setUpWithError()
     }
 

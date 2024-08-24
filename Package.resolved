@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "asyncplus",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/richardpiazza/AsyncPlus.git",
+      "state" : {
+        "revision" : "4e7b506142c6a268b2adac12b405615320bb04c8",
+        "version" : "0.3.1"
+      }
+    },
+    {
       "identity" : "sqlite.swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stephencelis/SQLite.swift.git",

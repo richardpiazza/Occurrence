@@ -6,6 +6,8 @@ class OccurrenceTests: XCTestCase {
 
     @LazyLogger(.occurrence) var log: Logger
 
+    let storage: LogStorage = OccurrenceLogStorage()
+    
     let metadataProvider = Logger.MetadataProvider {
         ["context": "XCTestCase"]
     }
@@ -14,9 +16,9 @@ class OccurrenceTests: XCTestCase {
         try super.setUpWithError()
         Occurrence.bootstrap(metadataProvider: metadataProvider)
     }
-
-    override class func tearDown() {
-        Occurrence.logProvider.purge()
+    
+    override func tearDown() {
+        storage.purge()
         super.tearDown()
     }
 
@@ -37,8 +39,8 @@ class OccurrenceTests: XCTestCase {
         ]
 
         log.log(level: .info, "Dictionary", dictionary: dictionary, redacting: ["value"])
-
-        let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
+        
+        let entry = try XCTUnwrap(storage.entries().first)
         var description = entry.description
 
         // Remove the timestamp
@@ -47,7 +49,7 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 39] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 40] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
         """
 
         XCTAssertEqual(description, output)
@@ -61,7 +63,7 @@ class OccurrenceTests: XCTestCase {
 
         log.log(level: .info, "Encodable", encodable: Metadata(id: 123, name: "Bob"), redacting: ["name"])
 
-        let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
+        let entry = try XCTUnwrap(storage.entries().first)
         var description = entry.description
 
         // Remove the timestamp
@@ -70,7 +72,7 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 62] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 63] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
         """
 
         XCTAssertEqual(description, output)
