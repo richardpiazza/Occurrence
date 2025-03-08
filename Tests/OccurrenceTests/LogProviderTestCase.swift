@@ -58,8 +58,8 @@ class LogProviderTestCase: XCTestCase {
     func testSubsystems() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", metadata: nil, source: ""))
-        logProvider.log(.init(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", metadata: nil, source: ""))
         
         let subsystems = logProvider.subsystems()
         XCTAssertEqual(subsystems.map(\.rawValue).sorted(), ["com.richardpiazza.occurrence", "log.provider.1", "log.provider.2"])
@@ -68,10 +68,10 @@ class LogProviderTestCase: XCTestCase {
     func testSubsystemFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", metadata: nil, source: ""))
-        logProvider.log(.init(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", metadata: nil, source: ""))
-        logProvider.log(.init(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", metadata: nil, source: ""))
-        logProvider.log(.init(date: january2nd_0809, subsystem: subsystem2, level: .debug, message: "four", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0809, subsystem: subsystem2, level: .debug, message: "four", metadata: nil, source: ""))
         
         let entries = logProvider.entries(.subsystem(subsystem1), ascending: true)
         XCTAssertEqual(entries.count, 2)
@@ -81,20 +81,20 @@ class LogProviderTestCase: XCTestCase {
     func testLevelFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "one", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .debug, message: "two", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .info, message: "three", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .notice, message: "four", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .warning, message: "five", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .error, message: "six", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .critical, message: "seven", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .critical, message: "eight", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .error, message: "nine", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "ten", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .notice, message: "eleven", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .info, message: "twelve", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "thirteen", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .trace, message: "fourteen", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "one", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "two", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .info, message: "three", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .notice, message: "four", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .warning, message: "five", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .error, message: "six", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .critical, message: "seven", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .critical, message: "eight", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .error, message: "nine", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "ten", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .notice, message: "eleven", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .info, message: "twelve", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "thirteen", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .trace, message: "fourteen", metadata: nil, source: ""))
         
         var entries: [Logger.Entry]
         
@@ -123,9 +123,9 @@ class LogProviderTestCase: XCTestCase {
     func testMessageFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(subsystem: subsystem1, level: .debug, message: "for", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .debug, message: "forward", metadata: nil, source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .debug, message: "warden", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "for", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "forward", metadata: nil, source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "warden", metadata: nil, source: ""))
         
         var entries: [Logger.Entry]
         
@@ -139,12 +139,12 @@ class LogProviderTestCase: XCTestCase {
     func testSourceFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "one", source: "Class1"))
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "two", source: "Class2"))
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "three", source: "Class3"))
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "four", source: "Class3"))
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "five", source: "Class2"))
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "six", source: "Class1"))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "one", source: "Class1"))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "two", source: "Class2"))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "three", source: "Class3"))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "four", source: "Class3"))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "five", source: "Class2"))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "six", source: "Class1"))
         
         var entries: [Logger.Entry]
         
@@ -158,12 +158,12 @@ class LogProviderTestCase: XCTestCase {
     func testFileFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "one", source: "", file: "File1.swift"))
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "two", source: "", file: "File2.swift"))
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "three", source: "", file: "File3.swift"))
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "four", source: "", file: "File3.swift"))
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "five", source: "", file: "File2.swift"))
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "six", source: "", file: "File1.swift"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "one", source: "", file: "File1.swift"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "two", source: "", file: "File2.swift"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "three", source: "", file: "File3.swift"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "four", source: "", file: "File3.swift"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "five", source: "", file: "File2.swift"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "six", source: "", file: "File1.swift"))
         
         var entries: [Logger.Entry]
         
@@ -177,12 +177,12 @@ class LogProviderTestCase: XCTestCase {
     func testFunctionFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "one", source: "", function: "doWork()"))
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "two", source: "", function: "presentData()"))
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "three", source: "", function: "asyncTask(_:)"))
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "four", source: "", function: "asyncTask(_:)"))
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "five", source: "", function: "presentData()"))
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "six", source: "", function: "doWork()"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "one", source: "", function: "doWork()"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "two", source: "", function: "presentData()"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "three", source: "", function: "asyncTask(_:)"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "four", source: "", function: "asyncTask(_:)"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "five", source: "", function: "presentData()"))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "six", source: "", function: "doWork()"))
         
         var entries: [Logger.Entry]
         
@@ -196,10 +196,10 @@ class LogProviderTestCase: XCTestCase {
     func testPeriodFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
-        logProvider.log(.init(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", source: ""))
-        logProvider.log(.init(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
-        logProvider.log(.init(date: january2nd_0809, subsystem: subsystem2, level: .debug, message: "four", source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0809, subsystem: subsystem2, level: .debug, message: "four", source: ""))
         
         var entries: [Logger.Entry]
         
@@ -213,10 +213,10 @@ class LogProviderTestCase: XCTestCase {
     func testAndFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
-        logProvider.log(.init(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
-        logProvider.log(.init(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
-        logProvider.log(.init(date: january2nd_0809, subsystem: subsystem2, level: .warning, message: "four", source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0809, subsystem: subsystem2, level: .warning, message: "four", source: ""))
         
         var entries: [Logger.Entry]
         
@@ -236,10 +236,10 @@ class LogProviderTestCase: XCTestCase {
     func testOrFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
-        logProvider.log(.init(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
-        logProvider.log(.init(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
-        logProvider.log(.init(date: january2nd_0809, subsystem: subsystem2, level: .warning, message: "four", source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0809, subsystem: subsystem2, level: .warning, message: "four", source: ""))
         
         var entries: [Logger.Entry]
         
@@ -253,10 +253,10 @@ class LogProviderTestCase: XCTestCase {
     func testNotFilter() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
-        logProvider.log(.init(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
-        logProvider.log(.init(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
-        logProvider.log(.init(date: january2nd_0809, subsystem: subsystem2, level: .warning, message: "four", source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
+        logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
+        logProvider.log(Logger.Entry(date: january2nd_0809, subsystem: subsystem2, level: .warning, message: "four", source: ""))
         
         var entries: [Logger.Entry]
         
@@ -269,20 +269,20 @@ class LogProviderTestCase: XCTestCase {
     func testAscendingLimit() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "one", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .debug, message: "two", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .info, message: "three", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .notice, message: "four", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .warning, message: "five", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .error, message: "six", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .critical, message: "seven", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .critical, message: "eight", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .error, message: "nine", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "ten", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .notice, message: "eleven", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .info, message: "twelve", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "thirteen", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .trace, message: "fourteen", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "one", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "two", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .info, message: "three", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .notice, message: "four", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .warning, message: "five", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .error, message: "six", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .critical, message: "seven", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .critical, message: "eight", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .error, message: "nine", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "ten", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .notice, message: "eleven", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .info, message: "twelve", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "thirteen", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .trace, message: "fourteen", source: ""))
         
         var entries: [Logger.Entry]
         
@@ -293,20 +293,20 @@ class LogProviderTestCase: XCTestCase {
     func testDescendingLimit() throws {
         try XCTSkipIf(logProvider == nil)
         
-        logProvider.log(.init(subsystem: subsystem1, level: .trace, message: "one", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .debug, message: "two", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .info, message: "three", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .notice, message: "four", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .warning, message: "five", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .error, message: "six", source: ""))
-        logProvider.log(.init(subsystem: subsystem1, level: .critical, message: "seven", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .critical, message: "eight", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .error, message: "nine", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .warning, message: "ten", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .notice, message: "eleven", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .info, message: "twelve", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .debug, message: "thirteen", source: ""))
-        logProvider.log(.init(subsystem: subsystem2, level: .trace, message: "fourteen", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "one", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "two", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .info, message: "three", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .notice, message: "four", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .warning, message: "five", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .error, message: "six", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem1, level: .critical, message: "seven", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .critical, message: "eight", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .error, message: "nine", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "ten", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .notice, message: "eleven", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .info, message: "twelve", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "thirteen", source: ""))
+        logProvider.log(Logger.Entry(subsystem: subsystem2, level: .trace, message: "fourteen", source: ""))
         
         var entries: [Logger.Entry]
         

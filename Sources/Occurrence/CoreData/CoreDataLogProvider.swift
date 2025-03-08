@@ -5,8 +5,14 @@ import CoreData
 
 class CoreDataLogProvider: LogProvider {
     
-    private var persistentContainer: NSPersistentContainer
     let storeUrl: URL
+    private var persistentContainer: NSPersistentContainer
+    
+    private lazy var context: NSManagedObjectContext = {
+        let context = persistentContainer.newBackgroundContext()
+        context.automaticallyMergesChangesFromParent = true
+        return context
+    }()
     
     init(url: URL? = nil) throws {
         storeUrl = try url ?? FileManager.default.defaultDatabaseUrl()
@@ -36,17 +42,39 @@ class CoreDataLogProvider: LogProvider {
     }
     
     deinit {
+        let context = persistentContainer.viewContext
+        context.performAndWait {
+            if context.hasChanges {
+                do {
+                    try context.save()
+                } catch {
+                    print(error)
+                }
+            }
+        }
+        
         let coordinator = persistentContainer.persistentStoreCoordinator
         let stores = coordinator.persistentStores
         do {
-            try stores.forEach { try coordinator.remove($0) }
+            for store in stores {
+                try coordinator.remove(store)
+            }
+            
+            // Checkpoint (merge WAL)
+            let options = [NSSQLitePragmasOption: ["journal_mode": "DELETE"]]
+            let store = try coordinator.addPersistentStore(
+                ofType: NSSQLiteStoreType,
+                configurationName: coordinator.name,
+                at: storeUrl,
+                options: options
+            )
+            try coordinator.remove(store)
         } catch {
+            print(error)
         }
     }
     
     public func log(_ entry: Logger.Entry) {
-        let context = persistentContainer.newBackgroundContext()
-        
         context.performAndWait {
             do {
                 try ManagedEntry(context: context, entry: entry)
@@ -58,43 +86,32 @@ class CoreDataLogProvider: LogProvider {
     }
     
     public func subsystems() -> [Logger.Subsystem] {
-        let context = persistentContainer.newBackgroundContext()
-        
-        let request: NSFetchRequest<NSFetchRequestResult> = ManagedEntry.fetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: ManagedEntry.fetchRequest().entityName ?? "ManagedEntry")
         request.resultType = .dictionaryResultType
         request.propertiesToFetch = [#keyPath(ManagedEntry.subsystem)]
         request.returnsDistinctResults = true
         
-        var fetch: [[String: String]]?
+        var subsystems: Set<Logger.Subsystem> = [.occurrence]
         
         context.performAndWait {
             do {
-                fetch = try context.fetch(request) as? [[String : String]]
+                let results = try context.fetch(request) as? [[String: String]]
+                results?
+                    .compactMap { $0[#keyPath(ManagedEntry.subsystem)] }
+                    .map { Logger.Subsystem($0) }
+                    .forEach {
+                        subsystems.insert($0)
+                    }
             } catch {
                 print(error)
             }
         }
         
-        var subsystems: Set<Logger.Subsystem> = [.occurrence]
-        
-        guard let dictionary = fetch else {
-            return Array(subsystems)
-        }
-        
-        dictionary
-            .compactMap { $0[#keyPath(ManagedEntry.subsystem)] }
-            .map { Logger.Subsystem(stringLiteral: $0) }
-            .forEach {
-                subsystems.insert($0)
-            }
-        
         return Array(subsystems)
     }
     
     public func entries(matching filter: Logger.Filter?, ascending: Bool, limit: UInt) -> [Logger.Entry] {
-        let context = persistentContainer.newBackgroundContext()
-        
-        let request: NSFetchRequest<NSFetchRequestResult> = ManagedEntry.fetchRequest()
+        let request = ManagedEntry.fetchRequest()
         request.predicate = filter?.predicate
         request.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(ManagedEntry.date), ascending: ascending)
@@ -103,34 +120,33 @@ class CoreDataLogProvider: LogProvider {
             request.fetchLimit = Int(limit)
         }
         
-        var fetch: [ManagedEntry] = []
+        var results: [Logger.Entry] = []
         
         context.performAndWait {
             do {
-                if let entities = try context.fetch(request) as? [ManagedEntry] {
-                    fetch = entities
-                }
+                let entries = try context.fetch(request)
+                results = entries.map { $0.entry }
             } catch {
                 print(error)
             }
         }
         
-        return fetch.map { $0.entry }
+        return results
     }
     
     public func purge(matching filter: Logger.Filter?) {
-        let context = persistentContainer.newBackgroundContext()
-        
-        let request: NSFetchRequest<NSFetchRequestResult> = ManagedEntry.fetchRequest()
+        let request = ManagedEntry.fetchRequest()
         request.predicate = filter?.predicate
         
         context.performAndWait {
             do {
-                let entities = try context.fetch(request) as? [ManagedEntry]
-                entities?.forEach {
+                let entities = try context.fetch(request)
+                entities.forEach {
                     context.delete($0)
                 }
-                try context.save()
+                if context.hasChanges {
+                    try context.save()
+                }
             } catch {
                 print(error)
             }
