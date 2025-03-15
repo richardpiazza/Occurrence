@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "8CF5B372-CEC2-415B-AB36-75686D2362AA",
+      "name" : "Test Scheme Action",
+      "options" : {
+        "commandLineArgumentEntries" : [
+          {
+            "argument" : "-com.apple.CoreData.ConcurrencyDebug 1"
+          }
+        ]
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "OccurrenceTests",
+        "name" : "OccurrenceTests"
+      }
+    }
+  ],
+  "version" : 1
+}

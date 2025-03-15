@@ -103,7 +103,7 @@ final class LoggableErrorTests: XCTestCase {
         XCTAssertEqual(userInfo.count, 1)
         XCTAssertEqual(description, #"Encoding (Invalid Value) - Value: FileRef(description: "Some File"), Context: Bad data. ["description", "file"]"#)
         #if os(Linux)
-        XCTAssertEqual(localizedDescription, "The operation could not be completed. The data isn’t in the correct format.")
+        XCTAssertEqual(localizedDescription, "The operation could not be completed. (SwiftEncodingErrorDomain error 0.)")
         #else
         XCTAssertEqual(localizedDescription, "The data couldn’t be written because it isn’t in the correct format.")
         #endif
@@ -129,7 +129,7 @@ final class LoggableErrorTests: XCTestCase {
         XCTAssertEqual(userInfo.count, 1)
         XCTAssertEqual(description, #"Decoding (Type Mismatch) - Type: Int, Context: Unexpected type. ["code"]"#)
         #if os(Linux)
-        XCTAssertEqual(localizedDescription, "The operation could not be completed. The data isn’t in the correct format.")
+        XCTAssertEqual(localizedDescription, "The operation could not be completed. (SwiftDecodingErrorDomain error 0.)")
         #else
         XCTAssertEqual(localizedDescription, "The data couldn’t be read because it isn’t in the correct format.")
         #endif

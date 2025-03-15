@@ -19,9 +19,7 @@ final class CoreDataLogProviderTests: LogProviderTestCase {
     }
     
     override func tearDownWithError() throws {
-        if let provider = logProvider {
-            provider.purge()
-        }
+        coreDataLogProvider.purge()
         
         let storeUrl = coreDataLogProvider.storeUrl
         let shm = storeUrl.deletingPathExtension().appendingPathExtension("sqlite-shm")

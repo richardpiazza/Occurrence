@@ -20,6 +20,10 @@ public extension Logger {
             self.rawValue = rawValue
         }
         
+        public init(_ rawValue: String) {
+            self.rawValue = rawValue
+        }
+        
         public init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             rawValue = try container.decode(String.self)
