@@ -22,7 +22,7 @@ extension Logger.Level {
     }
 }
 
-extension Logger.Level: CustomStringConvertible {
+extension Logger.Level: @retroactive CustomStringConvertible {
     public var description: String {
         "\(gem) \(fixedWidthDescription.uppercased())"
     }
