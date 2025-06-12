@@ -2,8 +2,8 @@ import Foundation
 import Logging
 
 public extension Logger {
-    struct Entry: Codable, CustomStringConvertible {
-        
+    struct Entry: Codable, Sendable {
+
         public static var gmtDateFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
@@ -43,19 +43,6 @@ public extension Logger {
             self.line = line
         }
         
-        public var description: String {
-            let _date = Self.gmtDateFormatter.string(from: date)
-            let sourceFile = [source, fileName].filter { !$0.isEmpty }.joined(separator: " ")
-            let output = "[\(_date) \(level) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
-            if let metadata = metadata {
-                let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
-                let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
-                return "\(output) { \(values) }"
-            } else {
-                return output
-            }
-        }
-        
         public func matchesFilter(_ filter: Logger.Filter) -> Bool {
             switch filter {
             case .subsystem(let subsystem):
@@ -79,6 +66,21 @@ public extension Logger {
             case .not(let filters):
                 return !filters.map({ matchesFilter($0) }).contains(true)
             }
+        }
+    }
+}
+
+extension Logger.Entry: CustomStringConvertible {
+    public var description: String {
+        let _date = Self.gmtDateFormatter.string(from: date)
+        let sourceFile = [source, fileName].filter { !$0.isEmpty }.joined(separator: " ")
+        let output = "[\(_date) \(level) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
+        if let metadata = metadata {
+            let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
+            let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
+            return "\(output) { \(values) }"
+        } else {
+            return output
         }
     }
 }
