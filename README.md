@@ -2,29 +2,8 @@
 
 A swift logging library that integrates with [`SwiftLog`](https://github.com/apple/swift-log).
 
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardpiazza%2FOccurrence%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/richardpiazza/Occurrence)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardpiazza%2FOccurrence%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/richardpiazza/Occurrence)
-
-## Installation
-
-**Occurrence** is distributed using the [Swift Package Manager](https://swift.org/package-manager). To install it into a project, Use the 
-Xcode 'Swift Packages' menu or add it as a dependency within your `Package.swift` manifest:
-
-```swift
-let package = Package(
-    ...
-    dependencies: [
-        .package(url: "https://github.com/richardpiazza/Occurence.git", .upToNextMinor(from: "0.6.0"))
-    ],
-    ...
-)
-```
-
-Then import the **Occurrence** packages wherever you'd like to use it:
-
-```swift
-import Occurrence
-```
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardpiazza%2FOccurrence%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/richardpiazza/Occurrence)
 
 ## Usage
 
