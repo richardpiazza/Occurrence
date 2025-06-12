@@ -7,28 +7,28 @@ extension Logger.Filter {
     var predicate: NSPredicate {
         switch self {
         case .subsystem(let subsystem):
-            return NSPredicate(format: "%K == %@", #keyPath(ManagedEntry.subsystem), subsystem.rawValue)
+            NSPredicate(format: "%K == %@", #keyPath(ManagedEntry.subsystem), subsystem.rawValue)
         case .level(let level):
-            return NSPredicate(format: "%K == %@", #keyPath(ManagedEntry.level), level.rawValue)
+            NSPredicate(format: "%K == %@", #keyPath(ManagedEntry.level), level.rawValue)
         case .message(let message):
-            return NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(ManagedEntry.message), message)
+            NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(ManagedEntry.message), message)
         case .source(let source):
-            return NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(ManagedEntry.source), source)
+            NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(ManagedEntry.source), source)
         case .file(let file):
-            return NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(ManagedEntry.file), file)
+            NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(ManagedEntry.file), file)
         case .function(let function):
-            return NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(ManagedEntry.function), function)
+            NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(ManagedEntry.function), function)
         case .period(let start, let end):
-            return NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSCompoundPredicate(andPredicateWithSubpredicates: [
                 NSPredicate(format: "%K >= %@", #keyPath(ManagedEntry.date), start as NSDate),
-                NSPredicate(format: "%K <= %@", #keyPath(ManagedEntry.date), end as NSDate)
+                NSPredicate(format: "%K <= %@", #keyPath(ManagedEntry.date), end as NSDate),
             ])
         case .and(let filters):
-            return NSCompoundPredicate(type: .and, subpredicates: filters.map { $0.predicate })
+            NSCompoundPredicate(type: .and, subpredicates: filters.map(\.predicate))
         case .or(let filters):
-            return NSCompoundPredicate(type: .or, subpredicates: filters.map { $0.predicate })
+            NSCompoundPredicate(type: .or, subpredicates: filters.map(\.predicate))
         case .not(let filters):
-            return NSCompoundPredicate(type: .not, subpredicates: filters.map { $0.predicate })
+            NSCompoundPredicate(type: .not, subpredicates: filters.map(\.predicate))
         }
     }
 }

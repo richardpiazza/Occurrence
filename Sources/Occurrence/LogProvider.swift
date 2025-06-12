@@ -5,12 +5,12 @@ import Logging
 public protocol LogProvider {
     /// Consume a log entry.
     func log(_ entry: Logger.Entry)
-    
+
     /// A collection of known `Logger.Subsystem`.
     ///
     /// - returns: A collection of known `Logger.Subsystem`.
     func subsystems() -> [Logger.Subsystem]
-    
+
     /// Query the provider for entries.
     ///
     /// - parameters:
@@ -19,7 +19,7 @@ public protocol LogProvider {
     ///   - limit: Limit the number of results returned (0 = unlimited).
     /// - returns: A collection of `Logger.Entry` that match the given parameters.
     func entries(matching filter: Logger.Filter?, ascending: Bool, limit: UInt) -> [Logger.Entry]
-    
+
     /// Removes entries from the storage
     ///
     /// - parameters:
@@ -31,7 +31,7 @@ public extension LogProvider {
     func entries(_ filter: Logger.Filter? = nil, ascending: Bool = false, limit: UInt = 0) -> [Logger.Entry] {
         entries(matching: filter, ascending: ascending, limit: limit)
     }
-    
+
     func purge(_ filter: Logger.Filter? = nil) {
         purge(matching: filter)
     }

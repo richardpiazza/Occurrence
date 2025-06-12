@@ -1,23 +1,23 @@
 import Foundation
 import Logging
 
-extension Logger.Level {
+public extension Logger.Level {
     /// A unique visual indicator for each `Level`.
-    public var gem: String {
+    var gem: String {
         switch self {
-        case .trace: return "🚰"
-        case .debug: return "🦠"
-        case .info: return "🔎"
-        case .notice: return "💡"
-        case .warning: return "🔮"
-        case .error: return "🚫"
-        case .critical: return "💣"
+        case .trace: "🚰"
+        case .debug: "🦠"
+        case .info: "🔎"
+        case .notice: "💡"
+        case .warning: "🔮"
+        case .error: "🚫"
+        case .critical: "💣"
         }
     }
-    
+
     /// A padded representation of the `Level`.
-    public var fixedWidthDescription: String {
-        let max = Logger.Level.allCases.map { $0.rawValue.count }.max() ?? rawValue.count
+    var fixedWidthDescription: String {
+        let max = Logger.Level.allCases.map(\.rawValue.count).max() ?? rawValue.count
         return rawValue.padding(toLength: max, withPad: " ", startingAt: 0)
     }
 }

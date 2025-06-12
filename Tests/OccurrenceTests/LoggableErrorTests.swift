@@ -1,33 +1,33 @@
-import XCTest
 import Logging
+import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
 @testable import Occurrence
 
 final class LoggableErrorTests: XCTestCase {
-    
+
     func testLoggableErrorConformance() throws {
         struct AnyMetadataError: CustomNSError, LoggableError {
             static let errorDomain: String = "any-error-domain"
             let errorCode: Int = 404
-            var errorUserInfo: [String : Any] = [
-                "answer": 42
+            var errorUserInfo: [String: Any] = [
+                "answer": 42,
             ]
         }
-        
+
         let metadata = AnyMetadataError().metadata
         XCTAssertEqual(metadata.count, 3)
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.intValue)
         let userInfo = try XCTUnwrap(metadata[.userInfo]?.dictionaryValue)
         let answer = try XCTUnwrap(userInfo["answer"]?.intValue)
-        
+
         XCTAssertEqual(domain, "any-error-domain")
         XCTAssertEqual(code, 404)
         XCTAssertEqual(answer, 42)
     }
-    
+
     func testLocalizedErrorConformance() throws {
         struct AnyMetadataError: CustomNSError, LocalizedError, LoggableError {
             static let errorDomain: String = "some-error-domain"
@@ -36,7 +36,7 @@ final class LoggableErrorTests: XCTestCase {
             let failureReason: String? = "The thing could not be done"
             let recoverySuggestion: String? = "Try a different thing"
         }
-        
+
         let error = AnyMetadataError()
         let metadata = error.metadata
         XCTAssertEqual(metadata.count, 6)
@@ -46,7 +46,7 @@ final class LoggableErrorTests: XCTestCase {
         let localizedDescription = try XCTUnwrap(metadata[.localizedDescription]?.stringValue)
         let localizedFailureReason = try XCTUnwrap(metadata[.localizedFailureReason]?.stringValue)
         let localizedRecoverySuggestion = try XCTUnwrap(metadata[.localizedRecoverySuggestion]?.stringValue)
-        
+
         XCTAssertEqual(domain, "some-error-domain")
         XCTAssertEqual(code, 500)
         XCTAssertEqual(userInfo.count, 0)
@@ -54,36 +54,36 @@ final class LoggableErrorTests: XCTestCase {
         XCTAssertEqual(localizedFailureReason, "The thing could not be done")
         XCTAssertEqual(localizedRecoverySuggestion, "Try a different thing")
     }
-    
+
     func testCocoaErrorConformance() throws {
         let metadata = CocoaError(.featureUnsupported).metadata
         XCTAssertEqual(metadata.count, 3)
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.intValue)
         let userInfo = try XCTUnwrap(metadata[.userInfo]?.dictionaryValue)
-        
+
         XCTAssertEqual(domain, "NSCocoaErrorDomain")
         XCTAssertEqual(code, 3328)
         XCTAssertEqual(userInfo.count, 0)
     }
-    
+
     func testURLErrorConformance() throws {
         let metadata = URLError(.cancelled).metadata
         XCTAssertEqual(metadata.count, 3)
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.intValue)
         let userInfo = try XCTUnwrap(metadata[.userInfo]?.dictionaryValue)
-        
+
         XCTAssertEqual(domain, "NSURLErrorDomain")
         XCTAssertEqual(code, -999)
         XCTAssertEqual(userInfo.count, 0)
     }
-    
+
     func testEncodingErrorConformance() throws {
         struct FileRef: Encodable {
             let description: String = "Some File"
         }
-        
+
         let context = EncodingError.Context(
             codingPath: [Logger.MetadataKey.description, Logger.MetadataKey.file],
             debugDescription: "Bad data."
@@ -91,13 +91,13 @@ final class LoggableErrorTests: XCTestCase {
         let error = EncodingError.invalidValue(FileRef(), context)
         let metadata = error.metadata
         XCTAssertEqual(metadata.count, 4)
-        
+
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.intValue)
         let userInfo = try XCTUnwrap(metadata[.userInfo]?.dictionaryValue)
         let description = try XCTUnwrap(userInfo[.description]?.stringValue)
         let localizedDescription = try XCTUnwrap(metadata[.localizedDescription]?.stringValue)
-        
+
         XCTAssertEqual(domain, "SwiftEncodingErrorDomain")
         XCTAssertEqual(code, 0)
         XCTAssertEqual(userInfo.count, 1)
@@ -108,7 +108,7 @@ final class LoggableErrorTests: XCTestCase {
         XCTAssertEqual(localizedDescription, "The data couldn’t be written because it isn’t in the correct format.")
         #endif
     }
-    
+
     func testDecodingErrorConformance() throws {
         let context = DecodingError.Context(
             codingPath: [Logger.MetadataKey.code],
@@ -117,13 +117,13 @@ final class LoggableErrorTests: XCTestCase {
         let error = DecodingError.typeMismatch(Int.self, context)
         let metadata = error.metadata
         XCTAssertEqual(metadata.count, 4)
-        
+
         let domain = try XCTUnwrap(metadata[.domain]?.stringValue)
         let code = try XCTUnwrap(metadata[.code]?.intValue)
         let userInfo = try XCTUnwrap(metadata[.userInfo]?.dictionaryValue)
         let description = try XCTUnwrap(userInfo[.description]?.stringValue)
         let localizedDescription = try XCTUnwrap(metadata[.localizedDescription]?.stringValue)
-        
+
         XCTAssertEqual(domain, "SwiftDecodingErrorDomain")
         XCTAssertEqual(code, 0)
         XCTAssertEqual(userInfo.count, 1)
@@ -134,26 +134,26 @@ final class LoggableErrorTests: XCTestCase {
         XCTAssertEqual(localizedDescription, "The data couldn’t be read because it isn’t in the correct format.")
         #endif
     }
-    
+
     func testMetadataRedactions() throws {
         struct RedactionError: CustomNSError, LoggableError {
             static var errorDomain: String { "redaction-error" }
             var errorCode: Int { 0 }
-            var errorUserInfo: [String : Any] {
+            var errorUserInfo: [String: Any] {
                 [
                     "first": "Something",
                     "second": [
-                        "third": "Secret"
+                        "third": "Secret",
                     ],
-                    "fourth": 47
+                    "fourth": 47,
                 ]
             }
         }
-            
+
         let error = RedactionError()
         let metadata = error.metadata(redactingUserInfo: ["second.third", "fourth"])
         let userInfo = try XCTUnwrap(metadata[.userInfo]?.dictionaryValue)
-        
+
         XCTAssertEqual(userInfo["first"]?.stringValue, "Something")
         XCTAssertEqual(userInfo["second"]?.dictionaryValue?["third"]?.stringValue, "<REDACTED>")
         XCTAssertEqual(userInfo["fourth"]?.stringValue, "<REDACTED>")

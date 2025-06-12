@@ -1,16 +1,16 @@
 import Logging
 
 public struct Occurrence: LogHandler {
-    
+
     public struct Configuration {
         public var outputToConsole: Bool = true
         public var outputToStream: Bool = true
         public var outputToStorage: Bool = true
     }
-    
+
     public static var configuration: Configuration = .init()
     private static var bootstrapped: Bool = false
-    
+
     /// Bootstraps **Occurrence** in to `Logging.LoggingSystem`.
     ///
     /// This ensures that `Occurrence` only calls `LoggingSystem.bootstrap(Occurrence.init)` once.
@@ -22,13 +22,13 @@ public struct Occurrence: LogHandler {
         guard !bootstrapped else {
             return
         }
-        
+
         LoggingSystem.bootstrap(Occurrence.init, metadataProvider: metadataProvider)
         bootstrapped = true
     }
-    
+
     public static let logStreamer: LogStreamer = OccurrenceLogStreamer()
-    
+
     public static var logProvider: LogProvider = {
         do {
             #if canImport(CoreData)
@@ -41,40 +41,38 @@ public struct Occurrence: LogHandler {
             preconditionFailure(error.localizedDescription)
         }
     }()
-    
+
     public let label: String
     public var metadataProvider: Logger.MetadataProvider?
     public var metadata: Logger.Metadata = .init()
     public var logLevel: Logger.Level = .trace
-    
+
     public init(label: String, metadataProvider: Logger.MetadataProvider?) {
         self.label = label
         self.metadataProvider = metadataProvider
     }
-    
+
     public subscript(metadataKey key: String) -> Logger.Metadata.Value? {
         get {
-            return metadata[key]
+            metadata[key]
         }
         set(newValue) {
             metadata[key] = newValue
         }
     }
-    
+
     public func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, source: String, file: String, function: String, line: UInt) {
-        let joinedMetadata: Logger.Metadata?
-        
-        switch (metadata, metadataProvider?.get()) {
+        let joinedMetadata: Logger.Metadata? = switch (metadata, metadataProvider?.get()) {
         case (.some(let instance), .some(let context)):
-            joinedMetadata = instance.merging(context, uniquingKeysWith: { instanceValue, _ in instanceValue })
+            instance.merging(context, uniquingKeysWith: { instanceValue, _ in instanceValue })
         case (.some(let instance), .none):
-            joinedMetadata = instance
+            instance
         case (.none, .some(let context)):
-            joinedMetadata = context
+            context
         case (.none, .none):
-            joinedMetadata = nil
+            nil
         }
-        
+
         let entry = Logger.Entry(
             subsystem: Logger.Subsystem(stringLiteral: label),
             level: level,
@@ -85,15 +83,15 @@ public struct Occurrence: LogHandler {
             function: function,
             line: line
         )
-        
+
         if Self.configuration.outputToConsole {
             print(entry)
         }
-        
+
         if Self.configuration.outputToStream {
             Self.logStreamer.log(entry)
         }
-        
+
         if Self.configuration.outputToStorage {
             Self.logProvider.log(entry)
         }

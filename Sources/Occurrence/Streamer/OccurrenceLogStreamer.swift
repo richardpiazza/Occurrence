@@ -5,10 +5,10 @@ import Combine
 #endif
 
 class OccurrenceLogStreamer: LogStreamer {
-    
+
     private var asyncStream: AsyncStream<Logger.Entry>?
     private var continuation: AsyncStream<Logger.Entry>.Continuation?
-    
+
     var stream: AsyncStream<Logger.Entry> {
         continuation?.finish()
         let _stream: AsyncStream<Logger.Entry>
@@ -23,15 +23,15 @@ class OccurrenceLogStreamer: LogStreamer {
         }
         asyncStream = _stream
         #endif
-        
+
         return _stream
     }
-    
+
     #if canImport(Combine)
     private var streamSubject: PassthroughSubject<Logger.Entry, Never> = .init()
     var publisher: AnyPublisher<Logger.Entry, Never> { streamSubject.eraseToAnyPublisher() }
     #endif
-    
+
     func log(_ entry: Logger.Entry) {
         continuation?.yield(entry)
         #if canImport(Combine)

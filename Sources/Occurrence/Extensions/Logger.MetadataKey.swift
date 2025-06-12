@@ -18,21 +18,21 @@ public extension Logger {
         case file
         case function
         case line
-        
+
         public var stringValue: String {
             switch self {
-            case .domain: return "domain"
-            case .code: return "code"
-            case .userInfo: return "userInfo"
-            case .localizedDescription: return NSLocalizedDescriptionKey
-            case .localizedFailureReason: return NSLocalizedFailureReasonErrorKey
-            case .localizedRecoverySuggestion: return NSLocalizedRecoverySuggestionErrorKey
-            case .localizedHelpAnchor: return NSHelpAnchorErrorKey
-            case .localizedRecoveryOptions: return NSLocalizedRecoveryOptionsErrorKey
-            case .description: return "description"
-            case .file: return "file"
-            case .function: return "function"
-            case .line: return "line"
+            case .domain: "domain"
+            case .code: "code"
+            case .userInfo: "userInfo"
+            case .localizedDescription: NSLocalizedDescriptionKey
+            case .localizedFailureReason: NSLocalizedFailureReasonErrorKey
+            case .localizedRecoverySuggestion: NSLocalizedRecoverySuggestionErrorKey
+            case .localizedHelpAnchor: NSHelpAnchorErrorKey
+            case .localizedRecoveryOptions: NSLocalizedRecoveryOptionsErrorKey
+            case .description: "description"
+            case .file: "file"
+            case .function: "function"
+            case .line: "line"
             }
         }
     }

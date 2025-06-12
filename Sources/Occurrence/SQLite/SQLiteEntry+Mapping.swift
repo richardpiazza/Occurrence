@@ -1,8 +1,8 @@
 import Foundation
 import Logging
 
-fileprivate let encoder = JSONEncoder()
-fileprivate let decoder = JSONDecoder()
+private let encoder = JSONEncoder()
+private let decoder = JSONDecoder()
 
 extension SQLiteEntry {
     init(_ entry: Logger.Entry) {

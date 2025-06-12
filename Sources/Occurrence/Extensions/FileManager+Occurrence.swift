@@ -14,7 +14,7 @@ extension FileManager {
         }
         return directory
     }
-    
+
     func defaultDatabaseUrl() throws -> URL {
         let directory = try occurrenceDirectory()
         return directory.appendingPathComponent("LogProvider.sqlite")

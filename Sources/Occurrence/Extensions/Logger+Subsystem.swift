@@ -2,7 +2,7 @@ import Logging
 
 public extension Logger {
     typealias Factory = (String) -> LogHandler
-    
+
     /// An individual component of an entire application.
     ///
     /// Typically a `Subsystem` will be defined on a per-package basis, using a reverse-dns style unique key.
@@ -18,9 +18,9 @@ public extension Logger {
             self.rawValue = rawValue
         }
     }
-    
+
     init(_ subsystem: Subsystem, factory: Factory? = nil) {
-        if let factory = factory {
+        if let factory {
             self = Logger(label: String(describing: subsystem), factory: factory)
         } else {
             self = Logger(label: String(describing: subsystem))

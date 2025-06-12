@@ -5,11 +5,11 @@ import CoreData
 
 @objc(ManagedEntry)
 class ManagedEntry: NSManagedObject {
-    
+
     @nonobjc class func fetchRequest() -> NSFetchRequest<ManagedEntry> {
-        return NSFetchRequest<ManagedEntry>(entityName: "ManagedEntry")
+        NSFetchRequest<ManagedEntry>(entityName: "ManagedEntry")
     }
-    
+
     @NSManaged var date: Date
     @NSManaged var subsystem: String
     @NSManaged var level: String
@@ -24,7 +24,7 @@ class ManagedEntry: NSManagedObject {
 extension ManagedEntry {
     private static let encoder = JSONEncoder()
     private static let decoder = JSONDecoder()
-    
+
     @discardableResult
     convenience init(context: NSManagedObjectContext, entry: Logger.Entry) throws {
         self.init(context: context)
@@ -40,13 +40,13 @@ extension ManagedEntry {
         function = entry.function
         line = Int64(entry.line)
     }
-    
+
     var entry: Logger.Entry {
         var meta: Logger.Metadata?
-        if let metadata = self.metadata {
+        if let metadata {
             meta = try? Self.decoder.decode(Logger.Metadata.self, from: metadata)
         }
-        
+
         return Logger.Entry(
             date: date,
             subsystem: Logger.Subsystem(stringLiteral: subsystem),
