@@ -1,6 +1,6 @@
 import Logging
 
-public extension Dictionary<String, Any> {
+public extension [String: Any] {
     /// Redacts keys within the instance with a replacement value.
     ///
     /// The provided `keyPaths` should be in a dotted notation to recursively redact entries. For example:
@@ -28,7 +28,7 @@ public extension Dictionary<String, Any> {
     /// ```
     func redacting(keyPaths: [String] = [], replacement: String = "<REDACTED>") -> Self {
         var dictionary = self
-        
+
         for keyPath in keyPaths {
             let split = keyPath.split(separator: ".", maxSplits: 1)
             let key = String(split[0])
@@ -47,15 +47,15 @@ public extension Dictionary<String, Any> {
 
             dictionary[key] = value
         }
-        
+
         return dictionary
     }
 }
 
-internal extension Dictionary<String, Any> {
+extension [String: Any] {
     var metadata: Logger.Metadata {
         var meta: Logger.Metadata = [:]
-        
+
         for (key, value) in self {
             switch value {
             case let dictionary as [String: Any]:
@@ -75,7 +75,7 @@ internal extension Dictionary<String, Any> {
                 meta[key] = .string(String(describing: value))
             }
         }
-        
+
         return meta
     }
 }

@@ -1,24 +1,24 @@
 import Logging
 #if canImport(SwiftUI)
-import SwiftUI
 import Combine
+import SwiftUI
 
 public struct LogView: View {
-    
+
     enum ManageOption: String, CaseIterable {
         case removeOld = "Remove Old (> 3 Days)"
         case removeAll = "Remove All (Reset)"
     }
-    
+
     enum ExportOption: String, CaseIterable {
         case recent = "Recent (1 Hour)"
         case today = "Today (Since Midnight)"
         case extended = "Extended (3 Days)"
     }
-    
+
     public class ViewModel: ObservableObject {
         public typealias ExportAction = ([Logger.Entry]) -> Void
-        
+
         @Published var subsystems: [Logger.Subsystem?] = [nil]
         @Published var levels: [Logger.Level?] = [nil]
         @Published var selectedSubsystem: Logger.Subsystem? {
@@ -26,26 +26,29 @@ public struct LogView: View {
                 reload()
             }
         }
+
         @Published var selectedLevel: Logger.Level? {
             didSet {
                 reload()
             }
         }
+
         @Published var live: Bool = true {
             didSet {
                 reload()
             }
         }
+
         @Published var entries: [Logger.Entry] = []
         @Published var allowManagement: Bool = false
-        
+
         var subsystemDescription: String { selectedSubsystem?.description ?? "All" }
-        
+
         private let provider: LogProvider
         private let streamer: LogStreamer
         public var exportAction: ExportAction?
         private var liveSubscription: AnyCancellable?
-        
+
         private var filter: Logger.Filter {
             var filters: [Logger.Filter] = []
             if let subsystem = selectedSubsystem {
@@ -54,10 +57,10 @@ public struct LogView: View {
             if let level = selectedLevel {
                 filters.append(.level(level))
             }
-            
+
             return .and(filters)
         }
-        
+
         /// Initialize `LogView` settings
         ///
         /// - parameters:
@@ -79,43 +82,43 @@ public struct LogView: View {
             levels.append(contentsOf: Logger.Level.allCases)
             reload()
         }
-        
+
         @available(*, deprecated, renamed: "init(provider:streamer:allowManagement:exportAction:)")
         public init(provider: LogProvider = Occurrence.logProvider, streamer: LogStreamer = Occurrence.logStreamer, limitUI: Bool, exportAction: ExportAction? = nil) {
             self.provider = provider
             self.streamer = streamer
-            self.allowManagement = limitUI
+            allowManagement = limitUI
             self.exportAction = exportAction
             subsystems.append(contentsOf: provider.subsystems())
             levels.append(contentsOf: Logger.Level.allCases)
             reload()
         }
-        
+
         deinit {
             liveSubscription?.cancel()
             liveSubscription = nil
         }
-        
+
         func reload() {
             liveSubscription?.cancel()
             liveSubscription = nil
-            
-            let filter = self.filter
-            
+
+            let filter = filter
+
             entries = provider.entries(filter, limit: 50)
-            
+
             guard live else {
                 return
             }
-            
+
             liveSubscription = streamer.publisher
-                .filter({ $0.matchesFilter(filter) })
+                .filter { $0.matchesFilter(filter) }
                 .receive(on: DispatchQueue.main)
                 .sink(receiveValue: { [weak self] entry in
                     self?.entries.insert(entry, at: 0)
                 })
         }
-        
+
         func manage(_ option: ManageOption) {
             switch option {
             case .removeOld:
@@ -128,14 +131,14 @@ public struct LogView: View {
                 entries.removeAll()
             }
         }
-        
+
         func export(_ option: ExportOption) {
             guard let action = exportAction else {
                 return
             }
-            
+
             let filter: Logger.Filter
-            
+
             switch option {
             case .recent:
                 let hourAgo = Calendar.current.date(byAdding: .hour, value: -1, to: Date())!
@@ -147,34 +150,34 @@ public struct LogView: View {
                 let threeDays = Calendar.current.date(byAdding: .day, value: -3, to: Date())!
                 filter = .period(start: threeDays, end: Date())
             }
-            
+
             let entries = provider.entries(filter, ascending: true)
             action(entries)
         }
     }
-    
+
     @ObservedObject var viewModel: ViewModel
-    
+
     public init(viewModel: ViewModel = .init()) {
         self.viewModel = viewModel
     }
-    
+
     public var body: some View {
         VStack(spacing: 4.0) {
             #if os(iOS) || os(macOS)
             if viewModel.allowManagement {
                 entryManagementView
                     .padding()
-                
+
                 Divider()
-                
+
                 filterView
                     .padding()
-                
+
                 Divider()
             }
             #endif
-            
+
             ScrollView {
                 ForEach(viewModel.entries, id: \.date) { entry in
                     LogEntryView(entry: entry)
@@ -184,7 +187,7 @@ public struct LogView: View {
         }
         .navigationTitle("System Log")
     }
-    
+
     #if os(iOS) || os(macOS)
     private var entryManagementView: some View {
         HStack {
@@ -199,9 +202,9 @@ public struct LogView: View {
             } label: {
                 Text(Image(systemName: "trash")) + Text(" Manage")
             }
-            
+
             Spacer()
-            
+
             Menu {
                 ForEach(ExportOption.allCases, id: \.self) { option in
                     Button {
@@ -215,7 +218,7 @@ public struct LogView: View {
             }
         }
     }
-    
+
     private var filterView: some View {
         VStack {
             HStack {
@@ -233,15 +236,15 @@ public struct LogView: View {
                     .pickerStyle(MenuPickerStyle())
                     .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 }
-                
+
                 Spacer()
-                
+
                 Text("🚰")
-                
+
                 Toggle("", isOn: $viewModel.live)
                     .labelsHidden()
             }
-            
+
             HStack {
                 VStack(alignment: .leading) {
                     Text("Level")
@@ -260,24 +263,24 @@ public struct LogView: View {
         }
     }
     #endif
-    
+
     struct LogEntryView: View {
-        
+
         let entry: Logger.Entry
         @State private var backgroundColor: Color = .clear
-        
+
         private func color(forLevel level: Logger.Level) -> Color {
             switch level {
-            case .trace: return .white
-            case .debug: return .gray
-            case .info: return .blue
-            case .notice: return .yellow
-            case .warning: return .orange
-            case .error: return .pink
-            case .critical: return .red
+            case .trace: .white
+            case .debug: .gray
+            case .info: .blue
+            case .notice: .yellow
+            case .warning: .orange
+            case .error: .pink
+            case .critical: .red
             }
         }
-        
+
         var body: some View {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
@@ -287,13 +290,13 @@ public struct LogView: View {
                         Text(Logger.Entry.gmtDateFormatter.string(from: entry.date))
                             .font(.system(size: 10, weight: .regular, design: .monospaced))
                     }
-                    
+
                     Text(entry.subsystem.description)
                         .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 }
-                
+
                 Divider()
-                
+
                 VStack(alignment: .leading) {
                     Text("\(entry.fileName) \(entry.line)")
                         .lineLimit(1)
@@ -306,16 +309,16 @@ public struct LogView: View {
                         .minimumScaleFactor(0.5)
                         .font(.system(size: 10, weight: .thin, design: .monospaced))
                 }
-                
+
                 Divider()
-                
+
                 Text(entry.message.description)
                     .font(.system(size: 10, weight: .semibold, design: .monospaced))
             }
             .padding()
             .background(backgroundColor.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 16.0))
-            .onAppear() {
+            .onAppear {
                 withAnimation(.easeIn(duration: 0.75)) {
                     backgroundColor = color(forLevel: entry.level)
                 }
@@ -338,7 +341,7 @@ private extension Logger.Subsystem {
 }
 
 private struct PreviewLogProvider: LogProvider {
-    
+
     private let entries: [Logger.Entry] = [
         .init(
             date: Calendar.current.date(byAdding: .minute, value: -2, to: Date())!,
@@ -368,11 +371,11 @@ private struct PreviewLogProvider: LogProvider {
             level: .info,
             message: "Bundle",
             metadata: [
-              "bundleName": "MyApp",
-              "bundleIdentifier": "tld.domain.app",
-              "appVersion": "1.0.0",
-              "buildNumber": "100",
-              "operatingEnvironment": "Release (TestFlight)"
+                "bundleName": "MyApp",
+                "bundleIdentifier": "tld.domain.app",
+                "appVersion": "1.0.0",
+                "buildNumber": "100",
+                "operatingEnvironment": "Release (TestFlight)",
             ],
             source: "",
             file: "AppDelegate.swift",
@@ -389,26 +392,23 @@ private struct PreviewLogProvider: LogProvider {
             file: "NetworkManager.swift",
             function: "get(request:)",
             line: 402
-        )
+        ),
     ]
-    
-    func log(_ entry: Logger.Entry) {
-        
-    }
-    
+
+    func log(_ entry: Logger.Entry) {}
+
     func subsystems() -> [Logger.Subsystem] {
-        return [.sub1, .sub2]
+        [.sub1, .sub2]
     }
-    
+
     func entries(matching filter: Logger.Filter?, ascending: Bool, limit: UInt) -> [Logger.Entry] {
-        if let filter = filter {
-            return entries.filter({ $0.matchesFilter(filter) })
+        if let filter {
+            entries.filter { $0.matchesFilter(filter) }
         } else {
-            return entries
+            entries
         }
     }
-    
-    func purge(matching filter: Logger.Filter?) {
-    }
+
+    func purge(matching filter: Logger.Filter?) {}
 }
 #endif

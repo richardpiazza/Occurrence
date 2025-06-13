@@ -7,7 +7,7 @@ extension Logger.Message: Codable {
         let value = try container.decode(String.self)
         self = .init(stringLiteral: value)
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(description)

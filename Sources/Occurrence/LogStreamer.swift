@@ -10,12 +10,12 @@ public protocol LogStreamer {
     /// Due to limitations with the underlying `AsyncSequence` implementation, only a single receiver can await elements.
     /// Each access will _finish_ an existing stream and return a fresh stream.
     var stream: AsyncStream<Logger.Entry> { get }
-    
+
     #if canImport(Combine)
     /// Publisher which emits log entries.
     var publisher: AnyPublisher<Logger.Entry, Never> { get }
     #endif
-    
+
     /// Consume a log entry.
     func log(_ entry: Logger.Entry)
 }

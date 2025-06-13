@@ -1,4 +1,3 @@
 import Foundation
 
-extension CocoaError: LoggableError {
-}
+extension CocoaError: LoggableError {}

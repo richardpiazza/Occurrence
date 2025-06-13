@@ -1,11 +1,11 @@
 import Foundation
-import Statement
 import Logging
+import Statement
 
 struct SQLiteEntry: Entity, Identifiable {
-    
+
     static let identifier: String = "entry"
-    
+
     @Field("id", unique: true, primaryKey: true, autoIncrement: true)
     var id: Int = 0
     @Field("date")
@@ -26,16 +26,15 @@ struct SQLiteEntry: Entity, Identifiable {
     var function: String = ""
     @Field("line")
     var line: Int = 0
-    
+
     var level: Logger.Level {
         get { Logger.Level(rawValue: levelRawValue) ?? .debug }
         set { levelRawValue = newValue.rawValue }
     }
 }
 
-
 extension SQLiteEntry {
-    static var instance: SQLiteEntry = { SQLiteEntry() }()
+    static var instance: SQLiteEntry = SQLiteEntry()
     static var id: Attribute { instance["id"]! }
     static var date: Attribute { instance["date"]! }
     static var subsystem: Attribute { instance["subsystem"]! }

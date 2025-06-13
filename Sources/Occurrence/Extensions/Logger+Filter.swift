@@ -2,7 +2,7 @@ import Foundation
 import Logging
 
 public extension Logger {
-    enum Filter {
+    enum Filter: Hashable, Sendable {
         /// An exact match based on the provided `Logger.Subsystem`,
         case subsystem(Subsystem)
         /// An exact match based on the provided `Logger.Level`.

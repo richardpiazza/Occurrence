@@ -19,7 +19,7 @@ extension Logger.MetadataValue: Codable {
             self = .string(string)
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
@@ -47,74 +47,74 @@ public extension Logger.MetadataValue {
     var stringValue: String? {
         switch self {
         case .string(let value):
-            return value
+            value
         default:
-            return nil
+            nil
         }
     }
-    
+
     var boolValue: Bool? {
         stringConvertibleValue as? Bool
     }
-    
+
     var intValue: Int? {
         stringConvertibleValue as? Int
     }
-    
+
     var doubleValue: Double? {
         stringConvertibleValue as? Double
     }
-    
+
     #if compiler(>=5.7)
     var stringConvertibleValue: (CustomStringConvertible & Sendable)? {
         switch self {
         case .stringConvertible(let value):
-            return value
+            value
         default:
-            return nil
+            nil
         }
     }
     #else
     var stringConvertibleValue: CustomStringConvertible? {
         switch self {
         case .stringConvertible(let value):
-            return value
+            value
         default:
-            return nil
+            nil
         }
     }
     #endif
-    
+
     var dictionaryValue: Logger.Metadata? {
         switch self {
         case .dictionary(let value):
-            return value
+            value
         default:
-            return nil
+            nil
         }
     }
-    
+
     var arrayValue: [Logger.Metadata.Value]? {
         switch self {
         case .array(let value):
-            return value
+            value
         default:
-            return nil
+            nil
         }
     }
 }
 
-internal extension Logger.MetadataValue {
+extension Logger.MetadataValue {
     var dictionaryRepresentableValue: Any {
         switch self {
         case .string(let string):
-            return string
+            string
         case .stringConvertible(let customStringConvertible):
-            return customStringConvertible
+            customStringConvertible
         case .dictionary(let metadata):
-            return metadata.mapValues { $0.dictionaryRepresentableValue }
+            metadata.mapValues { $0.dictionaryRepresentableValue }
         case .array(let array):
-            return array.map { $0.dictionaryRepresentableValue }
+            array.map(\.dictionaryRepresentableValue)
         }
     }
 }

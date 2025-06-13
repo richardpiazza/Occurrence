@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/Statement.git",
       "state" : {
-        "revision" : "1123b422e028cec9da56b9e7c83b8f1b63d2b7e2",
-        "version" : "0.7.2"
+        "revision" : "fc77679f1d34c75cf996bd09169efbc31ca93d7a",
+        "version" : "0.8.1"
       }
     },
     {

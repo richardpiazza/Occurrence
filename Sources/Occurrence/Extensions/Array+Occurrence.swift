@@ -1,10 +1,10 @@
 import Foundation
 import Logging
 
-internal extension Array<Any> {
+extension [Any] {
     var metadataValues: [Logger.MetadataValue] {
         var values: [Logger.MetadataValue] = []
-        
+
         for element in self {
             switch element {
             case let string as String:
@@ -24,7 +24,7 @@ internal extension Array<Any> {
                 values.append(.string(String(describing: element)))
             }
         }
-        
+
         return values
     }
 }

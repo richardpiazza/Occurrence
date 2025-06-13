@@ -3,5 +3,4 @@ import Foundation
 import FoundationNetworking
 #endif
 
-extension URLError: LoggableError {
-}
+extension URLError: LoggableError {}
