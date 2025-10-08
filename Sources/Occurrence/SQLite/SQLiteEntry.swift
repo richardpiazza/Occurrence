@@ -34,15 +34,15 @@ struct SQLiteEntry: Entity, Identifiable {
 }
 
 extension SQLiteEntry {
-    static var instance: SQLiteEntry = SQLiteEntry()
-    static var id: Attribute { instance["id"]! }
-    static var date: Attribute { instance["date"]! }
-    static var subsystem: Attribute { instance["subsystem"]! }
-    static var levelRawValue: Attribute { instance["level_raw_value"]! }
-    static var message: Attribute { instance["message"]! }
-    static var metadata: Attribute { instance["metadata"]! }
-    static var source: Attribute { instance["source"]! }
-    static var file: Attribute { instance["file"]! }
-    static var function: Attribute { instance["function"]! }
-    static var line: Attribute { instance["line"]! }
+    static let instance: SQLiteEntry = SQLiteEntry()
+    static var id: any Attribute { instance["id"]! }
+    static var date: any Attribute { instance["date"]! }
+    static var subsystem: any Attribute { instance["subsystem"]! }
+    static var levelRawValue: any Attribute { instance["level_raw_value"]! }
+    static var message: any Attribute { instance["message"]! }
+    static var metadata: any Attribute { instance["metadata"]! }
+    static var source: any Attribute { instance["source"]! }
+    static var file: any Attribute { instance["file"]! }
+    static var function: any Attribute { instance["function"]! }
+    static var line: any Attribute { instance["line"]! }
 }

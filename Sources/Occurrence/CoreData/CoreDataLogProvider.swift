@@ -1,7 +1,7 @@
 import Foundation
 import Logging
 #if canImport(CoreData)
-import CoreData
+@preconcurrency import CoreData
 
 class CoreDataLogProvider: LogProvider {
 
@@ -23,7 +23,7 @@ class CoreDataLogProvider: LogProvider {
         description.type = NSSQLiteStoreType
         description.url = storeUrl
 
-        var loadError: Error?
+        var loadError: (any Error)?
 
         let container = NSPersistentContainer(name: "Occurrence", managedObjectModel: LogModel.default.managedObjectModel)
         container.persistentStoreDescriptions = [description]
@@ -86,14 +86,13 @@ class CoreDataLogProvider: LogProvider {
     }
 
     public func subsystems() -> [Logger.Subsystem] {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: ManagedEntry.fetchRequest().entityName ?? "ManagedEntry")
+        let request = NSFetchRequest<any NSFetchRequestResult>(entityName: ManagedEntry.fetchRequest().entityName ?? "ManagedEntry")
         request.resultType = .dictionaryResultType
         request.propertiesToFetch = [#keyPath(ManagedEntry.subsystem)]
         request.returnsDistinctResults = true
 
-        var subsystems: Set<Logger.Subsystem> = [.occurrence]
-
-        context.performAndWait {
+        let subsystems = context.performAndWait {
+            var subsystems: Set<Logger.Subsystem> = [.occurrence]
             do {
                 let results = try context.fetch(request) as? [[String: String]]
                 results?
@@ -105,6 +104,7 @@ class CoreDataLogProvider: LogProvider {
             } catch {
                 print(error)
             }
+            return subsystems
         }
 
         return Array(subsystems)
@@ -120,15 +120,15 @@ class CoreDataLogProvider: LogProvider {
             request.fetchLimit = Int(limit)
         }
 
-        var results: [Logger.Entry] = []
-
-        context.performAndWait {
+        let results = context.performAndWait {
+            var results: [Logger.Entry] = []
             do {
                 let entries = try context.fetch(request)
                 results = entries.map(\.entry)
             } catch {
                 print(error)
             }
+            return results
         }
 
         return results

@@ -44,8 +44,8 @@ public struct LogView: View {
 
         var subsystemDescription: String { selectedSubsystem?.description ?? "All" }
 
-        private let provider: LogProvider
-        private let streamer: LogStreamer
+        private let provider: any LogProvider
+        private let streamer: any LogStreamer
         public var exportAction: ExportAction?
         private var liveSubscription: AnyCancellable?
 
@@ -69,25 +69,14 @@ public struct LogView: View {
         ///   - allowManagement: Whether management and filtering tools are available
         ///   - exportAction:
         public init(
-            provider: LogProvider = Occurrence.logProvider,
-            streamer: LogStreamer = Occurrence.logStreamer,
+            provider: any LogProvider = Occurrence.logProvider,
+            streamer: any LogStreamer = Occurrence.logStreamer,
             allowManagement: Bool = true,
             exportAction: ExportAction? = nil
         ) {
             self.provider = provider
             self.streamer = streamer
             self.allowManagement = allowManagement
-            self.exportAction = exportAction
-            subsystems.append(contentsOf: provider.subsystems())
-            levels.append(contentsOf: Logger.Level.allCases)
-            reload()
-        }
-
-        @available(*, deprecated, renamed: "init(provider:streamer:allowManagement:exportAction:)")
-        public init(provider: LogProvider = Occurrence.logProvider, streamer: LogStreamer = Occurrence.logStreamer, limitUI: Bool, exportAction: ExportAction? = nil) {
-            self.provider = provider
-            self.streamer = streamer
-            allowManagement = limitUI
             self.exportAction = exportAction
             subsystems.append(contentsOf: provider.subsystems())
             levels.append(contentsOf: Logger.Level.allCases)
@@ -336,8 +325,8 @@ public struct SwiftUIView_Previews: PreviewProvider {
 }
 
 private extension Logger.Subsystem {
-    static var sub1: Logger.Subsystem = "package.diagnostics"
-    static var sub2: Logger.Subsystem = "app.iOS"
+    static let sub1: Logger.Subsystem = "package.diagnostics"
+    static let sub2: Logger.Subsystem = "app.iOS"
 }
 
 private struct PreviewLogProvider: LogProvider {

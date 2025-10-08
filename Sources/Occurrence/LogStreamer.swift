@@ -13,6 +13,7 @@ public protocol LogStreamer {
 
     #if canImport(Combine)
     /// Publisher which emits log entries.
+    @available(*, deprecated, message: "Use `AsyncStream` variant.")
     var publisher: AnyPublisher<Logger.Entry, Never> { get }
     #endif
 
