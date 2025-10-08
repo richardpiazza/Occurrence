@@ -9,13 +9,8 @@ extension [Any] {
             switch element {
             case let string as String:
                 values.append(.string(string))
-            #if compiler(>=5.7)
             case let stringConvertible as (any CustomStringConvertible & Sendable):
                 values.append(.stringConvertible(stringConvertible))
-            #else
-            case let stringConvertible as CustomStringConvertible:
-                values.append(.stringConvertible(stringConvertible))
-            #endif
             case let dictionary as [String: Any]:
                 values.append(.dictionary(dictionary.metadata))
             case let array as [Any]:

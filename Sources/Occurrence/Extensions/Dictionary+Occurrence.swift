@@ -64,13 +64,8 @@ extension [String: Any] {
                 meta[key] = .array(array.metadataValues)
             case let string as String:
                 meta[key] = .string(string)
-            #if compiler(>=5.7)
             case let stringConvertible as (any CustomStringConvertible & Sendable):
                 meta[key] = .stringConvertible(stringConvertible)
-            #else
-            case let stringConvertible as CustomStringConvertible:
-                meta[key] = .stringConvertible(stringConvertible)
-            #endif
             default:
                 meta[key] = .string(String(describing: value))
             }

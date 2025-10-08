@@ -65,7 +65,6 @@ public extension Logger.MetadataValue {
         stringConvertibleValue as? Double
     }
 
-    #if compiler(>=5.7)
     var stringConvertibleValue: (any CustomStringConvertible & Sendable)? {
         switch self {
         case .stringConvertible(let value):
@@ -74,16 +73,6 @@ public extension Logger.MetadataValue {
             nil
         }
     }
-    #else
-    var stringConvertibleValue: CustomStringConvertible? {
-        switch self {
-        case .stringConvertible(let value):
-            value
-        default:
-            nil
-        }
-    }
-    #endif
 
     var dictionaryValue: Logger.Metadata? {
         switch self {
