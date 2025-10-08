@@ -65,7 +65,7 @@ extension [String: Any] {
             case let string as String:
                 meta[key] = .string(string)
             #if compiler(>=5.7)
-            case let stringConvertible as (CustomStringConvertible & Sendable):
+            case let stringConvertible as (any CustomStringConvertible & Sendable):
                 meta[key] = .stringConvertible(stringConvertible)
             #else
             case let stringConvertible as CustomStringConvertible:

@@ -1,8 +1,8 @@
 import Foundation
 import Logging
 
-extension Logger.MetadataValue: Codable {
-    public init(from decoder: Decoder) throws {
+extension Logger.MetadataValue: @retroactive Codable {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let dictionary = try? container.decode(Logger.Metadata.self) {
             self = .dictionary(dictionary)
@@ -20,7 +20,7 @@ extension Logger.MetadataValue: Codable {
         }
     }
 
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
         case .string(let string):
@@ -66,7 +66,7 @@ public extension Logger.MetadataValue {
     }
 
     #if compiler(>=5.7)
-    var stringConvertibleValue: (CustomStringConvertible & Sendable)? {
+    var stringConvertibleValue: (any CustomStringConvertible & Sendable)? {
         switch self {
         case .stringConvertible(let value):
             value

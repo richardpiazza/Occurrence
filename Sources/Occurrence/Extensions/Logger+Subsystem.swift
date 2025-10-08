@@ -1,7 +1,7 @@
 import Logging
 
 public extension Logger {
-    typealias Factory = (String) -> LogHandler
+    typealias Factory = (String) -> any LogHandler
 
     /// An individual component of an entire application.
     ///
@@ -29,12 +29,12 @@ public extension Logger {
 }
 
 extension Logger.Subsystem: Codable {
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         rawValue = try container.decode(String.self)
     }
 
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(rawValue)
     }

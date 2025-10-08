@@ -41,7 +41,7 @@ public extension LoggableError {
     func metadata(redactingUserInfo keyPaths: [String] = [], replacement: String = "<REDACTED>") -> Logger.Metadata {
         var meta: Logger.Metadata = [:]
 
-        if let customNSError = self as? CustomNSError {
+        if let customNSError = self as? any CustomNSError {
             meta[.domain] = .string(type(of: customNSError).errorDomain)
             meta[.code] = .stringConvertible(customNSError.errorCode)
             meta[.userInfo] = .dictionary(customNSError.errorUserInfo.redacting(keyPaths: keyPaths, replacement: replacement).metadata)
@@ -52,7 +52,7 @@ public extension LoggableError {
             meta[.userInfo] = .dictionary(nsError.userInfo.redacting(keyPaths: keyPaths, replacement: replacement).metadata)
         }
 
-        if let localizedError = self as? LocalizedError {
+        if let localizedError = self as? any LocalizedError {
             if let errorDescription = localizedError.errorDescription {
                 meta[.localizedDescription] = .string(errorDescription)
             } else {
@@ -70,7 +70,7 @@ public extension LoggableError {
             }
         }
 
-        if let recoverableError = self as? RecoverableError {
+        if let recoverableError = self as? any RecoverableError {
             let options = recoverableError.recoveryOptions.map { Logger.MetadataValue.string($0) }
             meta[.localizedRecoveryOptions] = .array(options)
         }
