@@ -1,6 +1,7 @@
 import Foundation
 import Logging
 
+#if hasFeature(RetroactiveAttribute)
 extension Logger.MetadataValue: @retroactive Codable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -42,6 +43,49 @@ extension Logger.MetadataValue: @retroactive Codable {
         }
     }
 }
+#else
+extension Logger.MetadataValue: Codable {
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let dictionary = try? container.decode(Logger.Metadata.self) {
+            self = .dictionary(dictionary)
+        } else if let array = try? container.decode([Logger.MetadataValue].self) {
+            self = .array(array)
+        } else if let bool = try? container.decode(Bool.self) {
+            self = .stringConvertible(bool)
+        } else if let int = try? container.decode(Int.self) {
+            self = .stringConvertible(int)
+        } else if let double = try? container.decode(Double.self) {
+            self = .stringConvertible(double)
+        } else {
+            let string = try container.decode(String.self)
+            self = .string(string)
+        }
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .string(let string):
+            try container.encode(string)
+        case .stringConvertible(let stringConvertible):
+            if let bool = stringConvertible as? Bool {
+                try container.encode(bool)
+            } else if let int = stringConvertible as? Int {
+                try container.encode(int)
+            } else if let double = stringConvertible as? Double {
+                try container.encode(double)
+            } else {
+                try container.encode(stringConvertible.description)
+            }
+        case .dictionary(let dictionary):
+            try container.encode(dictionary)
+        case .array(let array):
+            try container.encode(array)
+        }
+    }
+}
+#endif
 
 public extension Logger.MetadataValue {
     var stringValue: String? {
