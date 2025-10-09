@@ -22,8 +22,16 @@ public extension Logger.Level {
     }
 }
 
+#if hasFeature(RetroactiveAttribute)
 extension Logger.Level: @retroactive CustomStringConvertible {
     public var description: String {
         "\(gem) \(fixedWidthDescription.uppercased())"
     }
 }
+#else
+extension Logger.Level: CustomStringConvertible {
+    public var description: String {
+        "\(gem) \(fixedWidthDescription.uppercased())"
+    }
+}
+#endif
