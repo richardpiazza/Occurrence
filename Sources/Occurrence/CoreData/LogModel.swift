@@ -1,11 +1,12 @@
 import Foundation
+import Mutex
 #if canImport(CoreData)
 import CoreData
 
 enum LogModel {
     case version_1_0_0
 
-    static var `default`: LogModel = .version_1_0_0
+    static var `default`: LogModel { .version_1_0_0 }
 
     var managedObjectModel: NSManagedObjectModel {
         switch self {
@@ -15,9 +16,12 @@ enum LogModel {
 }
 
 class Version_1_0_0: NSManagedObjectModel, NSSecureCoding {
+    private static let protectedState = Mutex(Version_1_0_0())
     /// Provide a singular instance of the model to be referenced. There is a known issue where when referencing
     /// a model in an app target, as well as unit tests, a model - and therefore its entities - can be loaded twice.
-    static let instance: Version_1_0_0 = Version_1_0_0()
+    static var instance: Version_1_0_0 {
+        protectedState.withLock { $0 }
+    }
 
     static var supportsSecureCoding: Bool { true }
 

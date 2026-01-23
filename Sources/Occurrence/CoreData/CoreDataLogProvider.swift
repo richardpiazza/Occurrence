@@ -1,18 +1,14 @@
 import Foundation
 import Logging
+import Mutex
 #if canImport(CoreData)
 @preconcurrency import CoreData
 
-class CoreDataLogProvider: LogProvider {
+final class CoreDataLogProvider: LogProvider {
 
     let storeUrl: URL
-    private var persistentContainer: NSPersistentContainer
-
-    private lazy var context: NSManagedObjectContext = {
-        let context = persistentContainer.newBackgroundContext()
-        context.automaticallyMergesChangesFromParent = true
-        return context
-    }()
+    private let persistentContainer: Mutex<NSPersistentContainer>
+    private let context: Mutex<NSManagedObjectContext>
 
     init(url: URL? = nil) throws {
         storeUrl = try url ?? FileManager.default.defaultDatabaseUrl()
@@ -38,11 +34,16 @@ class CoreDataLogProvider: LogProvider {
         }
 
         container.viewContext.automaticallyMergesChangesFromParent = true
-        persistentContainer = container
+        persistentContainer = Mutex(container)
+
+        let backgroundContext = container.newBackgroundContext()
+        backgroundContext.automaticallyMergesChangesFromParent = true
+        context = Mutex(backgroundContext)
     }
 
     deinit {
-        let context = persistentContainer.viewContext
+        let container = persistentContainer.withLock { $0 }
+        let context = container.viewContext
         context.performAndWait {
             if context.hasChanges {
                 do {
@@ -53,7 +54,7 @@ class CoreDataLogProvider: LogProvider {
             }
         }
 
-        let coordinator = persistentContainer.persistentStoreCoordinator
+        let coordinator = container.persistentStoreCoordinator
         let stores = coordinator.persistentStores
         do {
             for store in stores {
@@ -75,10 +76,11 @@ class CoreDataLogProvider: LogProvider {
     }
 
     public func log(_ entry: Logger.Entry) {
-        context.performAndWait {
+        let backgroundContext = context.withLock { $0 }
+        backgroundContext.performAndWait {
             do {
-                try ManagedEntry(context: context, entry: entry)
-                try context.save()
+                try ManagedEntry(context: backgroundContext, entry: entry)
+                try backgroundContext.save()
             } catch {
                 print(error)
             }
@@ -91,10 +93,12 @@ class CoreDataLogProvider: LogProvider {
         request.propertiesToFetch = [#keyPath(ManagedEntry.subsystem)]
         request.returnsDistinctResults = true
 
-        let subsystems = context.performAndWait {
+        let backgroundContext = context.withLock { $0 }
+
+        let subsystems = backgroundContext.performAndWait {
             var subsystems: Set<Logger.Subsystem> = [.occurrence]
             do {
-                let results = try context.fetch(request) as? [[String: String]]
+                let results = try backgroundContext.fetch(request) as? [[String: String]]
                 results?
                     .compactMap { $0[#keyPath(ManagedEntry.subsystem)] }
                     .map { Logger.Subsystem($0) }
@@ -120,10 +124,12 @@ class CoreDataLogProvider: LogProvider {
             request.fetchLimit = Int(limit)
         }
 
-        let results = context.performAndWait {
+        let backgroundContext = context.withLock { $0 }
+
+        let results = backgroundContext.performAndWait {
             var results: [Logger.Entry] = []
             do {
-                let entries = try context.fetch(request)
+                let entries = try backgroundContext.fetch(request)
                 results = entries.map(\.entry)
             } catch {
                 print(error)
@@ -138,14 +144,16 @@ class CoreDataLogProvider: LogProvider {
         let request = ManagedEntry.fetchRequest()
         request.predicate = filter?.predicate
 
-        context.performAndWait {
+        let backgroundContext = context.withLock { $0 }
+
+        backgroundContext.performAndWait {
             do {
-                let entities = try context.fetch(request)
+                let entities = try backgroundContext.fetch(request)
                 for entity in entities {
-                    context.delete(entity)
+                    backgroundContext.delete(entity)
                 }
-                if context.hasChanges {
-                    try context.save()
+                if backgroundContext.hasChanges {
+                    try backgroundContext.save()
                 }
             } catch {
                 print(error)

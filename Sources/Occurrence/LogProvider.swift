@@ -2,7 +2,7 @@ import Foundation
 import Logging
 
 /// A source of logging data.
-public protocol LogProvider {
+public protocol LogProvider: Sendable {
     /// Consume a log entry.
     func log(_ entry: Logger.Entry)
 

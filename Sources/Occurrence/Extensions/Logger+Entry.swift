@@ -74,7 +74,7 @@ extension Logger.Entry: CustomStringConvertible {
     public var description: String {
         let _date = Self.gmtDateFormatter.string(from: date)
         let sourceFile = [source, fileName].filter { !$0.isEmpty }.joined(separator: " ")
-        let output = "[\(_date) \(level) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
+        let output = "[\(_date) \(level.fancyDescription) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
         if let metadata {
             let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
             let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")

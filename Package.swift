@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -22,9 +22,10 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-log.git", .upToNextMajor(from: "1.6.4")),
-        .package(url: "https://github.com/richardpiazza/Statement.git", .upToNextMajor(from: "0.8.1")),
-        .package(url: "https://github.com/stephencelis/SQLite.swift.git", .upToNextMajor(from: "0.15.3")),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.9.1"),
+        .package(url: "https://github.com/richardpiazza/Statement.git", from: "0.8.1"),
+        .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.5"),
+        .package(url: "https://github.com/swhitty/swift-mutex.git", from: "0.0.6"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -36,11 +37,8 @@ let package = Package(
                 .product(name: "Statement", package: "Statement"),
                 .product(name: "StatementSQLite", package: "Statement"),
                 .product(name: "SQLite", package: "SQLite.swift"),
+                .product(name: "Mutex", package: "swift-mutex"),
             ],
-            swiftSettings: [
-                .enableExperimentalFeature("ExistentialAny"),
-                .enableExperimentalFeature("StrictConcurrency=complete"),
-            ]
         ),
         .testTarget(
             name: "OccurrenceTests",
@@ -51,3 +49,13 @@ let package = Package(
         ),
     ]
 )
+
+for target in package.targets {
+    var settings = target.swiftSettings ?? []
+    settings.append(contentsOf: [
+        .enableUpcomingFeature("ExistentialAny"),
+        .enableUpcomingFeature("MemberImportVisibility"),
+        .enableUpcomingFeature("StrictConcurrency=complete"),
+    ])
+    target.swiftSettings = settings
+}
