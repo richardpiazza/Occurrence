@@ -30,7 +30,7 @@ public struct Occurrence: LogHandler {
     /// - parameters:
     ///   - metadataProvider: The `MetadataProvider` used to inject runtime-generated metadata from the execution context.
     public static func bootstrap(metadataProvider: Logger.MetadataProvider? = nil) {
-        let bootstrapped = self.bootstrapped.withLock { $0 }
+        let bootstrapped = bootstrapped.withLock { $0 }
         guard !bootstrapped else {
             return
         }

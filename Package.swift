@@ -38,7 +38,7 @@ let package = Package(
                 .product(name: "StatementSQLite", package: "Statement"),
                 .product(name: "SQLite", package: "SQLite.swift"),
                 .product(name: "Mutex", package: "swift-mutex"),
-            ],
+            ]
         ),
         .testTarget(
             name: "OccurrenceTests",

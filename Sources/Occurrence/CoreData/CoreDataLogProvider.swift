@@ -75,7 +75,7 @@ final class CoreDataLogProvider: LogProvider {
         }
     }
 
-    public func log(_ entry: Logger.Entry) {
+    func log(_ entry: Logger.Entry) {
         let backgroundContext = context.withLock { $0 }
         backgroundContext.performAndWait {
             do {
@@ -87,7 +87,7 @@ final class CoreDataLogProvider: LogProvider {
         }
     }
 
-    public func subsystems() -> [Logger.Subsystem] {
+    func subsystems() -> [Logger.Subsystem] {
         let request = NSFetchRequest<any NSFetchRequestResult>(entityName: ManagedEntry.fetchRequest().entityName ?? "ManagedEntry")
         request.resultType = .dictionaryResultType
         request.propertiesToFetch = [#keyPath(ManagedEntry.subsystem)]
@@ -114,7 +114,7 @@ final class CoreDataLogProvider: LogProvider {
         return Array(subsystems)
     }
 
-    public func entries(matching filter: Logger.Filter?, ascending: Bool, limit: UInt) -> [Logger.Entry] {
+    func entries(matching filter: Logger.Filter?, ascending: Bool, limit: UInt) -> [Logger.Entry] {
         let request = ManagedEntry.fetchRequest()
         request.predicate = filter?.predicate
         request.sortDescriptors = [
@@ -140,7 +140,7 @@ final class CoreDataLogProvider: LogProvider {
         return results
     }
 
-    public func purge(matching filter: Logger.Filter?) {
+    func purge(matching filter: Logger.Filter?) {
         let request = ManagedEntry.fetchRequest()
         request.predicate = filter?.predicate
 

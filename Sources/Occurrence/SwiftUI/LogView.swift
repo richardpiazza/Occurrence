@@ -2,6 +2,13 @@
 import Logging
 import SwiftUI
 
+/// View which presents and manages log entries.
+///
+/// A `LogView` utilizes the SwiftUI `EnvironmentValues`:
+/// ```swift
+/// @Environment(\.logStreamer)
+/// @Environment(\.logProvider)
+/// ```
 public struct LogView: View {
 
     enum ManageOption: String, CaseIterable {
@@ -52,6 +59,11 @@ public struct LogView: View {
         live ? "Pause" : "Resume"
     }
 
+    /// Initialize a `LogView`
+    ///
+    /// - parameters:
+    ///   - allowManagement: Indicates if management features are available.
+    ///   - exportAction: Handler to be called when log entries are exported.
     public init(
         allowManagement: Bool = true,
         exportAction: (([Logger.Entry]) -> Void)? = nil
@@ -186,8 +198,8 @@ public struct LogView: View {
     LogView()
         .environment(\.logProvider, PreviewLogProvider())
         .environment(\.logStreamer, OccurrenceLogStreamer())
-        #if os(macOS)
+    #if os(macOS)
         .frame(width: 500)
-        #endif
+    #endif
 }
 #endif
