@@ -24,7 +24,7 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.9.1"),
         .package(url: "https://github.com/richardpiazza/Statement.git", from: "0.8.1"),
-        .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.5"),
+        .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.5", traits: ["SwiftToolchainCSQLite"]),
         .package(url: "https://github.com/swhitty/swift-mutex.git", from: "0.0.6"),
     ],
     targets: [
