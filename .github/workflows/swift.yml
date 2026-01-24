@@ -12,13 +12,13 @@ jobs:
   Swift-Package:
     strategy:
       matrix:
-        os: [macos-15, ubuntu-latest]
+        os: [macos-26, ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Resolve Packages
       run: swift package resolve
