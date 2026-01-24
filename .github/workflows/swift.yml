@@ -11,6 +11,7 @@ jobs:
 
   Swift-Package:
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-26, ubuntu-latest]
 
