@@ -1,5 +1,5 @@
 {
-  "originHash" : "37742298698ace01d578968330807398c911f8d1d42b7c66557d6404f08bf44a",
+  "originHash" : "6e9390f337badf4961b9c74e4e6c2b29929f17ef7553c9620990ad7b1df322b9",
   "pins" : [
     {
       "identity" : "sqlite.swift",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "1770152df756b54c28ef1787df1e957d93cc62d5",
         "version" : "0.0.6"
+      }
+    },
+    {
+      "identity" : "swift-toolchain-sqlite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-toolchain-sqlite.git",
+      "state" : {
+        "revision" : "b45b80b943e88db3cb8ddea798fa3fa9912375ff",
+        "version" : "1.0.7"
       }
     }
   ],
