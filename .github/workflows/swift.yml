@@ -17,6 +17,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+    - name: Setup Toolchain
+      if: ${{ runner.os == 'Linux' }}
+      shell: bash
+      run: sudo apt-get install sqlite3 libsqlite3-dev
+
     - name: Checkout
       uses: actions/checkout@v6
 
