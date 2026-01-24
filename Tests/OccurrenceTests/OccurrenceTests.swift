@@ -1,44 +1,44 @@
 import Logging
 @testable import Occurrence
-import XCTest
+import Testing
 
-class OccurrenceTests: XCTestCase {
+@Suite(.serialized)
+final class OccurrenceTests {
 
-    @LazyLogger(.occurrence) var log: Logger
-
-    let metadataProvider = Logger.MetadataProvider {
+    static let metadataProvider = Logger.MetadataProvider {
         ["context": "XCTestCase"]
     }
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        Occurrence.bootstrap(metadataProvider: metadataProvider)
+    let logger: Logger
+
+    init() {
+        Occurrence.bootstrap(metadataProvider: Self.metadataProvider)
+        logger = Logger(.occurrence)
     }
 
-    override class func tearDown() {
+    deinit {
         Occurrence.logProvider.purge()
-        super.tearDown()
     }
 
-    func testMessage() {
-        log.trace("A 'TRACE' Message")
-        log.debug("A 'DEBUG' Message")
-        log.info("A 'INFO' Message")
-        log.notice("A 'NOTICE' Message")
-        log.warning("A 'WARNING' Message")
-        log.error("A 'ERROR' Message")
-        log.critical("A 'CRITICAL' Message")
+    @Test func levels() {
+        logger.trace("A 'TRACE' Message")
+        logger.debug("A 'DEBUG' Message")
+        logger.info("A 'INFO' Message")
+        logger.notice("A 'NOTICE' Message")
+        logger.warning("A 'WARNING' Message")
+        logger.error("A 'ERROR' Message")
+        logger.critical("A 'CRITICAL' Message")
     }
 
-    func testConvenienceDictionary() throws {
+    @Test func dictionaryConvenience() throws {
         let dictionary: [String: Any] = [
             "label": "count",
             "value": 42,
         ]
 
-        log.log(level: .info, "Dictionary", dictionary: dictionary, redacting: ["value"])
+        logger.log(level: .info, "Dictionary", dictionary: dictionary, redacting: ["value"])
 
-        let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
+        let entry = try #require(Occurrence.logProvider.entries().last)
         var description = entry.description
 
         // Remove the timestamp
@@ -47,21 +47,21 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceDictionary() 39] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | dictionaryConvenience() 39] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
         """
 
-        XCTAssertEqual(description, output)
+        #expect(description == output)
     }
 
-    func testConvenienceEncodable() throws {
+    @Test func encodableConvenience() throws {
         struct Metadata: Encodable {
             let id: Int
             let name: String
         }
 
-        log.log(level: .info, "Encodable", encodable: Metadata(id: 123, name: "Bob"), redacting: ["name"])
+        logger.log(level: .info, "Encodable", encodable: Metadata(id: 123, name: "Bob"), redacting: ["name"])
 
-        let entry = try XCTUnwrap(Occurrence.logProvider.entries().first)
+        let entry = try #require(Occurrence.logProvider.entries().last)
         var description = entry.description
 
         // Remove the timestamp
@@ -70,9 +70,9 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceEncodable() 62] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | encodableConvenience() 62] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
         """
 
-        XCTAssertEqual(description, output)
+        #expect(description == output)
     }
 }
