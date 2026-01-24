@@ -5,6 +5,7 @@ import XCTest
 final class LogStreamerTests: XCTestCase {
 
     func testStream() async throws {
+        XCTSkip("Does not work in parallel execution.")
         let streamer = OccurrenceLogStreamer()
 
         let task = Task {
