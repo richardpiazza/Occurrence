@@ -1,36 +1,37 @@
+import Foundation
 import Logging
 @testable import Occurrence
-import XCTest
+import Testing
 
-final class LoggerMetadataTests: XCTestCase {
+struct LoggerMetadataTests {
 
     /// Verify that an `NSError` can be reconstructed from `Logger.Metadata`
     /// when certain conditions are met.
-    func testNSErrorRepresentation() throws {
+    @Test func nsErrorRepresentation() throws {
         var metadata: Logger.Metadata = [:]
 
-        XCTAssertNil(metadata.nsError)
+        #expect(metadata.nsError == nil)
         metadata[.domain] = .string("SomeErrorDomain")
-        XCTAssertNil(metadata.nsError)
+        #expect(metadata.nsError == nil)
         metadata[.code] = .stringConvertible(123)
 
-        var nsError = try XCTUnwrap(metadata.nsError)
+        var nsError = try #require(metadata.nsError)
 
-        XCTAssertEqual(nsError.domain, "SomeErrorDomain")
-        XCTAssertEqual(nsError.code, 123)
-        XCTAssertTrue(nsError.userInfo.isEmpty)
+        #expect(nsError.domain == "SomeErrorDomain")
+        #expect(nsError.code == 123)
+        #expect(nsError.userInfo.isEmpty)
 
         metadata[.userInfo] = .dictionary([
             "context": .string("Unit Tests"),
             "pass": .stringConvertible(true),
         ])
 
-        nsError = try XCTUnwrap(metadata.nsError)
+        nsError = try #require(metadata.nsError)
 
-        XCTAssertEqual(nsError.userInfo.count, 2)
-        let context = try XCTUnwrap(nsError.userInfo["context"] as? String)
-        XCTAssertEqual(context, "Unit Tests")
-        let pass = try XCTUnwrap(nsError.userInfo["pass"] as? Bool)
-        XCTAssertTrue(pass)
+        #expect(nsError.userInfo.count == 2)
+        let context = try #require(nsError.userInfo["context"] as? String)
+        #expect(context == "Unit Tests")
+        let pass = try #require(nsError.userInfo["pass"] as? Bool)
+        #expect(pass)
     }
 }

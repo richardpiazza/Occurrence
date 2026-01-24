@@ -22,6 +22,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-testing.git", from: "6.2.0"),
         .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite.git", from: "1.0.7"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.9.1"),
         .package(url: "https://github.com/richardpiazza/Statement.git", from: "0.8.1"),
@@ -44,6 +45,7 @@ let package = Package(
         .testTarget(
             name: "OccurrenceTests",
             dependencies: [
+                .product(name: "Testing", package: "swift-testing"),
                 .product(name: "Logging", package: "swift-log"),
                 "Occurrence",
             ],
