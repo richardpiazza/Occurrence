@@ -73,7 +73,15 @@ public struct Occurrence: LogHandler {
         }
     }
 
-    public func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, source: String, file: String, function: String, line: UInt) {
+    public func log(
+        level: Logger.Level,
+        message: Logger.Message,
+        metadata: Logger.Metadata?,
+        source: String,
+        file: String,
+        function: String,
+        line: UInt,
+    ) {
         let joinedMetadata: Logger.Metadata? = switch (metadata, metadataProvider?.get()) {
         case (.some(let instance), .some(let context)):
             instance.merging(context, uniquingKeysWith: { instanceValue, _ in instanceValue })
@@ -93,7 +101,7 @@ public struct Occurrence: LogHandler {
             source: source,
             file: file,
             function: function,
-            line: line
+            line: line,
         )
 
         if Self.configuration.outputToConsole {

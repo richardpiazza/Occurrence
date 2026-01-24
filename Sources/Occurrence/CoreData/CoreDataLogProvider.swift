@@ -67,7 +67,7 @@ final class CoreDataLogProvider: LogProvider {
                 ofType: NSSQLiteStoreType,
                 configurationName: coordinator.name,
                 at: storeUrl,
-                options: options
+                options: options,
             )
             try coordinator.remove(store)
         } catch {

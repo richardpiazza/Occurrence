@@ -30,7 +30,7 @@ public extension Logger {
             source: String,
             file: String = #fileID,
             function: String = #function,
-            line: UInt = #line
+            line: UInt = #line,
         ) {
             self.date = date
             self.subsystem = subsystem

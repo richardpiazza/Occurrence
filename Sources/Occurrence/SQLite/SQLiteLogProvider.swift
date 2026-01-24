@@ -34,7 +34,7 @@ final class SQLiteLogProvider: LogProvider {
                          .column(SQLiteEntry.source),
                          .column(SQLiteEntry.file),
                          .column(SQLiteEntry.function),
-                         .column(SQLiteEntry.line)
+                         .column(SQLiteEntry.line),
             ),
             .VALUES(
                 .value(sqlEntry.date),
@@ -45,8 +45,8 @@ final class SQLiteLogProvider: LogProvider {
                 .value(sqlEntry.source),
                 .value(sqlEntry.file),
                 .value(sqlEntry.function),
-                .value(sqlEntry.line)
-            )
+                .value(sqlEntry.line),
+            ),
         ).render()
 
         do {
@@ -61,9 +61,9 @@ final class SQLiteLogProvider: LogProvider {
 
         let statement = SQLiteStatement(
             .SELECT_DISTINCT(
-                .column(SQLiteEntry.subsystem)
+                .column(SQLiteEntry.subsystem),
             ),
-            .FROM_TABLE(SQLiteEntry.self)
+            .FROM_TABLE(SQLiteEntry.self),
         )
 
         let sql = statement.render()
@@ -97,14 +97,14 @@ final class SQLiteLogProvider: LogProvider {
                     .column(SQLiteEntry.source),
                     .column(SQLiteEntry.file),
                     .column(SQLiteEntry.function),
-                    .column(SQLiteEntry.line)
+                    .column(SQLiteEntry.line),
                 ),
                 .FROM_TABLE(SQLiteEntry.self),
                 .WHERE(loggerFilter.whereClause),
                 .ORDER_BY(
-                    .column(SQLiteEntry.date, op: ascending ? .asc : .desc)
+                    .column(SQLiteEntry.date, op: ascending ? .asc : .desc),
                 ),
-                .LIMIT(Int(x))
+                .LIMIT(Int(x)),
             )
         case (.some(let loggerFilter), let x) where x == 0:
             SQLiteStatement(
@@ -118,13 +118,13 @@ final class SQLiteLogProvider: LogProvider {
                     .column(SQLiteEntry.source),
                     .column(SQLiteEntry.file),
                     .column(SQLiteEntry.function),
-                    .column(SQLiteEntry.line)
+                    .column(SQLiteEntry.line),
                 ),
                 .FROM_TABLE(SQLiteEntry.self),
                 .WHERE(loggerFilter.whereClause),
                 .ORDER_BY(
-                    .column(SQLiteEntry.date, op: ascending ? .asc : .desc)
-                )
+                    .column(SQLiteEntry.date, op: ascending ? .asc : .desc),
+                ),
             )
         case (.none, let x) where x > 0:
             SQLiteStatement(
@@ -138,13 +138,13 @@ final class SQLiteLogProvider: LogProvider {
                     .column(SQLiteEntry.source),
                     .column(SQLiteEntry.file),
                     .column(SQLiteEntry.function),
-                    .column(SQLiteEntry.line)
+                    .column(SQLiteEntry.line),
                 ),
                 .FROM_TABLE(SQLiteEntry.self),
                 .ORDER_BY(
-                    .column(SQLiteEntry.date, op: ascending ? .asc : .desc)
+                    .column(SQLiteEntry.date, op: ascending ? .asc : .desc),
                 ),
-                .LIMIT(Int(x))
+                .LIMIT(Int(x)),
             )
         default:
             SQLiteStatement(
@@ -158,12 +158,12 @@ final class SQLiteLogProvider: LogProvider {
                     .column(SQLiteEntry.source),
                     .column(SQLiteEntry.file),
                     .column(SQLiteEntry.function),
-                    .column(SQLiteEntry.line)
+                    .column(SQLiteEntry.line),
                 ),
                 .FROM_TABLE(SQLiteEntry.self),
                 .ORDER_BY(
-                    .column(SQLiteEntry.date, op: ascending ? .asc : .desc)
-                )
+                    .column(SQLiteEntry.date, op: ascending ? .asc : .desc),
+                ),
             )
         }
 
@@ -190,7 +190,7 @@ final class SQLiteLogProvider: LogProvider {
                     source: row[6] as! String,
                     file: row[7] as! String,
                     function: row[8] as! String,
-                    line: Int(row[9] as! Int64)
+                    line: Int(row[9] as! Int64),
                 )
 
                 entries.append(Logger.Entry(entry))
@@ -207,12 +207,12 @@ final class SQLiteLogProvider: LogProvider {
             SQLiteStatement(
                 .DELETE_FROM(SQLiteEntry.self),
                 .WHERE(
-                    filter.whereClause
-                )
+                    filter.whereClause,
+                ),
             )
         } else {
             SQLiteStatement(
-                .DELETE_FROM(SQLiteEntry.self)
+                .DELETE_FROM(SQLiteEntry.self),
             )
         }
 
@@ -235,8 +235,8 @@ extension Connection {
 
         let sql = SQLiteStatement(
             .CREATE(
-                .SCHEMA(SQLiteEntry.instance, ifNotExists: true)
-            )
+                .SCHEMA(SQLiteEntry.instance, ifNotExists: true),
+            ),
         ).render()
 
         do {
