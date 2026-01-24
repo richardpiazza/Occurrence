@@ -1,15 +1,26 @@
+import Foundation
 import Logging
+import Mutex
 
 public struct Occurrence: LogHandler {
 
-    public struct Configuration {
+    public struct Configuration: Equatable, Sendable {
         public var outputToConsole: Bool = true
         public var outputToStream: Bool = true
         public var outputToStorage: Bool = true
     }
 
-    public static var configuration: Configuration = .init()
-    private static var bootstrapped: Bool = false
+    private static let configurationState: Mutex<Configuration> = Mutex(Configuration())
+    private static let bootstrapped: Mutex<Bool> = Mutex(false)
+
+    public static var configuration: Configuration {
+        get {
+            configurationState.withLock { $0 }
+        }
+        set {
+            configurationState.withLock { $0 = newValue }
+        }
+    }
 
     /// Bootstraps **Occurrence** in to `Logging.LoggingSystem`.
     ///
@@ -19,17 +30,18 @@ public struct Occurrence: LogHandler {
     /// - parameters:
     ///   - metadataProvider: The `MetadataProvider` used to inject runtime-generated metadata from the execution context.
     public static func bootstrap(metadataProvider: Logger.MetadataProvider? = nil) {
+        let bootstrapped = bootstrapped.withLock { $0 }
         guard !bootstrapped else {
             return
         }
 
         LoggingSystem.bootstrap(Occurrence.init, metadataProvider: metadataProvider)
-        bootstrapped = true
+        self.bootstrapped.withLock { $0 = true }
     }
 
-    public static let logStreamer: LogStreamer = OccurrenceLogStreamer()
+    public static let logStreamer: any LogStreamer = OccurrenceLogStreamer()
 
-    public static var logProvider: LogProvider = {
+    public static let logProvider: any LogProvider = {
         do {
             #if canImport(CoreData)
             if #available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *) {

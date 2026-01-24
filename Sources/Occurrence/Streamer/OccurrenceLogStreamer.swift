@@ -1,29 +1,33 @@
 import Foundation
 import Logging
-#if canImport(Combine)
-import Combine
-#endif
+import Mutex
 
-class OccurrenceLogStreamer: LogStreamer {
+final class OccurrenceLogStreamer: LogStreamer {
 
-    private var continuation: AsyncStream<Logger.Entry>.Continuation?
+    private let subscribers: Mutex<[UUID: AsyncStream<Logger.Entry>.Continuation]> = Mutex([:])
 
     var stream: AsyncStream<Logger.Entry> {
-        continuation?.finish()
+        let id = UUID()
         let sequence = AsyncStream<Logger.Entry>.makeStream()
-        continuation = sequence.continuation
+        sequence.continuation.onTermination = { _ in
+            self.unsubscribe(id)
+        }
+        subscribers.withLock {
+            $0[id] = sequence.continuation
+        }
         return sequence.stream
     }
 
-    #if canImport(Combine)
-    private var streamSubject: PassthroughSubject<Logger.Entry, Never> = .init()
-    var publisher: AnyPublisher<Logger.Entry, Never> { streamSubject.eraseToAnyPublisher() }
-    #endif
-
     func log(_ entry: Logger.Entry) {
-        continuation?.yield(entry)
-        #if canImport(Combine)
-        streamSubject.send(entry)
-        #endif
+        let subscriptions = subscribers.withLock { $0 }
+        for continuation in subscriptions.values {
+            continuation.yield(entry)
+        }
+    }
+
+    private func unsubscribe(_ id: UUID) {
+        subscribers.withLock {
+            $0[id] = nil
+        }
     }
 }

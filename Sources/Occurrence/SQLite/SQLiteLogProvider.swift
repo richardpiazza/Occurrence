@@ -1,12 +1,12 @@
 import Foundation
 import Logging
-import SQLite
+@preconcurrency import SQLite
 import Statement
 import StatementSQLite
 
-class SQLiteLogProvider: LogProvider {
+final class SQLiteLogProvider: LogProvider {
 
-    public static func defaultURL() throws -> URL {
+    static func defaultURL() throws -> URL {
         let directory = try FileManager.default.occurrenceDirectory()
         let url = directory.appendingPathComponent("LogProvider.sqlite")
         return url
@@ -21,7 +21,7 @@ class SQLiteLogProvider: LogProvider {
         try db.prepare()
     }
 
-    public func log(_ entry: Logger.Entry) {
+    func log(_ entry: Logger.Entry) {
         let sqlEntry = SQLiteEntry(entry)
 
         let statement = SQLiteStatement(
@@ -56,7 +56,7 @@ class SQLiteLogProvider: LogProvider {
         }
     }
 
-    public func subsystems() -> [Logger.Subsystem] {
+    func subsystems() -> [Logger.Subsystem] {
         var subsystems: Set<Logger.Subsystem> = [.occurrence]
 
         let statement = SQLiteStatement(
@@ -81,7 +81,7 @@ class SQLiteLogProvider: LogProvider {
         return subsystems.sorted()
     }
 
-    public func entries(matching filter: Logger.Filter?, ascending: Bool, limit: UInt) -> [Logger.Entry] {
+    func entries(matching filter: Logger.Filter?, ascending: Bool, limit: UInt) -> [Logger.Entry] {
         var entries: [Logger.Entry] = []
 
         let statement: SQLiteStatement = switch (filter, limit) {
@@ -202,7 +202,7 @@ class SQLiteLogProvider: LogProvider {
         return entries
     }
 
-    public func purge(matching filter: Logger.Filter?) {
+    func purge(matching filter: Logger.Filter?) {
         let statement: SQLiteStatement = if let filter {
             SQLiteStatement(
                 .DELETE_FROM(SQLiteEntry.self),

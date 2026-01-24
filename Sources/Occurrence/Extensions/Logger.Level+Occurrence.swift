@@ -20,18 +20,8 @@ public extension Logger.Level {
         let max = Logger.Level.allCases.map(\.rawValue.count).max() ?? rawValue.count
         return rawValue.padding(toLength: max, withPad: " ", startingAt: 0)
     }
-}
 
-#if hasFeature(RetroactiveAttribute)
-extension Logger.Level: @retroactive CustomStringConvertible {
-    public var description: String {
+    var fancyDescription: String {
         "\(gem) \(fixedWidthDescription.uppercased())"
     }
 }
-#else
-extension Logger.Level: CustomStringConvertible {
-    public var description: String {
-        "\(gem) \(fixedWidthDescription.uppercased())"
-    }
-}
-#endif
