@@ -7,7 +7,7 @@ import CoreData
 final class CoreDataLogProviderTests: LogProviderTestCase {
 
     var coreDataLogProvider: CoreDataLogProvider!
-    override var logProvider: LogProvider! {
+    override var logProvider: (any LogProvider)! {
         get { coreDataLogProvider }
         set {}
     }

@@ -5,7 +5,7 @@ import XCTest
 final class SQLiteLogProviderTests: LogProviderTestCase {
 
     var sqliteLogProvider: SQLiteLogProvider!
-    override var logProvider: LogProvider! {
+    override var logProvider: (any LogProvider)! {
         get { sqliteLogProvider }
         set {}
     }

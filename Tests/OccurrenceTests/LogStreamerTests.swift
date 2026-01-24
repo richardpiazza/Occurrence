@@ -4,24 +4,25 @@ import XCTest
 
 final class LogStreamerTests: XCTestCase {
 
-    let streamer: LogStreamer = OccurrenceLogStreamer()
+    func testStream() async throws {
+        let streamer = OccurrenceLogStreamer()
 
-    func testStream() async {
-        let stream = streamer.stream
-
-        Task {
-            try await Task.sleep(nanoseconds: 500_000)
-            streamer.log(.init(subsystem: .occurrence, level: .trace, message: "a", source: "here"))
-            streamer.log(.init(subsystem: .occurrence, level: .debug, message: "b", source: "here"))
-            streamer.log(.init(subsystem: .occurrence, level: .info, message: "c", source: "here"))
-            _ = streamer.stream // Force existing stream to finish
+        let task = Task {
+            var entries: [Logger.Entry] = []
+            for await entry in streamer.stream {
+                entries.append(entry)
+            }
+            return entries
         }
 
-        var entries: [Logger.Entry] = []
-        for await entry in stream {
-            entries.append(entry)
-        }
+        streamer.log(.init(subsystem: .occurrence, level: .trace, message: "a", source: "here"))
+        streamer.log(.init(subsystem: .occurrence, level: .debug, message: "b", source: "here"))
+        streamer.log(.init(subsystem: .occurrence, level: .info, message: "c", source: "here"))
 
-        XCTAssertEqual(entries.count, 3)
+        try await Task.sleep(for: .milliseconds(250))
+        task.cancel()
+        let value = await task.value
+
+        XCTAssertEqual(value.count, 3)
     }
 }

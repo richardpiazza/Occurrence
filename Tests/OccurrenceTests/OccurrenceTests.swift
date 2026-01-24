@@ -47,7 +47,7 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceDictionary() 39] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceDictionary() 39] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
         """
 
         XCTAssertEqual(description, output)
@@ -70,7 +70,7 @@ class OccurrenceTests: XCTestCase {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests.swift | testConvenienceEncodable() 62] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | testConvenienceEncodable() 62] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
         """
 
         XCTAssertEqual(description, output)
