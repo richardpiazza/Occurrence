@@ -22,7 +22,7 @@ public extension Logger {
         source: @autoclosure () -> String? = nil,
         file: String = #file,
         function: String = #function,
-        line: UInt = #line
+        line: UInt = #line,
     ) -> T {
         log(
             level: level,
@@ -31,7 +31,7 @@ public extension Logger {
             source: source(),
             file: file,
             function: function,
-            line: line
+            line: line,
         )
 
         return error
@@ -56,7 +56,7 @@ public extension Logger {
         source: @autoclosure () -> String? = nil,
         file: String = #file,
         function: String = #function,
-        line: UInt = #line
+        line: UInt = #line,
     ) {
         log(
             level: level,
@@ -65,7 +65,7 @@ public extension Logger {
             source: source(),
             file: file,
             function: function,
-            line: line
+            line: line,
         )
     }
 
@@ -88,7 +88,7 @@ public extension Logger {
         source: @autoclosure () -> String? = nil,
         file: String = #file,
         function: String = #function,
-        line: UInt = #line
+        line: UInt = #line,
     ) {
         guard let jsonObject = try? JSONSerialization.jsonObject(with: data) else {
             log(level: level, message(), source: source(), file: file, function: function, line: line)
@@ -127,7 +127,7 @@ public extension Logger {
         source: @autoclosure () -> String? = nil,
         file: String = #file,
         function: String = #function,
-        line: UInt = #line
+        line: UInt = #line,
     ) {
         guard let data = try? JSONEncoder().encode(encodable) else {
             log(level: level, message(), source: source(), file: file, function: function, line: line)

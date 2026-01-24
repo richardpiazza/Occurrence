@@ -42,7 +42,7 @@ extension Logger.Entry {
         source: "",
         file: "PermissionManager.swift",
         function: "requestPermissions()",
-        line: 169
+        line: 169,
     )
 
     static let two = Logger.Entry(
@@ -54,7 +54,7 @@ extension Logger.Entry {
         source: "",
         file: "AuthenticationManager.swift",
         function: "checkAuthenticationState()",
-        line: 65
+        line: 65,
     )
 
     static let three = Logger.Entry(
@@ -72,7 +72,7 @@ extension Logger.Entry {
         source: "",
         file: "AppDelegate.swift",
         function: "application(_:didFinishLaunchingWithOptions:)",
-        line: 24
+        line: 24,
     )
 
     static let four = Logger.Entry(
@@ -84,6 +84,6 @@ extension Logger.Entry {
         source: "",
         file: "NetworkManager.swift",
         function: "get(request:)",
-        line: 402
+        line: 402,
     )
 }

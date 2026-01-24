@@ -66,7 +66,7 @@ public struct LogView: View {
     ///   - exportAction: Handler to be called when log entries are exported.
     public init(
         allowManagement: Bool = true,
-        exportAction: (([Logger.Entry]) -> Void)? = nil
+        exportAction: (([Logger.Entry]) -> Void)? = nil,
     ) {
         _allowManagement = State(wrappedValue: allowManagement)
         self.exportAction = exportAction

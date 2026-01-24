@@ -38,7 +38,7 @@ extension Logger.Filter {
             [
                 .AND(
                     .column(SQLiteEntry.date, op: .greaterThanEqualTo, value: start),
-                    .column(SQLiteEntry.date, op: .lessThanEqualTo, value: end)
+                    .column(SQLiteEntry.date, op: .lessThanEqualTo, value: end),
                 ),
             ]
         case .and(let filters):
@@ -74,7 +74,7 @@ extension Logger.Filter {
             [
                 .AND(
                     .column(SQLiteEntry.date, op: .lessThan, value: start),
-                    .column(SQLiteEntry.date, op: .greaterThan, value: end)
+                    .column(SQLiteEntry.date, op: .greaterThan, value: end),
                 ),
             ]
         case .and(let filters):

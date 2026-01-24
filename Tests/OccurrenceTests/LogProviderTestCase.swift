@@ -38,7 +38,7 @@ class LogProviderTestCase: XCTestCase {
             day: 1,
             hour: 15,
             minute: 30,
-            second: 0
+            second: 0,
         )
 
         january1st_1530 = try XCTUnwrap(gregorian.date(from: components))

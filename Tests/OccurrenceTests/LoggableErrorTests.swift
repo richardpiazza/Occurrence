@@ -86,7 +86,7 @@ final class LoggableErrorTests: XCTestCase {
 
         let context = EncodingError.Context(
             codingPath: [Logger.MetadataKey.description, Logger.MetadataKey.file],
-            debugDescription: "Bad data."
+            debugDescription: "Bad data.",
         )
         let error = EncodingError.invalidValue(FileRef(), context)
         let metadata = error.metadata
@@ -112,7 +112,7 @@ final class LoggableErrorTests: XCTestCase {
     func testDecodingErrorConformance() throws {
         let context = DecodingError.Context(
             codingPath: [Logger.MetadataKey.code],
-            debugDescription: "Unexpected type."
+            debugDescription: "Unexpected type.",
         )
         let error = DecodingError.typeMismatch(Int.self, context)
         let metadata = error.metadata

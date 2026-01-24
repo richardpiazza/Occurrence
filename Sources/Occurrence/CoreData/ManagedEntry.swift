@@ -56,7 +56,7 @@ extension ManagedEntry {
             source: source,
             file: file,
             function: function,
-            line: UInt(line)
+            line: UInt(line),
         )
     }
 }
