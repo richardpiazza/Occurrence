@@ -1,10 +1,6 @@
 import Foundation
 import Logging
-#if canImport(Synchronization)
-import Synchronization
-#else
 import Mutex
-#endif
 
 final class OccurrenceLogStreamer: LogStreamer {
 
