@@ -9,7 +9,7 @@ import SwiftUI
 /// @Environment(\.logStreamer)
 /// @Environment(\.logProvider)
 /// ```
-@available(macOS 14.0, macCatalyst 17.0, iOS 17.0, tvOS 17.0, watchOS 10.0, visionOS 1.0, *)
+@available(macOS 13.0, macCatalyst 16.0, iOS 16.0, tvOS 17.0, watchOS 9.0, visionOS 1.0, *)
 public struct LogView: View {
 
     enum ManageOption: String, CaseIterable {
@@ -197,7 +197,7 @@ public struct LogView: View {
     }
 }
 
-@available(macOS 14.0, macCatalyst 17.0, iOS 17.0, tvOS 17.0, watchOS 10.0, visionOS 1.0, *)
+@available(macOS 13.0, macCatalyst 16.0, iOS 16.0, tvOS 17.0, watchOS 9.0, visionOS 1.0, *)
 #Preview {
     LogView()
         .environment(\.logProvider, PreviewLogProvider())
