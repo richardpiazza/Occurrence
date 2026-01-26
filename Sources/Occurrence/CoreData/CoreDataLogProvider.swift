@@ -1,8 +1,8 @@
 import Foundation
 import Logging
+import Mutex
 #if canImport(CoreData)
 @preconcurrency import CoreData
-import Synchronization
 
 final class CoreDataLogProvider: LogProvider {
 
