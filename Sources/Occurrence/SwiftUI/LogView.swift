@@ -84,6 +84,7 @@ public struct LogView: View {
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
                     if allowManagement {
+                        #if !os(watchOS)
                         Menu {
                             Text("Subsystem")
 
@@ -131,6 +132,7 @@ public struct LogView: View {
                         } label: {
                             Label("Trash", systemImage: "trash")
                         }
+                        #endif
                     }
 
                     Toggle(isOn: $live) {

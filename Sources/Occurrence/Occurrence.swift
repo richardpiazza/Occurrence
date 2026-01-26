@@ -1,6 +1,10 @@
 import Foundation
 import Logging
+#if canImport(Synchronization)
+import Synchronization
+#else
 import Mutex
+#endif
 
 public struct Occurrence: LogHandler {
 
