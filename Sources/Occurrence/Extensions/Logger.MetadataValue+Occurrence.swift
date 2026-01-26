@@ -34,7 +34,7 @@ extension Logger.MetadataValue: @retroactive Codable {
             } else if let double = stringConvertible as? Double {
                 try container.encode(double)
             } else {
-                try container.encode(stringConvertible.description)
+                try container.encode(String(describing: stringConvertible))
             }
         case .dictionary(let dictionary):
             try container.encode(dictionary)
@@ -76,7 +76,7 @@ extension Logger.MetadataValue: Codable {
             } else if let double = stringConvertible as? Double {
                 try container.encode(double)
             } else {
-                try container.encode(stringConvertible.description)
+                try container.encode(String(describing: stringConvertible))
             }
         case .dictionary(let dictionary):
             try container.encode(dictionary)

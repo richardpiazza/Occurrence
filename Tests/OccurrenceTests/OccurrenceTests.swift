@@ -39,7 +39,7 @@ final class OccurrenceTests {
         logger.log(level: .info, "Dictionary", dictionary: dictionary, redacting: ["value"])
 
         let entry = try #require(Occurrence.logProvider.entries().last)
-        var description = entry.description
+        var description = String(describing: entry)
 
         // Remove the timestamp
         let first = description.index(description.startIndex, offsetBy: 1)
@@ -62,7 +62,7 @@ final class OccurrenceTests {
         logger.log(level: .info, "Encodable", encodable: Metadata(id: 123, name: "Bob"), redacting: ["name"])
 
         let entry = try #require(Occurrence.logProvider.entries().last)
-        var description = entry.description
+        var description = String(describing: entry)
 
         // Remove the timestamp
         let first = description.index(description.startIndex, offsetBy: 1)
