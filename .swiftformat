@@ -13,3 +13,4 @@
 --disable redundantType
 --disable unusedArguments
 --disable wrapArguments
+--disable wrapPropertyBodies

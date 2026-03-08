@@ -88,7 +88,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func subsystems(logProvider: any LogProvider) throws {
+    func subsystems(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", metadata: nil, source: ""))
         logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", metadata: nil, source: ""))
 
@@ -105,7 +105,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func subsystemFilter(logProvider: any LogProvider) throws {
+    func subsystemFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", metadata: nil, source: ""))
         logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", metadata: nil, source: ""))
         logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", metadata: nil, source: ""))
@@ -120,7 +120,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func levelFilter(logProvider: any LogProvider) throws {
+    func levelFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "one", metadata: nil, source: ""))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "two", metadata: nil, source: ""))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .info, message: "three", metadata: nil, source: ""))
@@ -175,7 +175,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func messageFilter(logProvider: any LogProvider) throws {
+    func messageFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "for", metadata: nil, source: ""))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "forward", metadata: nil, source: ""))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "warden", metadata: nil, source: ""))
@@ -194,7 +194,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func sourceFilter(logProvider: any LogProvider) throws {
+    func sourceFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "one", source: "Class1"))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "two", source: "Class2"))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "three", source: "Class3"))
@@ -216,7 +216,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func fileFilter(logProvider: any LogProvider) throws {
+    func fileFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "one", source: "", file: "File1.swift"))
         logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "two", source: "", file: "File2.swift"))
         logProvider.log(Logger.Entry(subsystem: subsystem2, level: .warning, message: "three", source: "", file: "File3.swift"))
@@ -238,7 +238,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func functionFilter(logProvider: any LogProvider) throws {
+    func functionFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "one", source: "", function: "doWork()"))
         logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "two", source: "", function: "presentData()"))
         logProvider.log(Logger.Entry(subsystem: subsystem2, level: .debug, message: "three", source: "", function: "asyncTask(_:)"))
@@ -260,7 +260,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func periodFilter(logProvider: any LogProvider) throws {
+    func periodFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
         logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .debug, message: "two", source: ""))
         logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
@@ -280,7 +280,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func andFilter(logProvider: any LogProvider) throws {
+    func andFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
         logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
         logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
@@ -310,7 +310,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func orFilter(logProvider: any LogProvider) throws {
+    func orFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
         logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
         logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
@@ -330,7 +330,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func notFilter(logProvider: any LogProvider) throws {
+    func notFilter(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(date: january1st_1530, subsystem: subsystem1, level: .debug, message: "one", source: ""))
         logProvider.log(Logger.Entry(date: january1st_1630, subsystem: subsystem2, level: .info, message: "two", source: ""))
         logProvider.log(Logger.Entry(date: january2nd_0808, subsystem: subsystem1, level: .debug, message: "three", source: ""))
@@ -349,7 +349,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func ascendingLimit(logProvider: any LogProvider) throws {
+    func ascendingLimit(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "one", source: ""))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "two", source: ""))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .info, message: "three", source: ""))
@@ -374,7 +374,7 @@ final class LogProviderTests {
     }
 
     @Test(arguments: try Self.logProviders)
-    func descendingLimit(logProvider: any LogProvider) throws {
+    func descendingLimit(logProvider: any LogProvider) {
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .trace, message: "one", source: ""))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .debug, message: "two", source: ""))
         logProvider.log(Logger.Entry(subsystem: subsystem1, level: .info, message: "three", source: ""))

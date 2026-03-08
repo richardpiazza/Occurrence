@@ -126,7 +126,7 @@ final class CoreDataLogProvider: LogProvider {
 
         let backgroundContext = context.withLock { $0 }
 
-        let results = backgroundContext.performAndWait {
+        return backgroundContext.performAndWait {
             var results: [Logger.Entry] = []
             do {
                 let entries = try backgroundContext.fetch(request)
@@ -136,8 +136,6 @@ final class CoreDataLogProvider: LogProvider {
             }
             return results
         }
-
-        return results
     }
 
     func purge(matching filter: Logger.Filter?) {
