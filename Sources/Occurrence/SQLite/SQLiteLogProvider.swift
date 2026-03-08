@@ -8,8 +8,7 @@ final class SQLiteLogProvider: LogProvider {
 
     static func defaultURL() throws -> URL {
         let directory = try FileManager.default.occurrenceDirectory()
-        let url = directory.appendingPathComponent("LogProvider.sqlite")
-        return url
+        return directory.appendingPathComponent("LogProvider.sqlite")
     }
 
     private let db: Connection

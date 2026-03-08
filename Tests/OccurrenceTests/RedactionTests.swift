@@ -10,7 +10,7 @@ struct RedactionTests {
         "c": ["d": "three"],
     ]
 
-    @Test func redactingKeyPaths() throws {
+    @Test func redactingKeyPaths() {
         let redactedDictionary = dictionary.redacting(keyPaths: ["a", "c.d"])
         #expect(redactedDictionary.keys.sorted() == ["a", "b", "c"])
         #expect(redactedDictionary["a"] as? String == "<REDACTED>")
