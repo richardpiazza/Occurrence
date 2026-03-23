@@ -1,15 +1,6 @@
 {
-  "originHash" : "9a66d8177cdf50320a17af7fe570627117405522c142c042e5f8e891166615d0",
+  "originHash" : "48c9daa9bc6b9b0058632d48d5d17f18202b68c77a6fdce81dd258d2321ca03c",
   "pins" : [
-    {
-      "identity" : "csqlite",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stephencelis/CSQLite",
-      "state" : {
-        "revision" : "bdb5580e54cdf49251b365ea34e2651199473240",
-        "version" : "3.50.4"
-      }
-    },
     {
       "identity" : "sqlite.swift",
       "kind" : "remoteSourceControl",
