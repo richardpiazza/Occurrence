@@ -18,3 +18,19 @@ public extension Logger.Metadata {
         return NSError(domain: domain, code: code, userInfo: userInfo)
     }
 }
+
+extension Logger.Metadata {
+    private static let encoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return encoder
+    }()
+
+    var prettyDescription: String {
+        guard let data = try? Self.encoder.encode(self) else {
+            return ""
+        }
+
+        return String(decoding: data, as: UTF8.self)
+    }
+}

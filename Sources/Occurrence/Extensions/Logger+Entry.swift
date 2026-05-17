@@ -67,21 +67,46 @@ public extension Logger {
                 !filters.map { matchesFilter($0) }.contains(true)
             }
         }
+
+        var descriptionPrefix: String {
+            let _date = Self.gmtDateFormatter.string(from: date)
+            let sourceFile = [source, fileName]
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
+
+            return "[\(_date) \(level.fancyDescription) | \(subsystem) | \(sourceFile) | \(function) \(line)]"
+        }
+    }
+}
+
+extension Logger.Entry: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        let output = "\(descriptionPrefix) \(message)"
+
+        guard let metadata, !metadata.isEmpty else {
+            return output
+        }
+
+        return "\(output)\n\(metadata.prettyDescription)"
     }
 }
 
 extension Logger.Entry: CustomStringConvertible {
     public var description: String {
-        let _date = Self.gmtDateFormatter.string(from: date)
-        let sourceFile = [source, fileName].filter { !$0.isEmpty }.joined(separator: " ")
-        let output = "[\(_date) \(level.fancyDescription) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
-        if let metadata {
-            let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
-            let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
-            return "\(output) { \(values) }"
-        } else {
+        let output = "\(descriptionPrefix) \(message)"
+
+        guard let metadata, !metadata.isEmpty else {
             return output
         }
+
+        let sortedMetadata = metadata
+            .sorted(by: { $0.key < $1.key })
+
+        let values = sortedMetadata
+            .map { "\($0.key): \($0.value)" }
+            .joined(separator: ", ")
+
+        return "\(output) { \(values) }"
     }
 }
 
