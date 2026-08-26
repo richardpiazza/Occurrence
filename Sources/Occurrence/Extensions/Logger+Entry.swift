@@ -8,12 +8,15 @@ import Logging
 public extension Logger {
     struct Entry: Codable, Sendable {
 
+        #if canImport(ObjectiveC)
+        @available(*, deprecated)
         public static let gmtDateFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             formatter.timeZone = TimeZone(secondsFromGMT: 0)
             return formatter
         }()
+        #endif
 
         public let date: Date
         public let subsystem: Subsystem

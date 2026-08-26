@@ -59,10 +59,7 @@ public extension LoggableError {
         if let localizedError = self as? any LocalizedError {
             if let errorDescription = localizedError.errorDescription {
                 meta[.localizedDescription] = .string(errorDescription)
-            } else {
-                meta[.localizedDescription] = .string(localizedError.localizedDescription)
             }
-
             if let failureReason = localizedError.failureReason {
                 meta[.localizedFailureReason] = .string(failureReason)
             }

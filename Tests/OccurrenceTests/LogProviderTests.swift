@@ -86,7 +86,7 @@ final class LogProviderTests {
                 }
             }
         } catch {
-            print(error.localizedDescription)
+            print(String(describing: error))
         }
     }
 
