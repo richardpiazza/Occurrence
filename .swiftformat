@@ -11,6 +11,7 @@
 --disable blankLinesAtStartOfScope
 --disable hoistPatternLet
 --disable redundantType
+--disable swiftTestingTestCaseNames
 --disable unusedArguments
 --disable wrapArguments
 --disable wrapPropertyBodies
