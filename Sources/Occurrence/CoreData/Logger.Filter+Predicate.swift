@@ -1,7 +1,7 @@
-import Foundation
-import Logging
 #if canImport(CoreData)
 import CoreData
+import Foundation
+import Logging
 
 extension Logger.Filter {
     var predicate: NSPredicate {

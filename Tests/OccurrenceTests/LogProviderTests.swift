@@ -1,7 +1,14 @@
 #if canImport(CoreData)
 import CoreData
 #endif
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import Logging
 @testable import Occurrence
 import Testing

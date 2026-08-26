@@ -1,4 +1,8 @@
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 extension FileManager {
     /// Locates (and creates) the **Occurrence** package directory.

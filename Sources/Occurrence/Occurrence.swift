@@ -1,4 +1,8 @@
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import Logging
 import Mutex
 
@@ -73,16 +77,8 @@ public struct Occurrence: LogHandler {
         }
     }
 
-    public func log(
-        level: Logger.Level,
-        message: Logger.Message,
-        metadata: Logger.Metadata?,
-        source: String,
-        file: String,
-        function: String,
-        line: UInt,
-    ) {
-        let joinedMetadata: Logger.Metadata? = switch (metadata, metadataProvider?.get()) {
+    public func log(event: LogEvent) {
+        let joinedMetadata: Logger.Metadata? = switch (event.metadata, metadataProvider?.get()) {
         case (.some(let instance), .some(let context)):
             instance.merging(context, uniquingKeysWith: { instanceValue, _ in instanceValue })
         case (.some(let instance), .none):
@@ -95,13 +91,13 @@ public struct Occurrence: LogHandler {
 
         let entry = Logger.Entry(
             subsystem: Logger.Subsystem(stringLiteral: label),
-            level: level,
-            message: message,
+            level: event.level,
+            message: event.message,
             metadata: joinedMetadata,
-            source: source,
-            file: file,
-            function: function,
-            line: line,
+            source: event.source,
+            file: event.file,
+            function: event.function,
+            line: event.line,
         )
 
         if Self.configuration.outputToConsole {

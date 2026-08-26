@@ -1,4 +1,3 @@
-import Foundation
 import Logging
 
 /// Provides an inline way to reference a lazy-loaded instance of `Logger`.
