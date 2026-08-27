@@ -74,20 +74,9 @@ public extension Logger {
 }
 
 extension Logger.Entry: CustomStringConvertible {
-    private var formatStyle: Date.ISO8601FormatStyle {
-        .iso8601
-            .month()
-            .day()
-            .year()
-            .dateSeparator(.dash)
-            .time(includingFractionalSeconds: true)
-            .timeSeparator(.colon)
-            .timeZone(separator: .omitted)
-    }
-
     public var description: String {
         let sourceFile = [source, fileName].filter { !$0.isEmpty }.joined(separator: " ")
-        let output = "[\(date.formatted(formatStyle)) \(level.fancyDescription) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
+        let output = "[\(date.formatted(Self.formatStyle)) \(level.fancyDescription) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
         if let metadata {
             let sortedMetadata = metadata.sorted(by: { $0.key < $1.key })
             let values = sortedMetadata.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
@@ -99,6 +88,18 @@ extension Logger.Entry: CustomStringConvertible {
 }
 
 public extension Logger.Entry {
+    /// Format style that uses: `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
+    static var formatStyle: Date.ISO8601FormatStyle {
+        .iso8601
+            .month()
+            .day()
+            .year()
+            .dateSeparator(.dash)
+            .time(includingFractionalSeconds: true)
+            .timeSeparator(.colon)
+            .timeZone(separator: .omitted)
+    }
+
     /// Attempts to extract only the last path component of the `file`
     var fileName: String {
         URL(fileURLWithPath: file).lastPathComponent
