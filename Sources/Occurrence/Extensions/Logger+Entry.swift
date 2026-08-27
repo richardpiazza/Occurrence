@@ -4,12 +4,15 @@ import Logging
 public extension Logger {
     struct Entry: Codable, Sendable {
 
+        #if canImport(ObjectiveC)
+        @available(*, deprecated)
         public static let gmtDateFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             formatter.timeZone = TimeZone(secondsFromGMT: 0)
             return formatter
         }()
+        #endif
 
         public let date: Date
         public let subsystem: Subsystem
@@ -69,12 +72,11 @@ public extension Logger {
         }
 
         var descriptionPrefix: String {
-            let _date = Self.gmtDateFormatter.string(from: date)
             let sourceFile = [source, fileName]
                 .filter { !$0.isEmpty }
                 .joined(separator: " ")
 
-            return "[\(_date) \(level.fancyDescription) | \(subsystem) | \(sourceFile) | \(function) \(line)]"
+            return "[\(date.formatted(Self.formatStyle)) \(level.fancyDescription) | \(subsystem) | \(sourceFile) | \(function) \(line)]"
         }
     }
 }
@@ -111,6 +113,18 @@ extension Logger.Entry: CustomStringConvertible {
 }
 
 public extension Logger.Entry {
+    /// Format style that uses: `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
+    static var formatStyle: Date.ISO8601FormatStyle {
+        .iso8601
+            .month()
+            .day()
+            .year()
+            .dateSeparator(.dash)
+            .time(includingFractionalSeconds: true)
+            .timeSeparator(.colon)
+            .timeZone(separator: .omitted)
+    }
+
     /// Attempts to extract only the last path component of the `file`
     var fileName: String {
         URL(fileURLWithPath: file).lastPathComponent

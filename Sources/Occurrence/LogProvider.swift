@@ -1,4 +1,3 @@
-import Foundation
 import Logging
 
 /// A source of logging data.

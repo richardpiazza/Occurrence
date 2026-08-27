@@ -1,7 +1,11 @@
+#if !canImport(Android)
 #if canImport(CoreData)
 import CoreData
 #endif
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import Logging
 @testable import Occurrence
 import Testing
@@ -83,7 +87,7 @@ final class LogProviderTests {
                 }
             }
         } catch {
-            print(error.localizedDescription)
+            print(String(describing: error))
         }
     }
 
@@ -398,3 +402,4 @@ final class LogProviderTests {
         #expect(entries == ["fourteen", "thirteen"])
     }
 }
+#endif

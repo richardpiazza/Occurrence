@@ -23,7 +23,7 @@ struct LogEntryView: View {
             HStack {
                 Text(entry.level.fancyDescription)
 
-                Text(Logger.Entry.gmtDateFormatter.string(from: entry.date))
+                Text(entry.date, format: Logger.Entry.formatStyle)
             }
             .font(.system(size: 10, weight: .semibold, design: .monospaced))
 

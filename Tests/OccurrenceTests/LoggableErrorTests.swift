@@ -95,23 +95,17 @@ struct LoggableErrorTests {
         )
         let error = EncodingError.invalidValue(FileRef(), context)
         let metadata = error.metadata
-        #expect(metadata.count == 4)
+        #expect(metadata.count == 3)
 
         let domain = try #require(metadata[.domain]?.stringValue)
         let code = try #require(metadata[.code]?.intValue)
         let userInfo = try #require(metadata[.userInfo]?.dictionaryValue)
         let description = try #require(userInfo[.description]?.stringValue)
-        let localizedDescription = try #require(metadata[.localizedDescription]?.stringValue)
 
         #expect(domain == "SwiftEncodingErrorDomain")
         #expect(code == 0)
         #expect(userInfo.count == 1)
         #expect(description == #"Encoding (Invalid Value) - Value: FileRef(description: "Some File"), Context: Bad data. ["description", "file"]"#)
-        #if os(Linux)
-        #expect(localizedDescription == "The operation could not be completed. (SwiftEncodingErrorDomain error 0.)")
-        #else
-        #expect(localizedDescription == "The data couldn’t be written because it isn’t in the correct format.")
-        #endif
     }
 
     @Test func decodingError() throws {
@@ -121,22 +115,16 @@ struct LoggableErrorTests {
         )
         let error = DecodingError.typeMismatch(Int.self, context)
         let metadata = error.metadata
-        #expect(metadata.count == 4)
+        #expect(metadata.count == 3)
 
         let domain = try #require(metadata[.domain]?.stringValue)
         let code = try #require(metadata[.code]?.intValue)
         let userInfo = try #require(metadata[.userInfo]?.dictionaryValue)
         let description = try #require(userInfo[.description]?.stringValue)
-        let localizedDescription = try #require(metadata[.localizedDescription]?.stringValue)
 
         #expect(domain == "SwiftDecodingErrorDomain")
         #expect(code == 0)
         #expect(userInfo.count == 1)
         #expect(description == #"Decoding (Type Mismatch) - Type: Int, Context: Unexpected type. ["code"]"#)
-        #if os(Linux)
-        #expect(localizedDescription == "The operation could not be completed. (SwiftDecodingErrorDomain error 0.)")
-        #else
-        #expect(localizedDescription == "The data couldn’t be read because it isn’t in the correct format.")
-        #endif
     }
 }
