@@ -76,5 +76,61 @@ final class OccurrenceTests {
 
         #expect(description == output)
     }
+
+    @Test func debugDictionaryConvenience() throws {
+        let dictionary: [String: Any] = [
+            "label": "count",
+            "value": 42,
+        ]
+
+        logger.log(level: .info, "Dictionary", dictionary: dictionary, redacting: ["value"])
+
+        let entry = try #require(Occurrence.logProvider.entries().last)
+        var description = String(reflecting: entry)
+
+        // Remove the timestamp
+        let first = description.index(description.startIndex, offsetBy: 1)
+        let last = description.index(description.startIndex, offsetBy: 25)
+        description.replaceSubrange(first ... last, with: "")
+
+        let output = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | debugDictionaryConvenience() 86] Dictionary
+        {
+          "context" : "XCTestCase",
+          "label" : "count",
+          "value" : "<REDACTED>"
+        }
+        """
+
+        #expect(description == output)
+    }
+
+    @Test func debugEncodableConvenience() throws {
+        struct Metadata: Encodable {
+            let id: Int
+            let name: String
+        }
+
+        logger.log(level: .info, "Encodable", encodable: Metadata(id: 123, name: "Bob"), redacting: ["name"])
+
+        let entry = try #require(Occurrence.logProvider.entries().last)
+        var description = String(reflecting: entry)
+
+        // Remove the timestamp
+        let first = description.index(description.startIndex, offsetBy: 1)
+        let last = description.index(description.startIndex, offsetBy: 25)
+        description.replaceSubrange(first ... last, with: "")
+
+        let output = """
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | debugEncodableConvenience() 114] Encodable
+        {
+          "context" : "XCTestCase",
+          "id" : 123,
+          "name" : "<REDACTED>"
+        }
+        """
+
+        #expect(description == output)
+    }
 }
 #endif

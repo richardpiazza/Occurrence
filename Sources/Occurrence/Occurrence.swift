@@ -4,10 +4,25 @@ import Mutex
 
 public struct Occurrence: LogHandler {
 
+    public enum StandardOutputLevel: Equatable, Sendable {
+        case describing
+        case reflecting
+    }
+
     public struct Configuration: Equatable, Sendable {
-        public var outputToConsole: Bool = true
+        public var standardOutputLevel: StandardOutputLevel? = .describing
         public var outputToStream: Bool = true
         public var outputToStorage: Bool = true
+
+        @available(*, deprecated, renamed: "standardOutputLevel")
+        public var outputToConsole: Bool {
+            get {
+                standardOutputLevel != nil
+            }
+            set {
+                standardOutputLevel = .describing
+            }
+        }
     }
 
     private static let configurationState: Mutex<Configuration> = Mutex(Configuration())
@@ -96,8 +111,13 @@ public struct Occurrence: LogHandler {
             line: event.line,
         )
 
-        if Self.configuration.outputToConsole {
+        switch Self.configuration.standardOutputLevel {
+        case .describing:
             print(entry)
+        case .reflecting:
+            debugPrint(entry)
+        default:
+            break
         }
 
         if Self.configuration.outputToStream {
