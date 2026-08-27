@@ -1,8 +1,4 @@
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
 import Foundation
-#endif
 import Logging
 
 public extension Logger {
@@ -78,8 +74,19 @@ public extension Logger {
 }
 
 extension Logger.Entry: CustomStringConvertible {
+    private var formatStyle: Date.ISO8601FormatStyle {
+        .iso8601
+            .month()
+            .day()
+            .year()
+            .dateSeparator(.dash)
+            .time(includingFractionalSeconds: true)
+            .timeSeparator(.colon)
+            .timeZone(separator: .omitted)
+    }
+
     public var description: String {
-        let _date = Self.gmtDateFormatter.string(from: date)
+        let _date = date.formatted(formatStyle)
         let sourceFile = [source, fileName].filter { !$0.isEmpty }.joined(separator: " ")
         let output = "[\(_date) \(level.fancyDescription) | \(subsystem) | \(sourceFile) | \(function) \(line)] \(message)"
         if let metadata {

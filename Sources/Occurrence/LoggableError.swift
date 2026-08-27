@@ -1,8 +1,4 @@
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
 import Foundation
-#endif
 import Logging
 
 /// An `Error` type which can produced `Logger.Metadata` suitable for logging.
