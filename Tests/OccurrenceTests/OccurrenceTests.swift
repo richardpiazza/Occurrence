@@ -94,7 +94,7 @@ final class OccurrenceTests {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | debugDictionaryConvenience() 85] Dictionary
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | debugDictionaryConvenience() 86] Dictionary
         {
           "context" : "XCTestCase",
           "label" : "count",
@@ -122,7 +122,7 @@ final class OccurrenceTests {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | debugEncodableConvenience() 113] Encodable
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | debugEncodableConvenience() 114] Encodable
         {
           "context" : "XCTestCase",
           "id" : 123,
