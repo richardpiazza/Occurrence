@@ -92,7 +92,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v6
-    - name: Build
+    - name: Build & Test
       uses: skiptools/swift-android-action@v2
       with:
         free-disk-space: true

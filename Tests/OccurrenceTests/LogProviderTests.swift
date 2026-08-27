@@ -1,3 +1,4 @@
+#if !canImport(Android)
 #if canImport(CoreData)
 import CoreData
 #endif
@@ -401,3 +402,4 @@ final class LogProviderTests {
         #expect(entries == ["fourteen", "thirteen"])
     }
 }
+#endif

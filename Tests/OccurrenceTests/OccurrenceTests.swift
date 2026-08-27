@@ -1,3 +1,4 @@
+#if !canImport(Android)
 import Logging
 @testable import Occurrence
 import Testing
@@ -76,3 +77,4 @@ final class OccurrenceTests {
         #expect(description == output)
     }
 }
+#endif
