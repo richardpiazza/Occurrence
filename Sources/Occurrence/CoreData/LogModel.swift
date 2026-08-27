@@ -1,7 +1,7 @@
-import Foundation
-import Mutex
 #if canImport(CoreData)
 import CoreData
+import Foundation
+import Mutex
 
 enum LogModel {
     case version_1_0_0

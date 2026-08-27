@@ -84,3 +84,15 @@ jobs:
       env:
         DESTINATION: "generic/platform=${{ matrix.platform }}"
       run: set -o pipefail && xcodebuild build -scheme "$SCHEME" -destination "$DESTINATION" | xcbeautify
+
+  Android:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+    - name: Build & Test
+      uses: skiptools/swift-android-action@v2
+      with:
+        free-disk-space: true

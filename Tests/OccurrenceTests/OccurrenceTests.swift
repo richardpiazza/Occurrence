@@ -1,3 +1,4 @@
+#if !canImport(Android)
 import Logging
 @testable import Occurrence
 import Testing
@@ -47,7 +48,7 @@ final class OccurrenceTests {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | dictionaryConvenience() 39] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | dictionaryConvenience() 40] Dictionary { context: XCTestCase, label: count, value: <REDACTED> }
         """
 
         #expect(description == output)
@@ -70,9 +71,10 @@ final class OccurrenceTests {
         description.replaceSubrange(first ... last, with: "")
 
         let output = """
-        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | encodableConvenience() 62] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
+        [🔎 INFO     | com.richardpiazza.occurrence | OccurrenceTests OccurrenceTests.swift | encodableConvenience() 63] Encodable { context: XCTestCase, id: 123, name: <REDACTED> }
         """
 
         #expect(description == output)
     }
 }
+#endif
